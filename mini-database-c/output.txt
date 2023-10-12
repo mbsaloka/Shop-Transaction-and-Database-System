@@ -1,0 +1,6 @@
+Buyung 50001 Informatika
+Wawa 50002 Sastra
+Dummy1 50003 Sipil
+Dummy2 50004 Fisika
+Dummy4 5005 Geofisika
+Dummy5 50006 Hukum
