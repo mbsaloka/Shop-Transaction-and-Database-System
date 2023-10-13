@@ -1,6 +1,10 @@
 {
   "files.associations": {
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "string.h": "c",
+    "txt_manipulation.h": "c",
+    "text_style.h": "c",
+    "data_barang.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
