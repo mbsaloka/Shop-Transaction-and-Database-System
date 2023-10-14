@@ -1,0 +1,25 @@
+beli
+|
+v
+1. Tampilin Daftar Barang dan Saldo
+2. Input: ID yang mau dibeli (ID valid ? lanjut : ulang)
+3. Konfirmasi: "Ingin membeli X? Berapa?"
+4. Input: Jumlah yang mau dibeli (N <= stok ? lanjut : ulang)
+5. Konfirmasi: "Membeli X sebanyak N"
+6. Konfirmasi: "Total Harga Rp"
+7. Lanjut / Batal ?
+8. Lanjut: masukkan keranjang, update: stok
+9. Lanjut Belanja / Selesai ?
+10. Lanjut: ulang ke-2 sampai pilih Selesai
+11. Selesai: pindah ke keranjang
+
+keranjang
+|
+v
+1. Tampilin Isi Keranjang dan Saldo
+2. Konfirmasi: "Total Harga Rp"
+3. Lanjut ? Ubah Keranjang ? Tambah Barang ? Batal ?
+4. Batal: exit
+5. Tambah Barang: pindah ke beli
+6. 
+

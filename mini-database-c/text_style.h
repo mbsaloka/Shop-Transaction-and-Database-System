@@ -6,6 +6,17 @@ void printBold(char *s) {
     printf("\x1b[1m%s\x1b[0m", s);
 }
 
+void comingSoon() {
+    printBold("Coming Soon\n");
+    printf("Text to erase****************************\n");
+    int i = 3;
+    while (i >= 0) {  // 3 second countdown
+        printf("\033[A\33[2KT\rKembali ke menu dalam %d...\n", i);
+        i--;
+        sleep(1);
+    }
+}
+
 /*
 Kode Pengendali ANSI
 \x1b[0m : normal text

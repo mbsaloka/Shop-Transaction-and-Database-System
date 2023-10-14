@@ -2,40 +2,36 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "text_style.h"
 #include "get_time.h"
 #include "data_barang.h"
 #include "data_member.h"
+#include "admin.h"
+#include "user.h"
 // #include "txt_manipulation.h"
 
 int main(int argc, char const *argv[]) {
     int code;
-    // clearScreen();
     do {
-        printBold("Ingin melakukan apa?\n");
+        clearScreen();
+        printBold("Selamat Datang di Sistem\n");
         puts("(0) Akhiri Program");
-        puts("(1) Tambah Barang");
-        puts("(2) Lihat Barang");
-        puts("(3) Tambah Membership");
-        puts("(4) Lihat Membership");
+        puts("(1) Login Sebagai Admin");
+        puts("(2) Login Sebagai Pelanggan");
         scanf("%d", &code);
         clearScreen();
         switch (code) {
         case 1:
-            inputBarang();
+            admin();
             break;
         case 2:
-            renderBarang();
-            break;
-        case 3:
-            inputMember();
-            break;
-        case 4:
-            renderMember();
+            user();
+            clearScreen();
             break;
         default:
-            puts("Akhir dari program.");
+            printBold("[Akhir dari program.]\n");
         }
     } while (code != 0);
 

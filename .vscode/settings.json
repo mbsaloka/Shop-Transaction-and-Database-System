@@ -4,7 +4,8 @@
     "string.h": "c",
     "txt_manipulation.h": "c",
     "text_style.h": "c",
-    "data_barang.h": "c"
+    "data_barang.h": "c",
+    "data_member.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
