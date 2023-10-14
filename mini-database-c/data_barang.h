@@ -1,8 +1,10 @@
-#define FILE_NAME "database/db_barang.csv"
+#define FILE_BARANG "database/db_barang.csv"
+#define COL_MAX 14
+#define COL_MIN 6
 FILE *inp, *outp;
 
 void renderBarang() {
-    inp = fopen(FILE_NAME, "r");
+    inp = fopen(FILE_BARANG, "r");
 
     if (inp == NULL) {
         puts("File failed to open.");
@@ -25,6 +27,16 @@ void renderBarang() {
         harga = atoi(strtok(NULL, delimiter));
         stok = atoi(strtok(NULL, delimiter));
 
+        if (strlen(namaBarang) > COL_MAX) {
+            namaBarang[COL_MAX - 2] = '.';
+            namaBarang[COL_MAX - 1] = '.';
+            namaBarang[COL_MAX] = '\0';
+        }
+
+        if (strlen(namaBarang) < COL_MIN) {
+            strcat(namaBarang, "    ");
+        }
+
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
@@ -38,7 +50,7 @@ void inputBarang() {
     char namaBarang[100];
     int ID, harga, stok;
 
-    inp = fopen(FILE_NAME, "r");
+    inp = fopen(FILE_BARANG, "r");
     char line[1000];
     while (fgets(line, sizeof(line), inp)) {
         ID = atoi(strtok(line, ",")) + 1;
@@ -62,7 +74,7 @@ void inputBarang() {
         namaBarang[strlen(namaBarang) - 1] = '\0';
     }
 
-    outp = fopen(FILE_NAME, "a");
+    outp = fopen(FILE_BARANG, "a");
     fprintf(outp, "%d,%s,%d,%d\n", ID, namaBarang, harga, stok);
     fclose(outp);
 }

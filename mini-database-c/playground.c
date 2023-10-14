@@ -1,25 +1,19 @@
 #include <stdio.h>
+#include <string.h>
+
+char* GetString() {
+    static char str[1000];
+    char* t = "Ini adalah string yang dikembalikan dari fungsi";
+    strcpy(str, t);
+
+    return str;
+}
 
 int main() {
-    char ID[100], namaBarang[100];
-    // char harga[100], stok[100];
-    int harga, stok;
+    char* result = GetString();
 
-    printf("TAMBAHKAN BARANG BARU\n");
-    printf("ID: ");
-    // scanf("%s", &ID);
-    gets(ID);
-    printf("Nama Barang: ");
-    // scanf("%s", &namaBarang);
-    gets(namaBarang);
-    printf("Harga: ");
-    scanf("%d", &harga);
-    printf("Stok: ");
-    scanf("%d", &stok);
+    // Gunakan string yang dikembalikan
+    printf("String yang dikembalikan: %s\n", result);
 
-    printf("=============\nHASIL\n");
-    printf("ID : %s\n", ID);
-    printf("Nama Barang : %s\n", namaBarang);
-    printf("Harga : %d\n", harga);
-    printf("Stok : %d\n", stok);
+    return 0;
 }
