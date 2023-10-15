@@ -8,7 +8,7 @@ v
 5. Konfirmasi: "Membeli X sebanyak N"
 6. Konfirmasi: "Total Harga Rp"
 7. Lanjut / Batal ?
-8. Lanjut: masukkan keranjang, update: stok
+8. Lanjut: masukkan keranjang, update: stok(c storage)
 9. Lanjut Belanja / Selesai ?
 10. Lanjut: ulang ke-2 sampai pilih Selesai
 11. Selesai: pindah ke keranjang
@@ -21,5 +21,6 @@ v
 3. Lanjut ? Ubah Keranjang ? Tambah Barang ? Batal ?
 4. Batal: exit
 5. Tambah Barang: pindah ke beli
-6. 
+6. Ubah Keranjang: pilih ID -> hapus / ganti jumlah
+7. Lanjut: saldo cukup ? konfirmasi, update: saldo, stok(database) : konfirmasi, kembali ke-1
 

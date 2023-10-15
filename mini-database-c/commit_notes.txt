@@ -1,0 +1,47 @@
+1. Penambahan (Addition):
+    Menambahkan fitur baru.
+    Menambahkan berkas atau direktori baru.
+    Menambahkan data ke dalam proyek.
+    Contoh: "Tambahkan fitur login menggunakan OAuth."
+2. Perbaikan (Fix):
+    Memperbaiki bug atau kesalahan.
+    Memperbaiki masalah keamanan.
+    Memperbaiki masalah tata letak atau desain.
+    Contoh: "Perbaiki bug yang menyebabkan aplikasi crash saat login."
+3. Pembaruan (Update):
+    Memperbarui fitur yang sudah ada.
+    Memperbarui perpustakaan atau dependensi.
+    Memperbarui dokumentasi.
+    Contoh: "Perbarui tampilan profil pengguna."
+4. Penghapusan (Removal):
+    Menghapus berkas atau fitur yang tidak lagi diperlukan.
+    Menghapus kode yang tidak digunakan.
+    Contoh: "Hapus fungsi yang tidak terpakai."
+5. Pengoptimalan (Optimization):
+    Meningkatkan kinerja.
+    Mengoptimalkan algoritma.
+    Contoh: "Optimalkan pencarian data."
+6. Pengujian (Testing):
+    Menambahkan atau memperbarui pengujian.
+    Mengganti pengujian yang gagal.
+    Contoh: "Tambahkan pengujian otomatis untuk modul kalkulasi."
+7. Dokumentasi (Documentation):
+    Memperbarui atau menambahkan dokumentasi.
+    Menyertakan komentar kode yang jelas.
+    Contoh: "Perbarui dokumentasi API REST."
+8. Koreksi Penulisan (Typo):
+    Memperbaiki kesalahan pengejaan atau tata bahasa dalam komentar, pesan, atau dokumentasi.
+    Contoh: "Koreksi penulisan dalam pesan kesalahan."
+9. Refaktor (Refactor):
+    Mengubah struktur kode tanpa mengubah fungsionalitas.
+    Meningkatkan kualitas kode.
+    Contoh: "Refaktor fungsi pencarian menjadi lebih modular."
+10. Revisi (Revert):
+    Mengembalikan perubahan sebelumnya ke dalam proyek.
+    Contoh: "Revert perubahan sebelumnya yang memicu masalah."
+11. Inisialisasi Proyek (Initial Commit):
+    Commit pertama dalam proyek baru.
+    Contoh: "Inisialisasi proyek penjualan online."
+12. Lainnya (Miscellaneous):
+    Jenis commit yang tidak sesuai dengan kategori di atas.
+    Contoh: "Lainnya: Penambahan fitur pembayaran via PayPal."

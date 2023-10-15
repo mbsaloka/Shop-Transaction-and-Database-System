@@ -6,11 +6,11 @@
 
 #include "text_style.h"
 #include "get_time.h"
-#include "data_barang.h"
-#include "data_member.h"
+#include "item.h"
+#include "member.h"
 #include "admin.h"
 #include "user.h"
-// #include "txt_manipulation.h"
+#include "user_belanja.h"
 
 int main(int argc, char const *argv[]) {
     int code;

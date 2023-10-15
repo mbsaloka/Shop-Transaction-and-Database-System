@@ -3,14 +3,19 @@
 
 void admin() {
     char username[100], pass[100], exitCode[10];
-    while (strcmp(pass, PASSWORD) != 0 && strcmp(username, ADMIN_NAME) != 0) {
+    while (strcmp(pass, PASSWORD) != 0 || strcmp(username, ADMIN_NAME) != 0) {
         clearScreen();
         printBold("[MODE ADMIN]\n");
         printBold("Masukkan Username dan Password\n");
         printf("Username: ");
-        scanf("%s", username);
+        fflush(stdin);
+        fgets(username, 100, stdin);
         printf("Password: ");
-        scanf("%s", pass);
+        fgets(pass, 100, stdin);
+
+        username[strlen(username) - 1] = '\0';
+        pass[strlen(pass) - 1] = '\0';
+
         if (strcmp(username, ADMIN_NAME) != 0) {
             printf("Username tidak dikenali!\n");
             printf("Coba login kembali? (Y/N) ");
@@ -18,7 +23,7 @@ void admin() {
             if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) return;
         } else if (strcmp(pass, PASSWORD) != 0) {
             printf("Password salah!\n");
-            printf("Coba login kembali? (Y/N)");
+            printf("Coba login kembali? (Y/N) ");
             scanf("%s", exitCode);
             if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) return;
         }
@@ -41,10 +46,10 @@ void admin() {
         clearScreen();
         switch (code) {
         case 1:
-            inputBarang();
+            inputItem();
             break;
         case 2:
-            renderBarang();
+            renderItem();
             break;
         case 3:
             inputMember();
