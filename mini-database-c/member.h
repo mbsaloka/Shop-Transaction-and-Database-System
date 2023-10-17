@@ -82,7 +82,7 @@ int createAccount() {
         password[strlen(password) - 1] = '\0';
 
         // Check is username used
-        char *temp, exitCode[10];
+        char *temp, exitCode;
         inp = fopen(FILE_MEMBER, "r");
         fgets(line, sizeof(line), inp);
         while (fgets(line, sizeof(line), inp) != NULL) {
@@ -98,26 +98,41 @@ int createAccount() {
         if (isUsed) {
             printf("Username sudah terdaftar, gunakan username yang berbeda!\n");
             printf("Coba buat akun lagi? (Y/N) ");
-            scanf("%s", exitCode);
-            if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) {
+            exitCode = getYesNo();
+            if (exitCode != 'Y') {
                 clearScreen();
                 return 0;
             }
         } else {
-            return 1;
+            printf("Lanjutkan membuat akun? (Y/N) ");
+            exitCode = getYesNo();
+            clearScreen();
+            if (exitCode != 'Y') {
+                printf("Proses dibatalkan.");
+                sleep(1);
+                clearScreen();
+                printf("Coba buat akun lagi? (Y/N) ");
+                exitCode = getYesNo();
+                if (exitCode != 'Y') {
+                    clearScreen();
+                    return 0;
+                }
+            } else {
+                return 1;
+            }
         }
     } while (1);
 }
 
 void inputMember() {
-    char *name, *phoneNum, address[100];
+    char *name, *phoneNum, address[100], exitCode;
     int ID = getCurrentID() + 1;
     char line[1000];
 
     char nol[] = "00";
     nol[1] = (ID < 10) ? '0' : '\0';
 
-    if (createAccount()) {
+    while (createAccount()) {
         clearScreen();
         printBold("MASUKKAN DATA DIRI ANDA\n");
         printf("Nama : ");
@@ -128,10 +143,29 @@ void inputMember() {
         fgets(address, 100, stdin);
         address[strlen(address) - 1] = '\0';
 
-        outp = fopen(FILE_MEMBER, "a");
-        fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s\n", ID, name, phoneNum, address, getDate(), getTime(), username, password);
-        free(name);
-        free(phoneNum);
-        fclose(outp);
+        printf("Apakah data diri Anda sudah benar? (Y/N) ");
+        exitCode = getYesNo();
+        clearScreen();
+        if (exitCode == 'Y') {
+            outp = fopen(FILE_MEMBER, "a");
+            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s\n", ID, name, phoneNum, address, getDate(), getTime(), username, password);
+            free(name);
+            free(phoneNum);
+            fclose(outp);
+            printf("Anda berhasil terdaftar sebagai membership.");
+            sleep(1);
+            clearScreen();
+            break;
+        } else {
+            printf("Proses dibatalkan.");
+            sleep(1);
+            clearScreen();
+            printf("Coba buat akun lagi? (Y/N) ");
+            exitCode = getYesNo();
+            if (exitCode != 'Y') {
+                clearScreen();
+                break;
+            }
+        }
     }
 }

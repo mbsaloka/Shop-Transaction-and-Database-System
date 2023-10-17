@@ -1,5 +1,5 @@
-#define ADMIN_NAME ""
-#define PASSWORD ""
+#define ADMIN_NAME "Admin1"
+#define PASSWORD "mbsaloka12"
 
 void admin() {
     char username[100], pass[100], exitCode;

@@ -1,4 +1,4 @@
-static char username[100], password[100], *guestName;
+static char username[100], password[100], guestName[100];
 
 int memberLogin() {
     const char *delimiter = ",";
@@ -64,7 +64,9 @@ void user() {
         clearScreen();
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
-        guestName = getAlpha();
+        char *temp;
+        temp = getAlpha();
+        strcpy(guestName, temp);
     }
 
     clearScreen();
@@ -85,8 +87,7 @@ void user() {
             sleep(1);
             break;
         case 1:
-            // renderItem();
-            comingSoon();
+            shoppingMenu();
             break;
         case 2:
             if (isMember) {
@@ -104,5 +105,4 @@ void user() {
             sleep(1);
         }
     } while (code != 0);
-    free(guestName);
 }

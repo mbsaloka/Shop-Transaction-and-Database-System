@@ -1,4 +1,4 @@
-#define FITE_ITEM "database/db_item.csv"
+#define FILE_ITEM "database/db_item.csv"
 FILE *inp, *outp;
 
 void renderItem() {
@@ -7,7 +7,7 @@ void renderItem() {
     char *name;
     int ID, price, stock;
     char line[1000];
-    inp = fopen(FITE_ITEM, "r");
+    inp = fopen(FILE_ITEM, "r");
     if (inp == NULL) {
         puts("File failed to open.");
         return;
@@ -44,10 +44,10 @@ void renderItem() {
 }
 
 void inputItem() {
-    char name[100], *temp;
+    char name[100], *temp, exitCode;
     int ID, price, stock;
     char line[1000];
-    inp = fopen(FITE_ITEM, "r");
+    inp = fopen(FILE_ITEM, "r");
     while (fgets(line, sizeof(line), inp)) {
         ID = atoi(strtok(line, ",")) + 1;
     }
@@ -63,12 +63,24 @@ void inputItem() {
     fgets(name, 100, stdin);
     printf("Harga : ");
     price = getNumINT();
-    printf("Stok : ");
+    printf("\nStok : ");
     stock = getNumINT();
 
     name[strlen(name) - 1] = '\0';
 
-    outp = fopen(FITE_ITEM, "a");
-    fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
-    fclose(outp);
+    printf("\nApakah Anda ingin menambahkan %s ke dalam daftar barang? (Y/N) ", name);
+    exitCode = getYesNo();
+    clearScreen();
+    if (exitCode == 'Y') {
+        outp = fopen(FILE_ITEM, "a");
+        fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
+        fclose(outp);
+        printf("%s berhasil ditambahkan.", name);
+        sleep(1);
+        clearScreen();
+    } else {
+        printf("Proses dibatalkan.");
+        sleep(1);
+        clearScreen();
+    }
 }

@@ -1,19 +1,25 @@
 #include <stdio.h>
 #include <string.h>
-
-char* GetString() {
-    static char str[1000];
-    char* t = "Ini adalah string yang dikembalikan dari fungsi";
-    strcpy(str, t);
-
-    return str;
-}
+#include <stdlib.h>
+#include <conio.h>
+#include <time.h>
+#include <unistd.h>
 
 int main() {
-    char* result = GetString();
-
-    // Gunakan string yang dikembalikan
-    printf("String yang dikembalikan: %s\n", result);
+    printf("HALO 1\n");
+    printf("HALO 2\n");
+    printf("HALO 3\n");
+    printf("HALO 4\n");
+    printf("HALO 5\n");
+    sleep(1);
+    printf("\033[A\33[2K\r");
+    sleep(1);
+    printf("\033[A\33[2K\r");
+    sleep(1);
+    printf("\033[A\33[2K\r");
+    sleep(1);
+    printf("\033[A\33[2K\r");
+    printf("HEHEHE\n");
 
     return 0;
 }

@@ -2,6 +2,10 @@ void clearScreen() {
     printf("\x1b[2J\x1b[H");
 }
 
+void clearRow() {
+    printf("\033[A\33[2K\r");
+}
+
 void printBold(char *s) {
     printf("\x1b[1m%s\x1b[0m", s);
 }
@@ -15,6 +19,25 @@ void comingSoon() {
         i--;
         sleep(1);
     }
+}
+
+void printMoney(int money) {
+    char str[100];
+    snprintf(str, sizeof(str), "%d", money);
+    int n = strlen(str);
+    int j = 0;
+    for (int i = n - 1; i > 0; i--) {
+        j++;
+        if (j % 3 == 0) {
+            char str2[100];
+            strcpy(str2, str);
+            char *temp = str2 + i;
+            str[i] = '.';
+            str[i + 1] = '\0';
+            strcat(str, temp);
+        }
+    }
+    printf("Rp%s", str);
 }
 
 /*
