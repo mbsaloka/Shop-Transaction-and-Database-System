@@ -1,4 +1,4 @@
-static char username[100], password[100], guestName[100];
+static char username[100], password[100], *guestName;
 
 int memberLogin() {
     const char *delimiter = ",";
@@ -17,7 +17,7 @@ int memberLogin() {
         password[strlen(password) - 1] = '\0';
 
         // Check is username exist
-        char *temp, *tempName, exitCode[10];
+        char *temp, *tempName, exitCode;
         passFlag = 1;
         inp = fopen(FILE_MEMBER, "r");
         fgets(line, sizeof(line), inp);
@@ -44,11 +44,8 @@ int memberLogin() {
                 printf("Username tidak terdaftar!\n");
             }
             printf("Coba login kembali? (Y/N) ");
-            scanf("%s", exitCode);
-            if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) {
-                clearScreen();
-                return 0;
-            }
+            exitCode = getYesNo();
+            if (exitCode != 'Y') return 0;
         }
         fclose(inp);
     } while (!isFound);
@@ -57,18 +54,17 @@ int memberLogin() {
 
 void user() {
     clearScreen();
-    char exitCode[10];
+    char exitCode;
     int isMember = 0;
     printBold("Apakah Anda sudah berlangganan Membership? (Y/N) ");
-    scanf("%s", exitCode);
-    if (strcmp(exitCode, "Y") == 0 || strcmp(exitCode, "y") == 0) {
-        isMember = memberLogin();
-    }
+    exitCode = getYesNo();
+    if (exitCode == 'Y') isMember = memberLogin();
 
     if (!isMember) {
+        clearScreen();
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
-        scanf("%s", guestName);
+        guestName = getAlpha();
     }
 
     clearScreen();
@@ -81,9 +77,13 @@ void user() {
         puts("(0) Keluar");
         puts("(1) Mulai Belanja");
         puts("(2) Daftar Membership");
-        scanf("%d", &code);
+        code = getNumINT();
         clearScreen();
         switch (code) {
+        case 0:
+            printBold("Selamat Berbelanja Kembali!\n");
+            sleep(1);
+            break;
         case 1:
             // renderItem();
             comingSoon();
@@ -100,9 +100,9 @@ void user() {
             }
             break;
         default:
-            printBold("Selamat Berbelanja Kembali!\n");
+            printBold("Input tidak valid.\n");
             sleep(1);
-            return;
         }
     } while (code != 0);
+    free(guestName);
 }

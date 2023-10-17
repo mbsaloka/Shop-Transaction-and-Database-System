@@ -1,9 +1,9 @@
 #define FITE_ITEM "database/db_item.csv"
-#define COL_MAX 14
-#define COL_MIN 6
 FILE *inp, *outp;
 
 void renderItem() {
+    int COL_MAX = 14;
+    int COL_MIN = 6;
     char *name;
     int ID, price, stock;
     char line[1000];
@@ -44,7 +44,7 @@ void renderItem() {
 }
 
 void inputItem() {
-    char name[100];
+    char name[100], *temp;
     int ID, price, stock;
     char line[1000];
     inp = fopen(FITE_ITEM, "r");
@@ -62,9 +62,9 @@ void inputItem() {
     printf("Nama Barang : ");
     fgets(name, 100, stdin);
     printf("Harga : ");
-    scanf("%d", &price);
+    price = getNumINT();
     printf("Stok : ");
-    scanf("%d", &stock);
+    stock = getNumINT();
 
     name[strlen(name) - 1] = '\0';
 

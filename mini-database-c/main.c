@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <conio.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "text_style.h"
+#include "limited_input.h"
 #include "get_time.h"
 #include "item.h"
 #include "member.h"
@@ -20,9 +22,12 @@ int main(int argc, char const *argv[]) {
         puts("(0) Akhiri Program");
         puts("(1) Login Sebagai Admin");
         puts("(2) Login Sebagai Pelanggan");
-        scanf("%d", &code);
+        code = getNumINT();
         clearScreen();
         switch (code) {
+        case 0:
+            printBold("[Akhir dari program.]\n");
+            break;
         case 1:
             admin();
             break;
@@ -31,7 +36,8 @@ int main(int argc, char const *argv[]) {
             clearScreen();
             break;
         default:
-            printBold("[Akhir dari program.]\n");
+            printBold("Input tidak valid.\n");
+            sleep(1);
         }
     } while (code != 0);
 

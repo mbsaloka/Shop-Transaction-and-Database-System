@@ -1,8 +1,8 @@
-#define ADMIN_NAME "Admin1"
-#define PASSWORD "mbsaloka12"
+#define ADMIN_NAME ""
+#define PASSWORD ""
 
 void admin() {
-    char username[100], pass[100], exitCode[10];
+    char username[100], pass[100], exitCode;
     while (strcmp(pass, PASSWORD) != 0 || strcmp(username, ADMIN_NAME) != 0) {
         clearScreen();
         printBold("[MODE ADMIN]\n");
@@ -19,13 +19,14 @@ void admin() {
         if (strcmp(username, ADMIN_NAME) != 0) {
             printf("Username tidak dikenali!\n");
             printf("Coba login kembali? (Y/N) ");
-            scanf("%s", exitCode);
-            if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) return;
+            exitCode = getYesNo();
+            if (exitCode != 'Y') return;
+
         } else if (strcmp(pass, PASSWORD) != 0) {
             printf("Password salah!\n");
             printf("Coba login kembali? (Y/N) ");
-            scanf("%s", exitCode);
-            if (strcmp(exitCode, "Y") != 0 && strcmp(exitCode, "y") != 0) return;
+            exitCode = getYesNo();
+            if (exitCode != 'Y') return;
         }
     }
 
@@ -42,9 +43,15 @@ void admin() {
         puts("(2) Lihat Barang");
         puts("(3) Tambah Membership");
         puts("(4) Lihat Membership");
-        scanf("%d", &code);
+        code = getNumINT();
         clearScreen();
         switch (code) {
+        case 0:
+            printBold("[Keluar Dari Mode Admin]\n");
+
+            sleep(1);
+            clearScreen();
+            return;
         case 1:
             inputItem();
             break;
@@ -58,9 +65,9 @@ void admin() {
             renderMember();
             break;
         default:
-            printBold("[Keluar Dari Mode Admin]\n");
+            printBold("Input tidak valid.\n");
             sleep(1);
-            return;
+            clearScreen();
         }
     } while (code != 0);
 }
