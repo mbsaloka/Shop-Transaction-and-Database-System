@@ -43,6 +43,7 @@ Warna Teks:
 \x1b[95m - Magenta Terang
 \x1b[96m - Cyan Terang
 \x1b[97m - Putih Terang
+\x1b[38;5;206m - Pink
 
 Warna Latar Belakang
 \x1b[40m - Hitam

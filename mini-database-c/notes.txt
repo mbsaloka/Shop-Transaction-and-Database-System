@@ -23,4 +23,3 @@ v
 5. Tambah Barang: pindah ke beli
 6. Ubah Keranjang: pilih ID -> hapus / ganti jumlah
 7. Lanjut: saldo cukup ? konfirmasi, update: saldo, stok(database) : konfirmasi, kembali ke-1
-

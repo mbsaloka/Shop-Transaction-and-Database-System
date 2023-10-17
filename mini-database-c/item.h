@@ -3,11 +3,10 @@
 #define COL_MIN 6
 FILE *inp, *outp;
 
-static char *name;
-static int ID, price, stock;
-static char line[1000];
-
 void renderItem() {
+    char *name;
+    int ID, price, stock;
+    char line[1000];
     inp = fopen(FITE_ITEM, "r");
     if (inp == NULL) {
         puts("File failed to open.");
@@ -45,6 +44,9 @@ void renderItem() {
 }
 
 void inputItem() {
+    char name[100];
+    int ID, price, stock;
+    char line[1000];
     inp = fopen(FITE_ITEM, "r");
     while (fgets(line, sizeof(line), inp)) {
         ID = atoi(strtok(line, ",")) + 1;
