@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "text_style.h"
+#include "arrow_input.h"
 #include "limited_input.h"
 #include "get_time.h"
 #include "item.h"
@@ -16,13 +17,16 @@
 
 int main(int argc, char const *argv[]) {
     int code;
+    char *option[] = {
+        "(0) Akhiri Program",
+        "(1) Login Sebagai Admin",
+        "(2) Login Sebagai Pelanggan",
+    };
+    int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
         clearScreen();
         printBold("Selamat Datang di Sistem\n");
-        puts("(0) Akhiri Program");
-        puts("(1) Login Sebagai Admin");
-        puts("(2) Login Sebagai Pelanggan");
-        code = getNumINT();
+        code = chooseOption(option, lengthOption);
         clearScreen();
         switch (code) {
         case 0:

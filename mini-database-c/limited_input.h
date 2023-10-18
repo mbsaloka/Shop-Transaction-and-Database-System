@@ -16,6 +16,9 @@ char *getAlpha() {
             printf("%c %c", c, c);
             i--;
         }
+        if (c == 3) {
+            exit(0);
+        }
     }
     str[i] = '\0';
     return str;
@@ -33,6 +36,9 @@ char *getNum() {
         } else if (c == 8 && i > 0) {  // ASCII 8 = backspace
             printf("%c %c", c, c);
             i--;
+        }
+        if (c == 3) {
+            exit(0);
         }
     }
     str[i] = '\0';
@@ -59,26 +65,12 @@ char getYesNo() {
             printf("%c %c", c, c);
             i--;
         }
-
         if (c == 13 && (key != 'Y' && key != 'N')) {
             c = ' ';
+        }
+        if (c == 3) {
+            exit(0);
         }
     }
     return key;
 }
-
-// int main() {
-//     char *nama;
-//     char *noTelp;
-//     printf("Masukkan nama : ");
-//     nama = getAlpha();
-
-//     printf("\nMasukkan no Telp : ");
-//     noTelp = getNum();
-
-//     printf("\nNAMA : %s\n", nama);
-//     printf("NO TELP : %s\n", noTelp);
-
-//     free(nama);
-//     free(noTelp);
-// }

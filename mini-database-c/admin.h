@@ -34,21 +34,23 @@ void admin() {
     printf("Selamat Datang %s!", ADMIN_NAME);
     sleep(1);
     clearScreen();
-    printBold("[MODE ADMIN]\n");
     int code;
+    char *option[] = {
+        "(0) Keluar Dari Mode Admin",
+        "(1) Tambah Barang",
+        "(2) Lihat Barang",
+        "(3) Tambah Membership",
+        "(4) Lihat Membership",
+    };
+    int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
+        printBold("[MODE ADMIN]\n");
         printBold("Ingin melakukan apa?\n");
-        puts("(0) Keluar Dari Mode Admin");
-        puts("(1) Tambah Barang");
-        puts("(2) Lihat Barang");
-        puts("(3) Tambah Membership");
-        puts("(4) Lihat Membership");
-        code = getNumINT();
+        code = chooseOption(option, lengthOption);
         clearScreen();
         switch (code) {
         case 0:
             printBold("[Keluar Dari Mode Admin]\n");
-
             sleep(1);
             clearScreen();
             return;
@@ -56,13 +58,13 @@ void admin() {
             inputItem();
             break;
         case 2:
-            renderItem();
+            showItem(0);
             break;
         case 3:
             inputMember();
             break;
         case 4:
-            renderMember();
+            showMember();
             break;
         default:
             printBold("Input tidak valid.\n");

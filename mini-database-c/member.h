@@ -15,7 +15,7 @@ int getCurrentID() {
     return currentID;
 }
 
-void renderMember() {
+void showMember() {
     int COL_MAX = 22;
     int COL_MIN = 15;
     char *name, *phoneNum, *address, *registDate, *registTime;

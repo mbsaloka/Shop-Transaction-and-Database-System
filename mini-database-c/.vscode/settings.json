@@ -2,6 +2,8 @@
   "files.associations": {
     "unistd.h": "c",
     "typeinfo": "c",
-    "time.h": "c"
-  }
+    "time.h": "c",
+    "signal.h": "c"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }

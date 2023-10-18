@@ -37,10 +37,20 @@ void printMoney(int money) {
             strcat(str, temp);
         }
     }
-    printf("Rp%s", str);
+    printf("\x1b[33mRp%s\x1b[0m", str);
 }
 
 /*
+Activate ANSI in CMD
+reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
+
+Hapus Satu Baris
+\033[A\33[2K\r
+\033[A : menggerakkan kursor satu baris ke atas
+\033[B : menggerakkan kursor satu baris ke atas
+\33[2K : hapus baris saat ini dan di bawahnya
+\r     : menggerakkan kursor ke awal baris
+
 Kode Pengendali ANSI
 \x1b[0m : normal text
 \x1b[1m : bold
@@ -85,4 +95,11 @@ Warna Latar Belakang
 \x1b[105m - Magenta Terang
 \x1b[106m - Cyan Terang
 \x1b[107m - Putih Terang
+
+Arrow Key Code
+\0H - UP
+\0P - DOWN
+\0K - LEFT
+\0M - RIGHT
+
 */

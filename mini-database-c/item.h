@@ -1,13 +1,20 @@
 #define FILE_ITEM "database/db_item.csv"
+#define FILE_TEMP_SHOPPING "database/temp_shopping.csv"
 FILE *inp, *outp;
 
-void renderItem() {
+void showItem(int param) {
+    char fileName[100];
+    if (param == 0) {
+        strcpy(fileName, FILE_ITEM);
+    } else if (param == 1) {
+        strcpy(fileName, FILE_TEMP_SHOPPING);
+    }
     int COL_MAX = 14;
     int COL_MIN = 6;
     char *name;
     int ID, price, stock;
     char line[1000];
-    inp = fopen(FILE_ITEM, "r");
+    inp = fopen(fileName, "r");
     if (inp == NULL) {
         puts("File failed to open.");
         return;

@@ -73,13 +73,16 @@ void user() {
     printf("Selamat Datang %s!", guestName);
     sleep(1);
     int code;
+    char *option[] = {
+        "(0) Keluar",
+        "(1) Mulai Belanja",
+        "(2) Daftar Membership",
+    };
+    int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
         clearScreen();
         printBold("Ingin melakukan apa?\n");
-        puts("(0) Keluar");
-        puts("(1) Mulai Belanja");
-        puts("(2) Daftar Membership");
-        code = getNumINT();
+        code = chooseOption(option, lengthOption);
         clearScreen();
         switch (code) {
         case 0:
