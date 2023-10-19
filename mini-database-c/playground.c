@@ -136,35 +136,76 @@
 //     return 0;
 // }
 
-#include <stdio.h>
-#include <string.h>
+// #include <stdio.h>
+// #include <string.h>
 
-void modifyStringArray(char *strings[], int length) {
-    for (int i = 0; i < length; i++) {
-        // strcat(strings[i], " (modified)");
-        printf("%s\n", strings[i]);
+// void modifyStringArray(char *strings[], int length) {
+//     for (int i = 0; i < length; i++) {
+//         // strcat(strings[i], " (modified)");
+//         printf("%s\n", strings[i]);
+//     }
+// }
+
+// int main() {
+//     char *strings[] = {
+//         "String pertama",
+//         "String kedua",
+//         "String ketiga"};
+
+//     int length = sizeof(strings) / sizeof(strings[0]);
+
+//     // printf("Sebelum pemanggilan fungsi:\n");
+//     // for (int i = 0; i < length; i++) {
+//     //     printf("String %d: %s\n", i, strings[i]);
+//     // }
+
+//     modifyStringArray(strings, length);
+
+//     // printf("\nSetelah pemanggilan fungsi:\n");
+//     // for (int i = 0; i < length; i++) {
+//     //     printf("String %d: %s\n", i, strings[i]);
+//     // }
+
+//     return 0;
+// }
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <conio.h>
+#include <unistd.h>
+#include "text_style.h"
+
+char *getAlpha() {
+    int length = 100;
+    char *str = (char *)malloc(length + 1);
+    char c;
+    int i = 0;
+    while (c != 13) {  // ASCII 13 = enter
+        c = getch();
+        if (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ') && i < length) {
+            printf("%c", c);
+            str[i++] = c;
+        } else if (c == 8 && i > 0) {  // ASCII 8 = backspace
+            printf("%c %c", c, c);
+            i--;
+        }
+        if (c == 3) exit(0);  // Ctrl + C
+        if (c == 27) {        // Esc
+            clearScreen();
+            strcpy(str, "ESCAPE");
+            break;
+        }
     }
+    str[i] = '\0';
+    return str;
 }
 
 int main() {
-    char *strings[] = {
-        "String pertama",
-        "String kedua",
-        "String ketiga"};
-
-    int length = sizeof(strings) / sizeof(strings[0]);
-
-    // printf("Sebelum pemanggilan fungsi:\n");
-    // for (int i = 0; i < length; i++) {
-    //     printf("String %d: %s\n", i, strings[i]);
-    // }
-
-    modifyStringArray(strings, length);
-
-    // printf("\nSetelah pemanggilan fungsi:\n");
-    // for (int i = 0; i < length; i++) {
-    //     printf("String %d: %s\n", i, strings[i]);
-    // }
-
-    return 0;
+    char *nama;
+    nama = getAlpha();
+    printf("%s\n", nama);
+    printf("HALO1\n");
+    free(nama);  // Membebaskan memori yang dialokasikan dalam getAlpha
+    printf("HALO2\n");
 }

@@ -3,7 +3,8 @@
     "unistd.h": "c",
     "typeinfo": "c",
     "time.h": "c",
-    "signal.h": "c"
+    "signal.h": "c",
+    "string_view": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

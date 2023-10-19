@@ -1,4 +1,4 @@
-static char username[100], password[100], guestName[100];
+static char *username, *pass, guestName[100];
 
 int memberLogin() {
     const char *delimiter = ",";
@@ -10,11 +10,19 @@ int memberLogin() {
         printBold("Masukkan Username dan Password\n");
         printf("Username : ");
         fflush(stdin);
-        fgets(username, 100, stdin);
+        username = getAllChar();
+        if (strcmp(username, "ESCAPE") == 0) return -1;
+
+        // fgets(username, 100, stdin);
+        // username[strlen(username) - 1] = '\0';
         printf("Password : ");
-        fgets(password, 100, stdin);
-        username[strlen(username) - 1] = '\0';
-        password[strlen(password) - 1] = '\0';
+        pass = getAllChar();
+        if (strcmp(pass, "ESCAPE") == 0) {
+            free(username);
+            return -1;
+        }
+        // fgets(pass, 100, stdin);
+        // pass[strlen(pass) - 1] = '\0';
 
         // Check is username exist
         char *temp, *tempName, exitCode;
@@ -29,7 +37,7 @@ int memberLogin() {
             if (strcmp(temp, username) == 0) {
                 temp = strtok(NULL, delimiter);
                 temp[strlen(temp) - 1] = '\0';
-                if (strcmp(temp, password) == 0) {
+                if (strcmp(temp, pass) == 0) {
                     isFound = 1;
                     strcpy(guestName, tempName);
                     break;
@@ -39,13 +47,16 @@ int memberLogin() {
                 }
             }
         }
+        free(username);
+        free(pass);
         if (!isFound) {
             if (passFlag) {
                 printf("Username tidak terdaftar!\n");
             }
             printf("Coba login kembali? (Y/N) ");
             exitCode = getYesNo();
-            if (exitCode != 'Y') return 0;
+            if (exitCode == 'N') return 0;
+            if (exitCode == 'E') return -1;
         }
         fclose(inp);
     } while (!isFound);
@@ -58,15 +69,22 @@ void user() {
     int isMember = 0;
     printBold("Apakah Anda sudah berlangganan Membership? (Y/N) ");
     exitCode = getYesNo();
-    if (exitCode == 'Y') isMember = memberLogin();
+    if (exitCode == 'Y') {
+        isMember = memberLogin();
+    } else if (exitCode == 'E') {
+        return;
+    }
 
+    if (isMember == -1) return;
     if (!isMember) {
         clearScreen();
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
         char *temp;
         temp = getAlpha();
+        if (strcmp(temp, "ESCAPE") == 0) return;
         strcpy(guestName, temp);
+        free(temp);
     }
 
     clearScreen();

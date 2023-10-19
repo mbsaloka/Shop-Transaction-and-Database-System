@@ -3,7 +3,7 @@
 FILE *inp, *outp;
 
 void showItem(int param) {
-    char fileName[100];
+    char fileName[101];
     if (param == 0) {
         strcpy(fileName, FILE_ITEM);
     } else if (param == 1) {
@@ -13,7 +13,7 @@ void showItem(int param) {
     int COL_MIN = 6;
     char *name;
     int ID, price, stock;
-    char line[1000];
+    char line[1001];
     inp = fopen(fileName, "r");
     if (inp == NULL) {
         puts("File failed to open.");
@@ -51,9 +51,9 @@ void showItem(int param) {
 }
 
 void inputItem() {
-    char name[100], *temp, exitCode;
+    char *name, exitCode;
     int ID, price, stock;
-    char line[1000];
+    char line[1001];
     inp = fopen(FILE_ITEM, "r");
     while (fgets(line, sizeof(line), inp)) {
         ID = atoi(strtok(line, ",")) + 1;
@@ -67,15 +67,24 @@ void inputItem() {
     printf("ID %s%d\n", nol, ID);
     fflush(stdin);
     printf("Nama Barang : ");
-    fgets(name, 100, stdin);
+    name = getAllChar();
+    if (strcmp(name, "ESCAPE") == 0) return;
+    // fgets(name, 101, stdin);
+    // name[strlen(name) - 1] = '\0';
     printf("Harga : ");
     price = getNumINT();
-    printf("\nStok : ");
+    if (price == -1) {
+        free(name);
+        return;
+    }
+    printf("Stok : ");
     stock = getNumINT();
+    if (stock == -1) {
+        free(name);
+        return;
+    }
 
-    name[strlen(name) - 1] = '\0';
-
-    printf("\nApakah Anda ingin menambahkan %s ke dalam daftar barang? (Y/N) ", name);
+    printf("Apakah Anda ingin menambahkan %s ke dalam daftar barang? (Y/N) ", name);
     exitCode = getYesNo();
     clearScreen();
     if (exitCode == 'Y') {
@@ -90,4 +99,5 @@ void inputItem() {
         sleep(1);
         clearScreen();
     }
+    free(name);
 }

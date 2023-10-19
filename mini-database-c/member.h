@@ -1,7 +1,7 @@
 #define FILE_MEMBER "database/db_member.csv"
 FILE *inp, *outp;
 
-static char username[100], password[100];
+static char *username, *pass;
 
 int getCurrentID() {
     inp = fopen(FILE_MEMBER, "r");
@@ -75,11 +75,18 @@ int createAccount() {
 
         printf("Username : ");
         fflush(stdin);
-        fgets(username, 100, stdin);
+        username = getAllChar();
+        if (strcmp(username, "ESCAPE") == 0) return 0;
+        // fgets(username, 100, stdin);
+        // username[strlen(username) - 1] = '\0';
         printf("Password : ");
-        fgets(password, 100, stdin);
-        username[strlen(username) - 1] = '\0';
-        password[strlen(password) - 1] = '\0';
+        pass = getAllChar();
+        if (strcmp(pass, "ESCAPE") == 0) {
+            free(username);
+            return 0;
+        }
+        // fgets(pass, 100, stdin);
+        // pass[strlen(pass) - 1] = '\0';
 
         // Check is username used
         char *temp, exitCode;
@@ -99,6 +106,8 @@ int createAccount() {
             printf("Username sudah terdaftar, gunakan username yang berbeda!\n");
             printf("Coba buat akun lagi? (Y/N) ");
             exitCode = getYesNo();
+            free(username);
+            free(pass);
             if (exitCode != 'Y') {
                 clearScreen();
                 return 0;
@@ -108,6 +117,8 @@ int createAccount() {
             exitCode = getYesNo();
             clearScreen();
             if (exitCode != 'Y') {
+                free(username);
+                free(pass);
                 printf("Proses dibatalkan.");
                 sleep(1);
                 clearScreen();
@@ -125,9 +136,9 @@ int createAccount() {
 }
 
 void inputMember() {
-    char *name, *phoneNum, address[100], exitCode;
+    char *name, *phoneNum, *address, exitCode;
     int ID = getCurrentID() + 1;
-    char line[1000];
+    char line[1001];
 
     char nol[] = "00";
     nol[1] = (ID < 10) ? '0' : '\0';
@@ -137,34 +148,61 @@ void inputMember() {
         printBold("MASUKKAN DATA DIRI ANDA\n");
         printf("Nama : ");
         name = getAlpha();
-        printf("\nNo Telpon : ");
+        if (strcmp(name, "ESCAPE") == 0) {
+            free(username);
+            free(pass);
+            return;
+        }
+        printf("No Telpon : ");
         phoneNum = getNum();
-        printf("\nAlamat : ");
-        fgets(address, 100, stdin);
-        address[strlen(address) - 1] = '\0';
+        if (strcmp(phoneNum, "ESCAPE") == 0) {
+            free(username);
+            free(pass);
+            free(name);
+            return;
+        }
+        printf("Alamat : ");
+        address = getAllChar();
+        if (strcmp(address, "ESCAPE") == 0) {
+            free(name);
+            free(phoneNum);
+            free(username);
+            free(pass);
+            return;
+        }
+        // fgets(address, 100, stdin);
+        // address[strlen(address) - 1] = '\0';
 
         printf("Apakah data diri Anda sudah benar? (Y/N) ");
         exitCode = getYesNo();
         clearScreen();
         if (exitCode == 'Y') {
             outp = fopen(FILE_MEMBER, "a");
-            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s\n", ID, name, phoneNum, address, getDate(), getTime(), username, password);
+            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s\n", ID, name, phoneNum, address, getDate(), getTime(), username, pass);
+            fclose(outp);
             free(name);
             free(phoneNum);
-            fclose(outp);
+            free(address);
+            free(username);
+            free(pass);
             printf("Anda berhasil terdaftar sebagai membership.");
             sleep(1);
             clearScreen();
-            break;
+            return;
         } else {
             printf("Proses dibatalkan.");
             sleep(1);
             clearScreen();
             printf("Coba buat akun lagi? (Y/N) ");
+            free(name);
+            free(phoneNum);
+            free(address);
+            free(username);
+            free(pass);
             exitCode = getYesNo();
             if (exitCode != 'Y') {
                 clearScreen();
-                break;
+                return;
             }
         }
     }

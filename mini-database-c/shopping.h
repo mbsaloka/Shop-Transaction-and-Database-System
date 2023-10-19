@@ -15,7 +15,7 @@ void createTempShoppingFile() {
     inp = fopen(FILE_ITEM, "r");
     outp = fopen(FILE_TEMP_SHOPPING, "w");
 
-    char line[1000];
+    char line[1001];
     char *name;
     int ID, price, stock;
     const char *delimiter = ",";
@@ -49,6 +49,7 @@ void addItemToCart() {
     printBold("\nMasukkan ID Barang yang ingin dibeli!\n");
     printf("ID : ");
     ID = getNumINT();
+    if (ID == -1) return;
 
     inp = fopen(FILE_TEMP_SHOPPING, "r");
     char line[1000];
@@ -62,7 +63,7 @@ void addItemToCart() {
             stock = atoi(strtok(NULL, ","));
             isFound = 1;
             if (stock <= 0) {
-                printf("\nStok produk yang Anda pilih sedang kosong.");
+                printf("Stok produk yang Anda pilih sedang kosong.");
                 sleep(1);
                 return;
             }
@@ -71,12 +72,12 @@ void addItemToCart() {
     }
     fclose(inp);
     if (!isFound) {
-        printf("\nID %d tidak ada di dalam daftar.", ID);
+        printf("ID %d tidak ada di dalam daftar.", ID);
         sleep(1);
         return;
     }
 
-    printBold("\n\nDetail Produk\n");
+    printBold("\nDetail Produk\n");
     printf("Nama : %s\n", name);
     printf("Harga : ");
     printMoney(price);
@@ -86,12 +87,13 @@ void addItemToCart() {
     while (1) {
         printf("Jumlah : ");
         amount = getNumINT();
+        if (amount == -1) return;
         if (amount > stock) {
-            printf("\nJumlah yang dipilih tidak boleh melebihi stok produk.\n");
+            printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
             printf("Tolong masukkan kembali jumlah yang sesuai.\n");
             sleep(2);
         } else if (amount == 0) {
-            printf("\nJumlah yang dipilih tidak boleh sama dengan 0.\n");
+            printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
             printf("Tolong masukkan kembali jumlah yang sesuai.\n");
             sleep(2);
         } else {
@@ -189,6 +191,7 @@ void openCart() {
             printBold("\nMasukkan ID Barang yang ingin dihapus!\n");
             printf("ID : ");
             int ID = getNumINT();
+            if (ID == -1) break;
             int isRemoved = 0;
             for (int i = 0; i < itemIndex; i++) {
                 if (ID == item[i].ID) {

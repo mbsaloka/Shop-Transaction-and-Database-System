@@ -33,6 +33,8 @@ int chooseOption(char *option[], int length) {
             }
         } else if (input == 3) {
             exit(0);
+        } else if (input == 27) {
+            return 0;
         }
     } while (input != 13);
     return code;

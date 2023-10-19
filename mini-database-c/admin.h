@@ -2,19 +2,22 @@
 #define PASSWORD "mbsaloka12"
 
 void admin() {
-    char username[100], pass[100], exitCode;
+    char *username, *pass, exitCode;
     while (strcmp(pass, PASSWORD) != 0 || strcmp(username, ADMIN_NAME) != 0) {
         clearScreen();
         printBold("[MODE ADMIN]\n");
         printBold("Masukkan Username dan Password\n");
         printf("Username: ");
         fflush(stdin);
-        fgets(username, 100, stdin);
+        username = getAllChar();
+        if (strcmp(username, "ESCAPE") == 0) return;
+        // fgets(username, 101, stdin);
+        // username[strlen(username) - 1] = '\0';
         printf("Password: ");
-        fgets(pass, 100, stdin);
-
-        username[strlen(username) - 1] = '\0';
-        pass[strlen(pass) - 1] = '\0';
+        pass = getAllChar();
+        if (strcmp(pass, "ESCAPE") == 0) return;
+        // fgets(pass, 101, stdin);
+        // pass[strlen(pass) - 1] = '\0';
 
         if (strcmp(username, ADMIN_NAME) != 0) {
             printf("Username tidak dikenali!\n");
@@ -31,8 +34,10 @@ void admin() {
     }
 
     clearScreen();
-    printf("Selamat Datang %s!", ADMIN_NAME);
+    printf("Selamat Datang %s!", username);
     sleep(1);
+    free(username);
+    free(pass);
     clearScreen();
     int code;
     char *option[] = {
