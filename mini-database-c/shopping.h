@@ -39,6 +39,37 @@ void createTempShoppingFile() {
     fclose(outp);
 }
 
+void updateDBItem() {
+    FILE *inp, *outp;
+    char ch;
+
+    inp = fopen(FILE_TEMP_SHOPPING, "r");
+    outp = fopen(FILE_ITEM, "w");
+
+    char line[1001];
+    char *name;
+    int ID, price, stock;
+    const char *delimiter = ",";
+    fgets(line, sizeof(line), inp);
+    fprintf(outp, line);
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        ID = atoi(strtok(line, delimiter));
+        name = strtok(NULL, delimiter);
+        price = atoi(strtok(NULL, delimiter));
+        stock = atoi(strtok(NULL, delimiter));
+
+        for (int i = 0; i < itemIndex; i++) {
+            if (ID == item[i].ID) {
+                stock = item[i].stock;
+            }
+        }
+        fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
+    }
+
+    fclose(inp);
+    fclose(outp);
+}
+
 void addItemToCart() {
     int ID, price, stock;
     char *name;
@@ -91,11 +122,11 @@ void addItemToCart() {
         if (amount > stock) {
             printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
             printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-            sleep(2);
+            sleep(1);
         } else if (amount == 0) {
             printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
             printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-            sleep(2);
+            sleep(1);
         } else {
             int isListed = 0;
             for (int i = 0; i < itemIndex; i++) {
@@ -115,14 +146,14 @@ void addItemToCart() {
             }
             createTempShoppingFile();
             printf("\nProduk %s sejumlah %d berhasil ditambahkan ke keranjang.\n", name, amount);
-            sleep(2);
+            sleep(1);
             break;
         }
         for (int i = 0; i < 3; i++) clearRow();
     }
 }
 
-void showBill() {
+int showBill() {
     printBold("\nISI KERANJANG ANDA ");
     printf("(%d produk)\n", itemIndex);
     printBold("ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
@@ -161,6 +192,7 @@ void showBill() {
     printBold("\t\t\t  TOTAL\t: ");
     printMoney(finalPrice);
     printf("\n");
+    return finalPrice;
 }
 
 void openCart() {
@@ -177,7 +209,7 @@ void openCart() {
         clearScreen();
         printBold("Saldo : ");
         printMoney(saldo);
-        showBill();
+        int finalPrice = showBill();
         printBold("\nIngin melakukan apa?\n");
         code = chooseOption(option, lengthOption);
         clearScreen();
@@ -195,6 +227,8 @@ void openCart() {
             int isRemoved = 0;
             for (int i = 0; i < itemIndex; i++) {
                 if (ID == item[i].ID) {
+                    item[i].stock += item[i].amount;
+                    createTempShoppingFile();
                     isRemoved = 1;
                     itemIndex--;
                 }
@@ -204,7 +238,23 @@ void openCart() {
             }
             break;
         case 2:
-            openCart();
+            comingSoon();
+            break;
+        case 3:
+            if (itemIndex == 0) {
+                printf("Keranjang Anda kosong.\n");
+                sleep(1);
+            } else if (saldo < finalPrice) {
+                printf("Saldo kurang! Hapus beberapa barang dari keranjang.\n");
+                sleep(1);
+            } else {
+                saldo -= finalPrice;
+                updateDBItem();
+                itemIndex = 0;
+                printf("Transaksi Sukses!\n");
+                sleep(1);
+                return;
+            }
             break;
         default:
             printBold("Input tidak valid.\n");

@@ -16,7 +16,7 @@ int memberLogin() {
         // fgets(username, 100, stdin);
         // username[strlen(username) - 1] = '\0';
         printf("Password : ");
-        pass = getAllChar();
+        pass = getPass();
         if (strcmp(pass, "ESCAPE") == 0) {
             free(username);
             return -1;

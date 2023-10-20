@@ -14,7 +14,7 @@ void admin() {
         // fgets(username, 101, stdin);
         // username[strlen(username) - 1] = '\0';
         printf("Password: ");
-        pass = getAllChar();
+        pass = getPass();
         if (strcmp(pass, "ESCAPE") == 0) return;
         // fgets(pass, 101, stdin);
         // pass[strlen(pass) - 1] = '\0';
