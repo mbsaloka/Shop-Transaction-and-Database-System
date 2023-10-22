@@ -40,6 +40,25 @@ void printMoney(int money) {
     printf("\x1b[33mRp%s\x1b[0m", str);
 }
 
+char *sToMoney(int money) {
+    static char str[50];
+    sprintf(str, "%d", money);
+    int n = strlen(str);
+    int j = 0;
+    for (int i = n - 1; i > 0; i--) {
+        j++;
+        if (j % 3 == 0) {
+            char str2[100];
+            strcpy(str2, str);
+            char *temp = str2 + i;
+            str[i] = '.';
+            str[i + 1] = '\0';
+            strcat(str, temp);
+        }
+    }
+    return str;
+}
+
 /*
 Activate ANSI in CMD
 reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1

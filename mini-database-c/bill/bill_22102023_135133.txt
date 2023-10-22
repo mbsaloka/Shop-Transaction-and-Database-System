@@ -1,0 +1,10 @@
+Tanggal         : 22/10/2023 13:51:33
+Nomor Transaksi : T0001
+Nama Pelanggan  : Muh Buyung Saloka (member)
+(2 produk)
+ID   |	 Nama Barang	| Jmlh	| Total Harga
+---------------------------------------------
+7    |	 Yoghurt    	| 2 	| 14.000
+12   |	 Supermie    	| 6 	| 19.200
+---------------------------------------------
+						TOTAL	: 33.200

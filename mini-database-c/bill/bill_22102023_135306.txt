@@ -1,0 +1,9 @@
+Tanggal         : 22/10/2023 13:53:06
+Nomor Transaksi : T0001
+Nama Pelanggan  : Wawa
+(1 produk)
+ID   |	 Nama Barang	| Jmlh	| Total Harga
+---------------------------------------------
+4    |	 Kopi ABC    	| 5 	| 17.500
+---------------------------------------------
+						TOTAL	: 17.500

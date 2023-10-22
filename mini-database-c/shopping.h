@@ -1,4 +1,3 @@
-static int saldo = 100000;
 
 struct Cart {
     int ID, price, amount, stock;
@@ -6,7 +5,10 @@ struct Cart {
 };
 
 static struct Cart item[100];
+static int balance = 100000;
 static int itemIndex;
+static int isMember = 0;
+static char guestName[101];
 
 void createTempShoppingFile() {
     FILE *inp, *outp;
@@ -76,7 +78,7 @@ void addItemToCart() {
     clearScreen();
     showItem(1);
     printBold("Saldo : ");
-    printMoney(saldo);
+    printMoney(balance);
     printBold("\nMasukkan ID Barang yang ingin dibeli!\n");
     printf("ID : ");
     ID = getNumINT();
@@ -184,7 +186,7 @@ int showBill() {
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
-        printf("%d%s|\t %s\t| %d\t| ", ID, space, name, amount, price);
+        printf("%d%s|\t %s\t| %d\t| ", ID, space, name, amount);
         printMoney(price);
         printf("\n");
     }
@@ -193,6 +195,74 @@ int showBill() {
     printMoney(finalPrice);
     printf("\n");
     return finalPrice;
+}
+
+void saveBill() {
+    FILE *inp, *outp;
+    char FILE_BILL[100];
+    char *date = getDate();
+    char *time = getTime();
+    strcpy(FILE_BILL, "bill/bill_");
+    strcat(FILE_BILL, date);
+    strcat(FILE_BILL, "_");
+    strcat(FILE_BILL, time);
+    strcat(FILE_BILL, ".txt");
+
+    char *ptr = FILE_BILL + 6;
+    while (*ptr) {
+        if (*ptr == '/' || *ptr == ':') {
+            memmove(ptr, ptr + 1, strlen(ptr));
+        } else {
+            ptr++;
+        }
+    }
+
+    outp = fopen(FILE_BILL, "w");
+    int transactionNum = 1;
+    int length = 1;
+    for (int i = 1; i <= transactionNum; i *= 10) length++;
+
+    fprintf(outp, "Tanggal         : %s %s\n", date, time);
+    fprintf(outp, "Nomor Transaksi : T");
+    for (int i = 0; i < 5 - length; i++) fprintf(outp, "0");
+    fprintf(outp, "%d\n", transactionNum);
+    fprintf(outp, "Nama Pelanggan  : %s", guestName);
+    if (isMember) fprintf(outp, " (member)");
+    fprintf(outp, "\n");
+    fprintf(outp, "(%d produk)\n", itemIndex);
+    fprintf(outp, "ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
+    fprintf(outp, "---------------------------------------------\n");
+    int finalPrice = 0;
+    for (int i = 0; i < itemIndex; i++) {
+        int COL_MAX = 15;
+        int COL_MIN = 11;
+        char name[100];
+        int ID, price, amount;
+
+        strcpy(name, item[i].name);
+        ID = item[i].ID;
+        amount = item[i].amount;
+        price = item[i].price * amount;
+        finalPrice += price;
+
+        if (strlen(name) > COL_MAX) {
+            name[COL_MAX - 2] = '.';
+            name[COL_MAX - 1] = '.';
+            name[COL_MAX] = '\0';
+        }
+
+        if (strlen(name) < COL_MIN) {
+            strcat(name, "    ");
+        }
+
+        char space[] = "    ";
+        space[3] = (ID < 10) ? ' ' : '\0';
+
+        fprintf(outp, "%d%s|\t %s\t| %d \t| %s\n", ID, space, name, amount, sToMoney(price));
+    }
+    fprintf(outp, "---------------------------------------------\n");
+    fprintf(outp, "\t\t\t\t\t\tTOTAL\t: %s\n", sToMoney(finalPrice));
+    fclose(outp);
 }
 
 void openCart() {
@@ -208,7 +278,7 @@ void openCart() {
     do {
         clearScreen();
         printBold("Saldo : ");
-        printMoney(saldo);
+        printMoney(balance);
         int finalPrice = showBill();
         printBold("\nIngin melakukan apa?\n");
         code = chooseOption(option, lengthOption);
@@ -218,7 +288,7 @@ void openCart() {
             break;
         case 1:
             printBold("Saldo : ");
-            printMoney(saldo);
+            printMoney(balance);
             showBill();
             printBold("\nMasukkan ID Barang yang ingin dihapus!\n");
             printf("ID : ");
@@ -244,12 +314,13 @@ void openCart() {
             if (itemIndex == 0) {
                 printf("Keranjang Anda kosong.\n");
                 sleep(1);
-            } else if (saldo < finalPrice) {
+            } else if (balance < finalPrice) {
                 printf("Saldo kurang! Hapus beberapa barang dari keranjang.\n");
                 sleep(1);
             } else {
-                saldo -= finalPrice;
+                balance -= finalPrice;
                 updateDBItem();
+                saveBill();
                 itemIndex = 0;
                 printf("Transaksi Sukses!\n");
                 sleep(1);
@@ -263,7 +334,9 @@ void openCart() {
     } while (code != 0);
 }
 
-void shoppingMenu() {
+void shoppingMenu(char name[101], int flag) {
+    strcpy(guestName, name);
+    isMember = flag;
     struct Cart item[100];
     int itemIndex = 0;
     createTempShoppingFile();
@@ -282,7 +355,7 @@ void shoppingMenu() {
         clearScreen();
         showItem(1);
         printBold("Saldo : ");
-        printMoney(saldo);
+        printMoney(balance);
         printBold("\nIngin melakukan apa?\n");
 
         code = chooseOption(option, lengthOption);

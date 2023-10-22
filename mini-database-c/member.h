@@ -19,7 +19,7 @@ void showMember() {
     int COL_MAX = 22;
     int COL_MIN = 15;
     char *name, *phoneNum, *address, *registDate, *registTime;
-    int ID;
+    int ID, balance;
     char line[1000];
     const char *delimiter = ",";
     char *temp;
@@ -31,8 +31,8 @@ void showMember() {
     }
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
-    printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar\n");
-    printf("-----------------------------------------------------------------------------------------\n");
+    printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Saldo\n");
+    printf("---------------------------------------------------------------------------------------------------------\n");
     fgets(line, sizeof(line), inp);
     while (fgets(line, sizeof(line), inp) != NULL) {
         ID = atoi(strtok(line, delimiter));
@@ -41,6 +41,8 @@ void showMember() {
         address = strtok(NULL, delimiter);
         registDate = strtok(NULL, delimiter);
         registTime = strtok(NULL, delimiter);
+        for (int i = 0; i < 2; i++) temp = strtok(NULL, delimiter);
+        balance = atoi(strtok(NULL, delimiter));
 
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
@@ -59,7 +61,9 @@ void showMember() {
                 strcat(name2, " ");
             }
         }
-        printf("%d%s|\t %s\t| %s\t| %s\t| %s %s\n", ID, space, name2, phoneNum, address, registDate, registTime);
+        printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name2, phoneNum, address, registDate, registTime);
+        printMoney(balance);
+        printf("\n");
     }
 
     fclose(inp);

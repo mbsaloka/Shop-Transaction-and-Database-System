@@ -1,20 +1,20 @@
-ID,Nama Pelanggan,No Telp,Alamat,Tanggal Daftar,Waktu Daftar,Username,Password
-1,Muh Buyung Saloka,082141977680,Jl. Ababil No. 5,14/10/2023,21:03:23,mbsaloka,123
-2,Nazwarahma Hannum Prasetya,08121652240,Jl. Soekarno Hatta 40,14/10/2023,21:04:59,zwaraha,123
-3,Tata Safira K D,08914739573,Keputih GG 1D Sby,15/10/2023,18:03:00,tataskd,123
-4,Muhammad Firmansyah Firdaus,0821231242,Jl Gunung Bromo 23,15/10/2023,18:16:04,firmanfz,123
-5,Raesaka Dwi Prayoga,0812474452,Jl Tapaan 81 Pasuruan,15/10/2023,18:23:24,raesakadp,123
-6,Hana Cika Sari ,0812325823,Graha Candi Blok C20,15/10/2023,18:39:00,hcikas,123
-7,Armandiaz Luth Javier Agersah,08423876252,Jl Hassanudin 17 Pas,15/10/2023,19:39:46,armandiaz,123
-8,Gea Fauzi Rayhanifa,0891476224,Jl Menara 40 Pas,15/10/2023,19:42:30,geafauzi,123
-9,Fathin Amera Raya,0863758577,Gendhis Asri 3 Pas,15/10/2023,19:53:45,rara,123
-10,Bintang Bagus Maulana,0812736214,Jl Hassanudin 103,17/10/2023,21:11:59,bintangbm,123
-11,Jordam Sulaiman,08123657346,Jl Sidogiri Pasuruan,17/10/2023,21:18:45,jordamsa,123
-12,Choirul Anam,08198281277,Bangil Pasuruan,17/10/2023,21:23:31,anam,123
-13,M Ikhwan Maruf Santoso,08127312312,Samarinda Kaltim,17/10/2023,21:25:04,ikhwan,123
-14,Hasan,086348328793,Karya Bhakti Pas,17/10/2023,22:06:18,hasan,123
-15,Louisa Caroline Pramesti,0892346734,Jl Brantas Pas,17/10/2023,22:10:07,louisacp,123
-16,M Kolbi Nurron,0812458234123,Jl Kertajaya Sby,17/10/2023,23:43:57,kolbi,123
-17,Fajar Ulun Wiweka,0826382424,Perum Kebon Candi B4,17/10/2023,23:54:59,fajar,123
-18,Reynold Putra Merdeka,08284624921,Perum Kirana Candi C9,17/10/2023,23:57:51,reynold,123
-19,Firman Hidayat,08123768942,Perum Graha Candi B21,19/10/2023,21:03:07,firmanh,123
+ID,Nama Pelanggan,No Telp,Alamat,Tanggal Daftar,Waktu Daftar,Username,Password,Saldo
+1,Muh Buyung Saloka,082141977680,Jl. Ababil No. 5,14/10/2023,21:03:23,mbsaloka,123,100000
+2,Nazwarahma Hannum Prasetya,08121652240,Jl. Soekarno Hatta 40,14/10/2023,21:04:59,zwaraha,123,100000
+3,Tata Safira K D,08914739573,Keputih GG 1D Sby,15/10/2023,18:03:00,tataskd,123,100000
+4,Muhammad Firmansyah Firdaus,0821231242,Jl Gunung Bromo 23,15/10/2023,18:16:04,firmanfz,123,100000
+5,Raesaka Dwi Prayoga,0812474452,Jl Tapaan 81 Pasuruan,15/10/2023,18:23:24,raesakadp,123,100000
+6,Hana Cika Sari ,0812325823,Graha Candi Blok C20,15/10/2023,18:39:00,hcikas,123,100000
+7,Armandiaz Luth Javier Agersah,08423876252,Jl Hassanudin 17 Pas,15/10/2023,19:39:46,armandiaz,123,100000
+8,Gea Fauzi Rayhanifa,0891476224,Jl Menara 40 Pas,15/10/2023,19:42:30,geafauzi,123,100000
+9,Fathin Amera Raya,0863758577,Gendhis Asri 3 Pas,15/10/2023,19:53:45,rara,123,100000
+10,Bintang Bagus Maulana,0812736214,Jl Hassanudin 103,17/10/2023,21:11:59,bintangbm,123,100000
+11,Jordam Sulaiman,08123657346,Jl Sidogiri Pasuruan,17/10/2023,21:18:45,jordamsa,123,100000
+12,Choirul Anam,08198281277,Bangil Pasuruan,17/10/2023,21:23:31,anam,123,100000
+13,M Ikhwan Maruf Santoso,08127312312,Samarinda Kaltim,17/10/2023,21:25:04,ikhwan,123,100000
+14,Hasan,086348328793,Karya Bhakti Pas,17/10/2023,22:06:18,hasan,123,100000
+15,Louisa Caroline Pramesti,0892346734,Jl Brantas Pas,17/10/2023,22:10:07,louisacp,123,100000
+16,M Kolbi Nurron,0812458234123,Jl Kertajaya Sby,17/10/2023,23:43:57,kolbi,123,100000
+17,Fajar Ulun Wiweka,0826382424,Perum Kebon Candi B4,17/10/2023,23:54:59,fajar,123,100000
+18,Reynold Putra Merdeka,08284624921,Perum Kirana Candi C9,17/10/2023,23:57:51,reynold,123,100000
+19,Firman Hidayat,08123768942,Perum Graha Candi B21,19/10/2023,21:03:07,firmanh,123,100000

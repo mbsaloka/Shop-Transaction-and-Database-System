@@ -1,4 +1,4 @@
-static char *username, *pass, guestName[100];
+static char *username, *pass, guestName[101];
 
 int memberLogin() {
     const char *delimiter = ",";
@@ -12,17 +12,12 @@ int memberLogin() {
         fflush(stdin);
         username = getAllChar();
         if (strcmp(username, "ESCAPE") == 0) return -1;
-
-        // fgets(username, 100, stdin);
-        // username[strlen(username) - 1] = '\0';
         printf("Password : ");
         pass = getPass();
         if (strcmp(pass, "ESCAPE") == 0) {
             free(username);
             return -1;
         }
-        // fgets(pass, 100, stdin);
-        // pass[strlen(pass) - 1] = '\0';
 
         // Check is username exist
         char *temp, *tempName, exitCode;
@@ -36,7 +31,6 @@ int memberLogin() {
             temp = strtok(NULL, delimiter);
             if (strcmp(temp, username) == 0) {
                 temp = strtok(NULL, delimiter);
-                temp[strlen(temp) - 1] = '\0';
                 if (strcmp(temp, pass) == 0) {
                     isFound = 1;
                     strcpy(guestName, tempName);
@@ -108,7 +102,7 @@ void user() {
             sleep(1);
             break;
         case 1:
-            shoppingMenu();
+            shoppingMenu(guestName, isMember);
             break;
         case 2:
             if (isMember) {

@@ -156,6 +156,7 @@ char *getPass() {
     while (c != 13) {  // ASCII 13 = enter
         c = getch();
         if ((c >= 32 && c <= 126) && i < length) {
+            // printf("%c", c);
             printf("*");
             str[i++] = c;
         } else if (c == 8 && i > 0) {  // ASCII 8 = backspace
