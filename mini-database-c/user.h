@@ -1,4 +1,5 @@
 static char *username, *pass, guestName[101];
+static int guestID = 0;
 
 int memberLogin() {
     const char *delimiter = ",";
@@ -21,19 +22,20 @@ int memberLogin() {
 
         // Check is username exist
         char *temp, *tempName, exitCode;
+        int tempID;
         passFlag = 1;
         inp = fopen(FILE_MEMBER, "r");
         fgets(line, sizeof(line), inp);
         while (fgets(line, sizeof(line), inp) != NULL) {
-            temp = strtok(line, delimiter);
+            tempID = atoi(strtok(line, delimiter));
             tempName = strtok(NULL, delimiter);
-            for (int i = 0; i < 4; i++) temp = strtok(NULL, delimiter);
-            temp = strtok(NULL, delimiter);
+            for (int i = 0; i < 5; i++) temp = strtok(NULL, delimiter);
             if (strcmp(temp, username) == 0) {
                 temp = strtok(NULL, delimiter);
                 if (strcmp(temp, pass) == 0) {
                     isFound = 1;
                     strcpy(guestName, tempName);
+                    guestID = tempID;
                     break;
                 } else {
                     printf("Password salah!\n");
@@ -72,6 +74,7 @@ void user() {
     if (isMember == -1) return;
     if (!isMember) {
         clearScreen();
+        guestID = 0;
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
         char *temp;
@@ -102,7 +105,7 @@ void user() {
             sleep(1);
             break;
         case 1:
-            shoppingMenu(guestName, isMember);
+            shoppingMenu(guestName, guestID);
             break;
         case 2:
             if (isMember) {

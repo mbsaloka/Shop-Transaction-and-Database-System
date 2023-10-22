@@ -46,6 +46,7 @@ void admin() {
         "(2) Lihat Barang",
         "(3) Tambah Membership",
         "(4) Lihat Membership",
+        "(5) Lihat Catatan Traksaksi",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -70,6 +71,9 @@ void admin() {
             break;
         case 4:
             showMember();
+            break;
+        case 5:
+            showTransactionLog();
             break;
         default:
             printBold("Input tidak valid.\n");

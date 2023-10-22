@@ -5,10 +5,8 @@ struct Cart {
 };
 
 static struct Cart item[100];
-static int balance = 100000;
-static int itemIndex;
-static int isMember = 0;
-static char guestName[101];
+static int balance, itemIndex, transactionID, userID;
+static char userName[101];
 
 void createTempShoppingFile() {
     FILE *inp, *outp;
@@ -70,6 +68,42 @@ void updateDBItem() {
 
     fclose(inp);
     fclose(outp);
+}
+
+void updateUserBalance(int ID) {
+    char *temp;
+    int tempID;
+    char line[1000];
+    inp = fopen(FILE_MEMBER, "r");
+    outp = fopen("database/temp_member.csv", "w");
+    fgets(line, sizeof(line), inp);
+    fprintf(outp, line);
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        tempID = atoi(strtok(line, ","));
+        fprintf(outp, "%d", tempID);
+        for (int i = 0; i < 7; i++) {
+            temp = strtok(NULL, ",");
+            fprintf(outp, ",%s", temp);
+        }
+        if (tempID == userID) {
+            fprintf(outp, ",%d\n", balance);
+        } else {
+            temp = strtok(NULL, ",");
+            fprintf(outp, ",%s", temp);
+        }
+    }
+    fclose(inp);
+    fclose(outp);
+
+    inp = fopen("database/temp_member.csv", "r");
+    outp = fopen(FILE_MEMBER, "w");
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        fprintf(outp, line);
+    }
+    fclose(inp);
+    fclose(outp);
+
+    remove("database/temp_member.csv");
 }
 
 void addItemToCart() {
@@ -197,7 +231,7 @@ int showBill() {
     return finalPrice;
 }
 
-void saveBill() {
+void addBill() {
     FILE *inp, *outp;
     char FILE_BILL[100];
     char *date = getDate();
@@ -218,23 +252,28 @@ void saveBill() {
     }
 
     outp = fopen(FILE_BILL, "w");
-    int transactionNum = 1;
     int length = 1;
-    for (int i = 1; i <= transactionNum; i *= 10) length++;
+    for (int i = 1; i <= transactionID; i *= 10) length++;
 
+    fprintf(outp, "---------------------------------------------\n");
+    fprintf(outp, "================ ITS MIRT ===================\n");
+    fprintf(outp, "---------------------------------------------\n");
     fprintf(outp, "Tanggal         : %s %s\n", date, time);
     fprintf(outp, "Nomor Transaksi : T");
     for (int i = 0; i < 5 - length; i++) fprintf(outp, "0");
-    fprintf(outp, "%d\n", transactionNum);
-    fprintf(outp, "Nama Pelanggan  : %s", guestName);
-    if (isMember) fprintf(outp, " (member)");
+    fprintf(outp, "%d\n", transactionID);
+    fprintf(outp, "Nama Pelanggan  : %s", userName);
+    if (userID) {
+        fprintf(outp, " (member)\n");
+        fprintf(outp, "ID Member       : %d", userID);
+    }
     fprintf(outp, "\n");
-    fprintf(outp, "(%d produk)\n", itemIndex);
+    fprintf(outp, "---------------------------------------------\n");
     fprintf(outp, "ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
     fprintf(outp, "---------------------------------------------\n");
     int finalPrice = 0;
     for (int i = 0; i < itemIndex; i++) {
-        int COL_MAX = 15;
+        int COL_MAX = 14;
         int COL_MIN = 11;
         char name[100];
         int ID, price, amount;
@@ -258,10 +297,31 @@ void saveBill() {
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
-        fprintf(outp, "%d%s|\t %s\t| %d \t| %s\n", ID, space, name, amount, sToMoney(price));
+        fprintf(outp, "%d%s|\t %s\t| %d \t| Rp%s\n", ID, space, name, amount, strMoney(price));
     }
     fprintf(outp, "---------------------------------------------\n");
-    fprintf(outp, "\t\t\t\t\t\tTOTAL\t: %s\n", sToMoney(finalPrice));
+    fprintf(outp, "\t\t\tTOTAL\t: Rp%s\n", strMoney(finalPrice));
+    fclose(outp);
+}
+
+void addTransactionLog(int finalPrice) {
+    char *date = getDate();
+    char *time = getTime();
+    char *name = userName;
+    int ID = userID;
+    transactionID = 0;
+
+    inp = fopen(FILE_TRANSACTION, "r");
+    char line[1000];
+    fgets(line, sizeof(line), inp);
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        transactionID = atoi(strtok(line, ","));
+    }
+    transactionID++;
+    fclose(inp);
+
+    outp = fopen(FILE_TRANSACTION, "a");
+    fprintf(outp, "%d,%s %s,%s,%d,%d\n", transactionID, date, time, name, ID, finalPrice);
     fclose(outp);
 }
 
@@ -319,8 +379,10 @@ void openCart() {
                 sleep(1);
             } else {
                 balance -= finalPrice;
+                addTransactionLog(finalPrice);
+                addBill();
                 updateDBItem();
-                saveBill();
+                updateUserBalance(userID);
                 itemIndex = 0;
                 printf("Transaksi Sukses!\n");
                 sleep(1);
@@ -334,9 +396,31 @@ void openCart() {
     } while (code != 0);
 }
 
-void shoppingMenu(char name[101], int flag) {
-    strcpy(guestName, name);
-    isMember = flag;
+int getUserBalance(int ID) {
+    char *temp;
+    int tempID;
+    char line[1000];
+    inp = fopen(FILE_MEMBER, "r");
+    fgets(line, sizeof(line), inp);
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        tempID = atoi(strtok(line, ","));
+        if (tempID == userID) {
+            for (int i = 0; i < 7; i++) temp = strtok(NULL, ",");
+            return atoi(strtok(NULL, ","));
+        }
+    }
+    printMoney(balance);
+    printf("\n");
+    fclose(inp);
+
+    return 0;
+}
+
+void shoppingMenu(char name[101], int ID) {
+    strcpy(userName, name);
+    userID = ID;
+    balance = (userID > 0) ? getUserBalance(ID) : 100000;
+
     struct Cart item[100];
     int itemIndex = 0;
     createTempShoppingFile();
@@ -348,7 +432,7 @@ void shoppingMenu(char name[101], int flag) {
     char *option[] = {
         "(0) Kembali ke Menu Utama",
         "(1) Pilih Produk",
-        "(2) Lihat Keranjang (Checkout)",
+        "(2) Lihat Keranjang (Bayar)",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {

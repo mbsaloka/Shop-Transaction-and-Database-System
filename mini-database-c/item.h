@@ -1,6 +1,53 @@
 #define FILE_ITEM "database/db_item.csv"
 #define FILE_TEMP_SHOPPING "database/temp_shopping.csv"
+#define FILE_TRANSACTION "database/db_transaction_log.csv"
 FILE *inp, *outp;
+
+void showTransactionLog() {
+    int COL_MAX = 21;
+    int COL_MIN = 14;
+    char *dateTime, *name;
+    int transactionID, price, userID;
+
+    char line[1001];
+    inp = fopen(FILE_TRANSACTION, "r");
+    if (inp == NULL) {
+        puts("File failed to open.");
+        return;
+    }
+
+    printBold("CATATAN TRANSAKSI\n");
+    printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
+    printf("---------------------------------------------------------------------------------\n");
+    fgets(line, sizeof(line), inp);
+    const char *delimiter = ",";
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        transactionID = atoi(strtok(line, delimiter));
+        dateTime = strtok(NULL, delimiter);
+        name = strtok(NULL, delimiter);
+        userID = atoi(strtok(NULL, delimiter));
+        price = atoi(strtok(NULL, delimiter));
+
+        if (strlen(name) > COL_MAX) {
+            name[COL_MAX - 2] = '.';
+            name[COL_MAX - 1] = '.';
+            name[COL_MAX] = '\0';
+        }
+        if (strlen(name) < COL_MIN) {
+            strcat(name, "    ");
+        }
+        char space[] = "    ";
+        space[3] = (transactionID < 10) ? ' ' : '\0';
+        printf("%d%s|\t %s\t| %s\t| ", transactionID, space, dateTime, name);
+        if (userID == 0) {
+            printf("guest     | Rp%s\n", strMoney(price));
+        } else {
+            printf("%d\t    | Rp%s\n", userID, strMoney(price));
+        }
+    }
+
+    fclose(inp);
+}
 
 void showItem(int param) {
     char fileName[101];

@@ -141,7 +141,7 @@ int createAccount() {
 
 void inputMember() {
     char *name, *phoneNum, *address, exitCode;
-    int ID = getCurrentID() + 1;
+    int ID = getCurrentID() + 1, balance = 1000000;
     char line[1001];
 
     char nol[] = "00";
@@ -174,15 +174,13 @@ void inputMember() {
             free(pass);
             return;
         }
-        // fgets(address, 100, stdin);
-        // address[strlen(address) - 1] = '\0';
 
         printf("Apakah data diri Anda sudah benar? (Y/N) ");
         exitCode = getYesNo();
         clearScreen();
         if (exitCode == 'Y') {
             outp = fopen(FILE_MEMBER, "a");
-            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s\n", ID, name, phoneNum, address, getDate(), getTime(), username, pass);
+            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s,%d\n", ID, name, phoneNum, address, getDate(), getTime(), username, pass, balance);
             fclose(outp);
             free(name);
             free(phoneNum);

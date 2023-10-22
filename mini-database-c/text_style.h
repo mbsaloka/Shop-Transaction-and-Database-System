@@ -40,7 +40,7 @@ void printMoney(int money) {
     printf("\x1b[33mRp%s\x1b[0m", str);
 }
 
-char *sToMoney(int money) {
+char *strMoney(int money) {
     static char str[50];
     sprintf(str, "%d", money);
     int n = strlen(str);
