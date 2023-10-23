@@ -1,6 +1,63 @@
 static char *username, *pass, guestName[101];
 static int guestID = 0;
 
+int memberTopUp() {
+    int topUpAmount = 0;
+    int newBalance;
+    do {
+        clearScreen();
+        printf("Masukkan jumlah uang yang ingin Anda isi!\n");
+        printf("Jumlah Uang : ");
+        topUpAmount = getNumINT();
+        if (topUpAmount > 10000000) {
+            clearScreen();
+            printf("ISI SALDO GAGAL!\nNominal yang dimasukkan tidak bisa melebihi 10 juta.");
+            sleep(1);
+        } else {
+            break;
+        }
+    } while (1);
+    char *temp;
+    int tempID;
+    char line[1000];
+    inp = fopen(FILE_MEMBER, "r");
+    outp = fopen("database/temp_member.csv", "w");
+    fgets(line, sizeof(line), inp);
+    fprintf(outp, line);
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        tempID = atoi(strtok(line, ","));
+        fprintf(outp, "%d", tempID);
+        for (int i = 0; i < 7; i++) {
+            temp = strtok(NULL, ",");
+            fprintf(outp, ",%s", temp);
+        }
+        if (tempID == guestID) {
+            newBalance = atoi(strtok(NULL, ",")) + topUpAmount;
+            printf("NEW BALANCE : %d\n", newBalance);
+            fprintf(outp, ",%d\n", newBalance);
+        } else {
+            temp = strtok(NULL, ",");
+            fprintf(outp, ",%s", temp);
+        }
+    }
+    fclose(inp);
+    fclose(outp);
+
+    inp = fopen("database/temp_member.csv", "r");
+    outp = fopen(FILE_MEMBER, "w");
+    while (fgets(line, sizeof(line), inp) != NULL) {
+        fprintf(outp, line);
+    }
+    fclose(inp);
+    fclose(outp);
+
+    remove("database/temp_member.csv");
+
+    printf("Isi Saldo Berhasil!\n Saldo anda sekarang ");
+    printMoney(newBalance);
+    sleep(1);
+}
+
 int memberLogin() {
     const char *delimiter = ",";
     char line[1000];
@@ -92,6 +149,7 @@ void user() {
         "(0) Keluar",
         "(1) Mulai Belanja",
         "(2) Daftar Membership",
+        "(3) Isi Saldo",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -116,6 +174,14 @@ void user() {
                 inputMember();
                 int after = getCurrentID();
                 if (before != after) isMember = 1;
+            }
+            break;
+        case 3:
+            if (!isMember) {
+                printf("Anda harus menjadi member terlebih dahulu untuk mengisi saldo.");
+                sleep(1);
+            } else {
+                memberTopUp(guestID);
             }
             break;
         default:
