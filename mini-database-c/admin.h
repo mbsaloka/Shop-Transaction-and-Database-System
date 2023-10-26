@@ -11,13 +11,9 @@ void admin() {
         fflush(stdin);
         username = getAllChar();
         if (strcmp(username, "ESCAPE") == 0) return;
-        // fgets(username, 101, stdin);
-        // username[strlen(username) - 1] = '\0';
         printf("Password: ");
         pass = getPass();
         if (strcmp(pass, "ESCAPE") == 0) return;
-        // fgets(pass, 101, stdin);
-        // pass[strlen(pass) - 1] = '\0';
 
         if (strcmp(username, ADMIN_NAME) != 0) {
             printf("Username tidak dikenali!\n");
@@ -64,13 +60,37 @@ void admin() {
             inputItem();
             break;
         case 2:
-            showItem(0);
+            showItem(0, "");
+            while (1) {
+                char *filter;
+                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+                printf("Masukkan Filter : ");
+                filter = getFilter();
+                clearScreen();
+                if (strcmp(filter, "ESCAPE") == 0) {
+                    break;
+                }
+                showItem(0, filter);
+                free(filter);
+            }
             break;
         case 3:
             inputMember();
             break;
         case 4:
-            showMember();
+            showMember("");
+            while (1) {
+                char *filter;
+                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+                printf("Masukkan Filter : ");
+                filter = getFilter();
+                if (strcmp(filter, "ESCAPE") == 0) {
+                    break;
+                }
+                clearScreen();
+                showMember(filter);
+                free(filter);
+            }
             break;
         case 5:
             showTransactionLog();

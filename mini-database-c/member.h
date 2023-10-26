@@ -15,7 +15,7 @@ int getCurrentID() {
     return currentID;
 }
 
-void showMember() {
+void showMember(char *filter) {
     int COL_MAX = 22;
     int COL_MIN = 15;
     char *name, *phoneNum, *address, *registDate, *registTime;
@@ -61,9 +61,23 @@ void showMember() {
                 strcat(name2, " ");
             }
         }
-        printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name2, phoneNum, address, registDate, registTime);
-        printMoney(balance);
-        printf("\n");
+
+        for (int i = 0; i < strlen(filter); i++) {
+            if (filter[i] >= 'A' && filter[i] <= 'Z') {
+                filter[i] += 32;
+            }
+        }
+        for (int i = 0; i < strlen(name); i++) {
+            if (name[i] >= 'A' && name[i] <= 'Z') {
+                name[i] += 32;
+            }
+        }
+
+        if (strstr(name, filter)) {
+            printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name2, phoneNum, address, registDate, registTime);
+            printMoney(balance);
+            printf("\n");
+        }
     }
 
     fclose(inp);

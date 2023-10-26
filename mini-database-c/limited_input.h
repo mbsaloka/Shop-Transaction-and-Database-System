@@ -176,3 +176,36 @@ char *getPass() {
     str[i] = '\0';
     return str;
 }
+
+char *getFilter() {
+    int length = 100;
+    char *str = (char *)malloc(length + 1);
+    char c;
+    int i = 0;
+    while (c != 13) {  // ASCII 13 = enter
+        c = getch();
+        if ((c >= 32 && c <= 126) && i < length) {
+            printf("%c", c);
+            str[i++] = c;
+        } else if (c == 8 && i > 0) {  // ASCII 8 = backspace
+            printf("%c %c", c, c);
+            i--;
+        }
+        if (c == 3) exit(0);  // Ctrl + C
+        if (c == 27) {        // Esc
+            free(str);
+            clearScreen();
+            return "ESCAPE";
+        }
+        if (c == 13) {
+            if (i == 0) {
+                strcpy(str, "");
+                return str;
+            } else {
+                printf("\n");
+            }
+        }
+    }
+    str[i] = '\0';
+    return str;
+}

@@ -110,7 +110,7 @@ void addItemToCart() {
     int ID, price, stock;
     char *name;
     clearScreen();
-    showItem(1);
+    showItem(1, "");
     printBold("Saldo : ");
     printMoney(balance);
     printBold("\nMasukkan ID Barang yang ingin dibeli!\n");
@@ -431,13 +431,16 @@ void shoppingMenu(char name[101], int ID) {
     char exitCode;
     char *option[] = {
         "(0) Kembali ke Menu Utama",
-        "(1) Pilih Produk",
-        "(2) Lihat Keranjang (Bayar)",
+        "(1) Terapkan Filter",
+        "(2) Pilih Produk",
+        "(3) Lihat Keranjang (Bayar)",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
+    char filter[101];
+    strcpy(filter, "");
     do {
         clearScreen();
-        showItem(1);
+        showItem(1, filter);
         printBold("Saldo : ");
         printMoney(balance);
         printBold("\nIngin melakukan apa?\n");
@@ -457,9 +460,20 @@ void shoppingMenu(char name[101], int ID) {
             }
             break;
         case 1:
-            addItemToCart();
+            showItem(1, "");
+            printf("Masukkan Filter : ");
+            char *temp;
+            temp = getFilter();
+            if (strcmp(temp, "ESCAPE") == 0) {
+                break;
+            }
+            strcpy(filter, temp);
+            free(temp);
             break;
         case 2:
+            addItemToCart();
+            break;
+        case 3:
             openCart();
             break;
         default:

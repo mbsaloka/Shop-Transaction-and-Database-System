@@ -49,7 +49,7 @@ void showTransactionLog() {
     fclose(inp);
 }
 
-void showItem(int param) {
+void showItem(int param, char *filter) {
     char fileName[101];
     if (param == 0) {
         strcpy(fileName, FILE_ITEM);
@@ -78,20 +78,35 @@ void showItem(int param) {
         price = atoi(strtok(NULL, delimiter));
         stock = atoi(strtok(NULL, delimiter));
 
+        char name2[101];
+        strcpy(name2, name);
         if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
+            name2[COL_MAX - 2] = '.';
+            name2[COL_MAX - 1] = '.';
+            name2[COL_MAX] = '\0';
         }
 
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "    ");
+        if (strlen(name2) < COL_MIN) {
+            strcat(name2, "    ");
         }
 
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
-        printf("%d%s|\t %s\t| %d\t| %d\n", ID, space, name, price, stock);
+        for (int i = 0; i < strlen(filter); i++) {
+            if (filter[i] >= 'A' && filter[i] <= 'Z') {
+                filter[i] += 32;
+            }
+        }
+        for (int i = 0; i < strlen(name); i++) {
+            if (name[i] >= 'A' && name[i] <= 'Z') {
+                name[i] += 32;
+            }
+        }
+
+        if (strstr(name, filter)) {
+            printf("%d%s|\t %s\t| %d\t| %d\n", ID, space, name2, price, stock);
+        }
     }
 
     fclose(inp);
