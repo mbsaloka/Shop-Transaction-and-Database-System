@@ -27,11 +27,11 @@ v
 
 
 // TO DO LIST
-1. Filter Barang
-2. Filter Member (Admin)
-3. Sorting Barang
+1. Filter Barang        DONE
+2. Filter Member (Admin) DONE
+3. Sorting Barang 
 4. Sorting Member (Admin) 
-5. Lihat Struk (Admin)
+5. Lihat Struk (Admin)  DONE
 6. Ubah Jumlah Barang di Keranjang (user)
 7. Ganti Password (member)
 8. Update stok (admin)

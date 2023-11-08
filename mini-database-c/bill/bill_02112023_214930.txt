@@ -1,15 +1,12 @@
 ---------------------------------------------
 ================ ITS MIRT ===================
 ---------------------------------------------
-Tanggal         : 22/10/2023 20:32:38
-Nomor Transaksi : T0001
-Nama Pelanggan  : Nazwarahma Hannum P (member)
-ID Member       : 2
+Tanggal         : 02/11/2023 21:49:30
+Nomor Transaksi : T0007
+Nama Pelanggan  : ikhwan
 ---------------------------------------------
 ID   |	 Nama Barang	| Jmlh	| Total Harga
 ---------------------------------------------
-3    |	 Pop Ice    	| 3 	| Rp6.000
-19   |	 Teh Poci    	| 3 	| Rp21.000
-6    |	 Chitato    	| 2 	| Rp12.000
+17   |	 Bir    	| 2 	| Rp24.000
 ---------------------------------------------
-			TOTAL	: Rp39.000
+			TOTAL	: Rp24.000

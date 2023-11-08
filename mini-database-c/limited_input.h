@@ -209,3 +209,13 @@ char *getFilter() {
     str[i] = '\0';
     return str;
 }
+
+char getEnter() {
+    char key, c;
+    int i = 0;
+    while (c != 13 && c != 27) {  // ASCII 13 = enter
+        c = getch();
+        if (c == 3) exit(0);  // Ctrl + C
+    }
+    return 'E';
+}
