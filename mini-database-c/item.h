@@ -152,8 +152,8 @@ void showItem(int param, char *filter) {
     } else if (param == 1) {
         strcpy(fileName, FILE_TEMP_SHOPPING);
     }
-    int COL_MAX = 14;
-    int COL_MIN = 6;
+    int COL_MAX = 21;
+    int COL_MIN = 14;
     char *name;
     int ID, price, stock;
     char line[1001];
@@ -164,7 +164,7 @@ void showItem(int param, char *filter) {
     }
 
     printBold("DAFTAR BARANG\n");
-    printBold("ID   |\t Nama Barang\t| Harga\t| Stok\n");
+    printBold("ID   |\t Nama Barang\t\t| Harga\t| Stok\n");
     printf("---------------------------------------\n");
     fgets(line, sizeof(line), inp);
     const char *delimiter = ",";
@@ -182,8 +182,8 @@ void showItem(int param, char *filter) {
             name2[COL_MAX] = '\0';
         }
 
-        if (strlen(name2) < COL_MIN) {
-            strcat(name2, "    ");
+        while (strlen(name2) <= COL_MIN) {
+            strcat(name2, " ");
         }
 
         char space[] = "    ";

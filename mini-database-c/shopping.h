@@ -1,4 +1,3 @@
-
 struct Cart {
     int ID, price, amount, stock;
     char name[100];

@@ -66,7 +66,7 @@ reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
 Hapus Satu Baris
 \033[A\33[2K\r
 \033[A : menggerakkan kursor satu baris ke atas
-\033[B : menggerakkan kursor satu baris ke atas
+\033[B : menggerakkan kursor satu baris ke bawah
 \33[2K : hapus baris saat ini dan di bawahnya
 \r     : menggerakkan kursor ke awal baris
 
