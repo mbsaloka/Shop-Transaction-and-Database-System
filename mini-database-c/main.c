@@ -5,17 +5,20 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "data_manipulation.h"
 #include "text_style.h"
 #include "arrow_input.h"
 #include "limited_input.h"
 #include "get_time.h"
 #include "item.h"
 #include "member.h"
-#include "shopping.h"
+// #include "shopping.h"
 #include "admin.h"
-#include "user.h"
+// #include "user.h"
 
 int main(int argc, char const *argv[]) {
+    importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
+
     int code;
     char *option[] = {
         "(0) Akhiri Program",
@@ -35,10 +38,10 @@ int main(int argc, char const *argv[]) {
         case 1:
             admin();
             break;
-        case 2:
-            user();
-            clearScreen();
-            break;
+        // case 2:
+        //     user();
+        //     clearScreen();
+        //     break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);

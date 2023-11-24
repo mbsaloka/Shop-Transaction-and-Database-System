@@ -1,6 +1,3 @@
-#define FILE_ITEM "database/db_item.csv"
-#define FILE_TEMP_SHOPPING "database/temp_shopping.csv"
-#define FILE_TRANSACTION "database/db_transaction_log.csv"
 FILE *inp, *outp;
 
 void showLog() {
@@ -145,34 +142,20 @@ void showTransactionLog() {
     } while (code != 0);
 }
 
-void showItem(int param, char *filter) {
-    char fileName[101];
-    if (param == 0) {
-        strcpy(fileName, FILE_ITEM);
-    } else if (param == 1) {
-        strcpy(fileName, FILE_TEMP_SHOPPING);
-    }
+void showItem(char *filter) {
     int COL_MAX = 21;
     int COL_MIN = 14;
-    char *name;
+    char name[101];
     int ID, price, stock;
-    char line[1001];
-    inp = fopen(fileName, "r");
-    if (inp == NULL) {
-        puts("File failed to open.");
-        return;
-    }
 
     printBold("DAFTAR BARANG\n");
     printBold("ID   |\t Nama Barang\t\t| Harga\t| Stok\n");
-    printf("---------------------------------------\n");
-    fgets(line, sizeof(line), inp);
-    const char *delimiter = ",";
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        ID = atoi(strtok(line, delimiter));
-        name = strtok(NULL, delimiter);
-        price = atoi(strtok(NULL, delimiter));
-        stock = atoi(strtok(NULL, delimiter));
+    printf("----------------------------------------------\n");
+    for (int i = 0; i < numItem; i++) {
+        ID = item[i].ID;
+        strcpy(name, item[i].name);
+        price = item[i].price;
+        stock = item[i].stock;
 
         char name2[101];
         strcpy(name2, name);
@@ -189,14 +172,14 @@ void showItem(int param, char *filter) {
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
-        for (int i = 0; i < strlen(filter); i++) {
-            if (filter[i] >= 'A' && filter[i] <= 'Z') {
-                filter[i] += 32;
+        for (int j = 0; j < strlen(filter); j++) {
+            if (filter[j] >= 'A' && filter[j] <= 'Z') {
+                filter[j] += 32;
             }
         }
-        for (int i = 0; i < strlen(name); i++) {
-            if (name[i] >= 'A' && name[i] <= 'Z') {
-                name[i] += 32;
+        for (int j = 0; j < strlen(name); j++) {
+            if (name[j] >= 'A' && name[j] <= 'Z') {
+                name[j] += 32;
             }
         }
 
@@ -204,22 +187,16 @@ void showItem(int param, char *filter) {
             printf("%d%s|\t %s\t| %d\t| %d\n", ID, space, name2, price, stock);
         }
     }
-
-    fclose(inp);
 }
 
 void inputItem() {
+    int idx = numItem;
     char *name, exitCode;
     int ID, price, stock;
-    char line[1001];
-    inp = fopen(FILE_ITEM, "r");
-    while (fgets(line, sizeof(line), inp)) {
-        ID = atoi(strtok(line, ",")) + 1;
-    }
-    fclose(inp);
 
     char nol[] = "00";
     nol[1] = (ID < 10) ? '0' : '\0';
+    ID = (idx == 0) ? 1 : item[idx - 1].ID + 1;
 
     printBold("TAMBAHKAN BARANG BARU\n");
     printf("ID %s%d\n", nol, ID);
@@ -227,8 +204,6 @@ void inputItem() {
     printf("Nama Barang : ");
     name = getAllChar();
     if (strcmp(name, "ESCAPE") == 0) return;
-    // fgets(name, 101, stdin);
-    // name[strlen(name) - 1] = '\0';
     printf("Harga : ");
     price = getNumINT();
     if (price == -1) {
@@ -246,9 +221,14 @@ void inputItem() {
     exitCode = getYesNo();
     clearScreen();
     if (exitCode == 'Y') {
-        outp = fopen(FILE_ITEM, "a");
-        fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
-        fclose(outp);
+        item[idx].ID = ID;
+        strcpy(item[idx].name, name);
+        item[idx].price = price;
+        item[idx].stock = stock;
+
+        addToDb(&item[idx], sizeof(Item), FILE_ITEM);
+        numItem++;
+
         printf("%s berhasil ditambahkan.", name);
         sleep(1);
         clearScreen();

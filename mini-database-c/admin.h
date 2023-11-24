@@ -1,5 +1,5 @@
-#define ADMIN_NAME "Admin1"
-#define PASSWORD "mbsaloka12"
+#define ADMIN_NAME " "
+#define PASSWORD " "
 
 void admin() {
     char *username, *pass, exitCode;
@@ -57,10 +57,10 @@ void admin() {
             clearScreen();
             return;
         case 1:
-            inputItem();
+            inputItem(item, numItem);
             break;
         case 2:
-            showItem(0, "");
+            showItem("");
             while (1) {
                 char *filter;
                 printBold("[FILTER] (Tekan Esc untuk kembali)\n");
@@ -70,7 +70,7 @@ void admin() {
                 if (strcmp(filter, "ESCAPE") == 0) {
                     break;
                 }
-                showItem(0, filter);
+                showItem(filter);
                 free(filter);
             }
             break;
