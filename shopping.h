@@ -1,6 +1,6 @@
 void addItemToCart() {
     int ID, price, stock;
-    char *name;
+    char name[101];
     clearScreen();
     showItem("");
     printBold("Saldo : ");
@@ -13,7 +13,7 @@ void addItemToCart() {
 
     for (int i = 0; i < numItem; i++) {
         if (ID == item[i].ID) {
-            name = item[i].name;
+            strcpy(name, item[i].name);
             price = item[i].price;
             stock = item[i].stock;
             isFound = i;
@@ -114,7 +114,6 @@ int checkoutCart() {
 
 void openCart() {
     int code;
-    char exitCode;
     char *option[] = {
         "(0) Kembali ke Menu Belanja",
         "(1) Hapus Produk",
@@ -172,7 +171,6 @@ void openCart() {
 
 void shoppingMenu() {
     int code;
-    char exitCode;
     char *option[] = {
         "(0) Kembali ke Menu Utama",
         "(1) Terapkan Filter",
@@ -193,8 +191,7 @@ void shoppingMenu() {
         switch (code) {
         case 0:
             printf("Jika keluar maka keranjang akan dikosongkan.\nYakin ingin keluar? (Y/N) ");
-            exitCode = getYesNo();
-            if (exitCode == 'Y') {
+            if (getYesNo() == 'Y') {
                 clearScreen();
                 numCart = 0;
                 importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
@@ -206,13 +203,10 @@ void shoppingMenu() {
         case 1:
             showItem("");
             printf("Masukkan Filter : ");
-            char *temp;
-            temp = getFilter();
-            if (strcmp(temp, "ESCAPE") == 0) {
+            getFilter(filter);
+            if (strcmp(filter, "ESCAPE") == 0) {
                 break;
             }
-            strcpy(filter, temp);
-            free(temp);
             break;
         case 2:
             addItemToCart();

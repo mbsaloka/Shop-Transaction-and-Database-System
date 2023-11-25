@@ -1,5 +1,3 @@
-FILE *inp, *outp;
-
 void showItem(char *filter) {
     int COL_MAX = 21;
     int COL_MIN = 14;
@@ -49,7 +47,7 @@ void showItem(char *filter) {
 
 void inputItem() {
     int idx = numItem;
-    char *name, exitCode;
+    char name[101];
     int ID, price, stock;
 
     char nol[] = "00";
@@ -60,25 +58,18 @@ void inputItem() {
     printf("ID %s%d\n", nol, ID);
     fflush(stdin);
     printf("Nama Barang : ");
-    name = getAllChar();
+    getAllChar(name);
     if (strcmp(name, "ESCAPE") == 0) return;
     printf("Harga : ");
     price = getNumINT();
-    if (price == -1) {
-        free(name);
-        return;
-    }
+    if (price == -1) return;
     printf("Stok : ");
     stock = getNumINT();
-    if (stock == -1) {
-        free(name);
-        return;
-    }
+    if (stock == -1) return;
 
     printf("Apakah Anda ingin menambahkan %s ke dalam daftar barang? (Y/N) ", name);
-    exitCode = getYesNo();
-    clearScreen();
-    if (exitCode == 'Y') {
+    if (getYesNo() == 'Y') {
+        clearScreen();
         item[idx].ID = ID;
         strcpy(item[idx].name, name);
         item[idx].price = price;
@@ -95,5 +86,4 @@ void inputItem() {
         sleep(1);
         clearScreen();
     }
-    free(name);
 }

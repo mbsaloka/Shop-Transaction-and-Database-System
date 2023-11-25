@@ -11,7 +11,7 @@ typedef struct item_s {
 typedef struct member_s {
     int ID, balance;
     char username[101], password[101];
-    char name[101], phoneNum[15], address[101];
+    char name[101], phoneNum[20], address[101];
     char registDate[15], registTime[15];
 } Member;
 

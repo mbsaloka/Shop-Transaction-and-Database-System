@@ -29,23 +29,20 @@ int memberTopUp() {
 
 int memberLogin() {
     int isFound = 0, passFlag;
+    char username[101], password[101];
     do {
         clearScreen();
         printBold("LOGIN MEMBERSHIP\n");
         printBold("Masukkan Username dan Password\n");
         printf("Username : ");
         fflush(stdin);
-        username = getAllChar();
+        getAllChar(username);
         if (strcmp(username, "ESCAPE") == 0) return -1;
         printf("Password : ");
-        char *password = getPass();
-        if (strcmp(password, "ESCAPE") == 0) {
-            free(username);
-            return -1;
-        }
+        getPass(password);
+        if (strcmp(password, "ESCAPE") == 0) return -1;
 
-        // Check is username exist
-        char *temp, *tempName, exitCode;
+        char *temp, *tempName;
         int tempID;
         passFlag = 1;
         for (int i = 0; i < numMember; i++) {
@@ -59,8 +56,6 @@ int memberLogin() {
                 break;
             }
         }
-        free(username);
-        free(password);
 
         if (!isFound) {
             if (passFlag) {
@@ -69,7 +64,7 @@ int memberLogin() {
                 printf("Password salah!\n");
             }
             printf("Coba login kembali? (Y/N) ");
-            exitCode = getYesNo();
+            char exitCode = getYesNo();
             if (exitCode == 'N') return 0;
             if (exitCode == 'E') return -1;
         }
@@ -94,13 +89,12 @@ void user() {
         clearScreen();
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
-        char *temp;
-        temp = getAlpha();
-        if (strcmp(temp, "ESCAPE") == 0) return;
-        strcpy(onlineUser.name, temp);
+        char name[101];
+        getAlpha(name);
+        if (strcmp(name, "ESCAPE") == 0) return;
+        strcpy(onlineUser.name, name);
         onlineUser.ID = 0;
         onlineUser.balance = 100000;
-        free(temp);
     }
 
     clearScreen();

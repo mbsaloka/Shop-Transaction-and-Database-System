@@ -39,11 +39,3 @@ int chooseOption(char *option[], int length) {
     } while (input != 13);
     return code;
 }
-
-/* Cara Basic
-printBold("Selamat Datang di Sistem\n");
-puts("(0) Akhiri Program");
-puts("(1) Login Sebagai Admin");
-puts("(2) Login Sebagai Pelanggan");
-code = getNumINT();
-*/

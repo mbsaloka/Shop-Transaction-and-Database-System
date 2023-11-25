@@ -1,12 +1,8 @@
-FILE *inp, *outp;
-
-static char *username, *pass;
-char exitCode;
-
 void showMember(char *filter) {
     int COL_MAX = 22;
     int COL_MIN = 15;
-    char *name, *phoneNum, *address, *username, *password, *registDate, *registTime;
+    char name[101], phoneNum[20], address[101], username[101], password[101];
+    char registDate[15], registTime[15];
     int ID, balance;
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
@@ -14,19 +10,19 @@ void showMember(char *filter) {
     printf("-----------------------------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < numMember; i++) {
         ID = member[i].ID;
-        name = member[i].name;
-        phoneNum = member[i].phoneNum;
-        address = member[i].address;
+        strcpy(name, member[i].name);
+        strcpy(phoneNum, member[i].phoneNum);
+        strcpy(address, member[i].address);
+        strcpy(username, member[i].username);
+        strcpy(password, member[i].password);
+        strcpy(registDate, member[i].registDate);
+        strcpy(registTime, member[i].registTime);
         balance = member[i].balance;
-        registDate = member[i].registDate;
-        registTime = member[i].registTime;
-        username = member[i].username;
-        password = member[i].password;
 
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
 
-        char name2[100];
+        char name2[101];
         strcpy(name2, name);
         if (strlen(name) > COL_MAX) {
             name[COL_MAX - 2] = '.';
@@ -60,9 +56,7 @@ void showMember(char *filter) {
     }
 }
 
-int createAccount() {
-    const char *delimiter = ",";
-    char line[1000];
+int createAccount(char *username, char *password) {
     do {
         int isUsed = 0;
         clearScreen();
@@ -70,16 +64,12 @@ int createAccount() {
 
         printf("Username : ");
         fflush(stdin);
-        username = getAllChar();
+        getAllChar(username);
         if (strcmp(username, "ESCAPE") == 0) return 0;
         printf("Password : ");
-        pass = getAllChar();
-        if (strcmp(pass, "ESCAPE") == 0) {
-            free(username);
-            return 0;
-        }
+        getPass(password);
+        if (strcmp(password, "ESCAPE") == 0) return 0;
 
-        // Check is username used
         for (int i = 0; i < numMember; i++) {
             if (strcmp(member[i].username, username) == 0) {
                 isUsed = 1;
@@ -90,26 +80,19 @@ int createAccount() {
         if (isUsed) {
             printf("Username sudah terdaftar, gunakan username yang berbeda!\n");
             printf("Coba buat akun lagi? (Y/N) ");
-            exitCode = getYesNo();
-            free(username);
-            free(pass);
-            if (exitCode != 'Y') {
+            if (getYesNo() != 'Y') {
                 clearScreen();
                 return 0;
             }
         } else {
             printf("Lanjutkan membuat akun? (Y/N) ");
-            exitCode = getYesNo();
-            clearScreen();
-            if (exitCode != 'Y') {
-                free(username);
-                free(pass);
+            if (getYesNo() != 'Y') {
+                clearScreen();
                 printf("Proses dibatalkan.");
                 sleep(1);
                 clearScreen();
                 printf("Coba buat akun lagi? (Y/N) ");
-                exitCode = getYesNo();
-                if (exitCode != 'Y') {
+                if (getYesNo() != 'Y') {
                     clearScreen();
                     return 0;
                 }
@@ -118,77 +101,52 @@ int createAccount() {
             }
         }
     } while (1);
+    printf("Proses dibatalkan.\n");
+    return 1;
 }
 
 void inputMember() {
-    char *name, *phoneNum, *address, exitCode;
+    char name[101], phoneNum[20], address[101], username[101], password[101];
     int ID, balance = 1000000;
 
-    while (createAccount()) {
+    while (createAccount(username, password)) {
         clearScreen();
         printBold("MASUKKAN DATA DIRI ANDA\n");
         printf("Nama : ");
-        name = getAlpha();
-        if (strcmp(name, "ESCAPE") == 0) {
-            free(username);
-            free(pass);
-            return;
-        }
+        getAlpha(name);
+        if (strcmp(name, "ESCAPE") == 0) return;
         printf("No Telpon : ");
-        phoneNum = getNum();
-        if (strcmp(phoneNum, "ESCAPE") == 0) {
-            free(username);
-            free(pass);
-            free(name);
-            return;
-        }
+        getNum(phoneNum);
+        if (strcmp(phoneNum, "ESCAPE") == 0) return;
         printf("Alamat : ");
-        address = getAllChar();
-        if (strcmp(address, "ESCAPE") == 0) {
-            free(name);
-            free(phoneNum);
-            free(username);
-            free(pass);
-            return;
-        }
+        getAllChar(address);
+        if (strcmp(address, "ESCAPE") == 0) return;
 
         printf("Apakah data diri Anda sudah benar? (Y/N) ");
-        exitCode = getYesNo();
-        clearScreen();
-        if (exitCode == 'Y') {
+        if (getYesNo() == 'Y') {
+            clearScreen();
             int idx = numMember;
             member[idx].ID = (idx == 0) ? 1 : member[idx - 1].ID + 1;
             strcpy(member[idx].name, name);
             strcpy(member[idx].phoneNum, phoneNum);
             strcpy(member[idx].address, address);
             strcpy(member[idx].username, username);
-            strcpy(member[idx].password, pass);
+            strcpy(member[idx].password, password);
             strcpy(member[idx].registDate, getDate());
             strcpy(member[idx].registTime, getTime());
             member[idx].balance = balance;
             addToDb(&member[numMember], sizeof(Member), FILE_MEMBER);
             numMember++;
-            free(name);
-            free(phoneNum);
-            free(address);
-            free(username);
-            free(pass);
             printf("Anda berhasil terdaftar sebagai membership.");
             sleep(1);
             clearScreen();
             return;
         } else {
+            clearScreen();
             printf("Proses dibatalkan.");
             sleep(1);
-            clearScreen();
             printf("Coba buat akun lagi? (Y/N) ");
-            free(name);
-            free(phoneNum);
-            free(address);
-            free(username);
-            free(pass);
-            exitCode = getYesNo();
-            if (exitCode != 'Y') {
+            if (getYesNo() != 'Y') {
                 clearScreen();
                 return;
             }
