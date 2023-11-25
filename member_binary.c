@@ -6,7 +6,8 @@
 typedef struct member_s {
     int ID, balance;
     char username[101], password[101];
-    char name[101], noTelp[15], address[101], dateRegist[15], timeRegist[15];
+    char name[101], noTelp[15], address[101];
+    char dateRegist[15], timeRegist[15];
 } Member;
 
 Member member[1000];
@@ -71,8 +72,8 @@ void showMember() {
         printf("Username : %s\n", member[i].username);
         printf("Password : %s\n", member[i].password);
         printf("Nama : %s\n", member[i].name);
-        printf("No Telp : %d\n", member[i].noTelp);
-        printf("Alamat : %d\n", member[i].address);
+        printf("No Telp : %s\n", member[i].noTelp);
+        printf("Alamat : %s\n", member[i].address);
         printf("Saldo : %d\n", member[i].balance);
         printf("\n");
     }

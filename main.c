@@ -18,6 +18,7 @@
 
 int main(int argc, char const *argv[]) {
     importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
+    importFromDb(member, sizeof(Member), &numMember, FILE_MEMBER);
 
     int code;
     char *option[] = {

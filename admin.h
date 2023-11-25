@@ -92,9 +92,9 @@ void admin() {
                 free(filter);
             }
             break;
-        case 5:
-            showTransactionLog();
-            break;
+        // case 5:
+        //     showTransactionLog();
+        //     break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);

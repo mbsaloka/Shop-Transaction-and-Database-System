@@ -1,14 +1,31 @@
 #define FILE_ITEM "database/db_item.bin"
+#define FILE_MEMBER "database/db_member.bin"
 #define FILE_TEMP "database/temp.bin"
 #define FILE_TEMP_SHOPPING "database/temp_shopping.csv"
 #define FILE_TRANSACTION "database/db_transaction_log.csv"
+
 typedef struct item_s {
     int ID, price, stock;
     char name[101];
 } Item;
 
+typedef struct member_s {
+    int ID, balance;
+    char username[101], password[101];
+    char name[101], phoneNum[15], address[101];
+    char registDate[15], registTime[15];
+} Member;
+
+typedef struct cart_s {
+    int ID, price, amount, stock;
+    char name[100];
+} Cart;
+
 Item item[1000];
-int numItem;
+Member member[1000], memberOnline;
+Cart cart[1000];
+int numItem, numMember, numCart;
+
 void addToDb(void *data, size_t dataSize, char *fileName) {
     FILE *outp;
     outp = fopen(fileName, "ab");
@@ -70,4 +87,8 @@ void removeData(void *data, size_t dataSize, int removeID, int *totalIndex, char
 
 int getItemID(void *item) {
     return ((Item *)item)->ID;
+}
+
+int getMemberID(void *member) {
+    return ((Member *)member)->ID;
 }

@@ -1,47 +1,25 @@
 FILE *inp, *outp;
 
 static char *username, *pass;
-
-int getCurrentID() {
-    inp = fopen(FILE_MEMBER, "r");
-    char line[1000];
-    int currentID = 1;
-    fgets(line, sizeof(line), inp);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        currentID = atoi(strtok(line, ","));
-    }
-    fclose(inp);
-    return currentID;
-}
+char exitCode;
 
 void showMember(char *filter) {
     int COL_MAX = 22;
     int COL_MIN = 15;
     char *name, *phoneNum, *address, *registDate, *registTime;
     int ID, balance;
-    char line[1000];
-    const char *delimiter = ",";
-    char *temp;
-    inp = fopen(FILE_MEMBER, "r");
-
-    if (inp == NULL) {
-        puts("File failed to open.");
-        return;
-    }
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
     printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Saldo\n");
     printf("---------------------------------------------------------------------------------------------------------\n");
-    fgets(line, sizeof(line), inp);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        ID = atoi(strtok(line, delimiter));
-        name = strtok(NULL, delimiter);
-        phoneNum = strtok(NULL, delimiter);
-        address = strtok(NULL, delimiter);
-        registDate = strtok(NULL, delimiter);
-        registTime = strtok(NULL, delimiter);
-        for (int i = 0; i < 2; i++) temp = strtok(NULL, delimiter);
-        balance = atoi(strtok(NULL, delimiter));
+    for (int i = 0; i < numMember; i++) {
+        ID = member[i].ID;
+        name = member[i].name;
+        phoneNum = member[i].phoneNum;
+        address = member[i].address;
+        balance = member[i].balance;
+        registDate = member[i].registDate;
+        registTime = member[i].registTime;
 
         char space[] = "    ";
         space[3] = (ID < 10) ? ' ' : '\0';
@@ -78,8 +56,6 @@ void showMember(char *filter) {
             printf("\n");
         }
     }
-
-    fclose(inp);
 }
 
 int createAccount() {
@@ -102,19 +78,13 @@ int createAccount() {
         }
 
         // Check is username used
-        char *temp, exitCode;
-        inp = fopen(FILE_MEMBER, "r");
-        fgets(line, sizeof(line), inp);
-        while (fgets(line, sizeof(line), inp) != NULL) {
-            temp = strtok(line, delimiter);
-            for (int i = 0; i < 5; i++) temp = strtok(NULL, delimiter);
-            temp = strtok(NULL, delimiter);
-            if (strcmp(temp, username) == 0) {
+        for (int i = 0; i < numMember; i++) {
+            if (strcmp(member[i].username, username) == 0) {
                 isUsed = 1;
                 break;
             }
         }
-        fclose(inp);
+
         if (isUsed) {
             printf("Username sudah terdaftar, gunakan username yang berbeda!\n");
             printf("Coba buat akun lagi? (Y/N) ");
@@ -150,11 +120,7 @@ int createAccount() {
 
 void inputMember() {
     char *name, *phoneNum, *address, exitCode;
-    int ID = getCurrentID() + 1, balance = 1000000;
-    char line[1001];
-
-    char nol[] = "00";
-    nol[1] = (ID < 10) ? '0' : '\0';
+    int ID, balance = 1000000;
 
     while (createAccount()) {
         clearScreen();
@@ -188,9 +154,18 @@ void inputMember() {
         exitCode = getYesNo();
         clearScreen();
         if (exitCode == 'Y') {
-            outp = fopen(FILE_MEMBER, "a");
-            fprintf(outp, "%d,%s,%s,%s,%s,%s,%s,%s,%d\n", ID, name, phoneNum, address, getDate(), getTime(), username, pass, balance);
-            fclose(outp);
+            int idx = numMember;
+            member[idx].ID = (idx == 0) ? 1 : member[idx - 1].ID + 1;
+            strcpy(member[idx].name, name);
+            strcpy(member[idx].phoneNum, phoneNum);
+            strcpy(member[idx].address, address);
+            strcpy(member[idx].username, username);
+            strcpy(member[idx].password, pass);
+            strcpy(member[idx].registDate, getDate());
+            strcpy(member[idx].registTime, getTime());
+            member[idx].balance = balance;
+            addToDb(&member[numMember], sizeof(Member), FILE_MEMBER);
+            numMember++;
             free(name);
             free(phoneNum);
             free(address);

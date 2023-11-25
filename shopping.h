@@ -1,10 +1,4 @@
-struct Cart {
-    int ID, price, amount, stock;
-    char name[100];
-};
-
-static struct Cart item[100];
-static int balance, itemIndex, transactionID, userID;
+static int balance, transactionID, userID;
 static char userName[101];
 
 void createTempShoppingFile() {
