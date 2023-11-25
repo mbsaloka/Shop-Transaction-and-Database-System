@@ -1,39 +1,45 @@
 #define ADMIN_NAME " "
 #define PASSWORD " "
 
+int adminLogin() {
+    char *username, *pass, exitCode;
+    while (strcmp(pass, PASSWORD) != 0 || strcmp(username, ADMIN_NAME) != 0) {
+        clearScreen();
+        printBold("[MODE ADMIN]\n");
+        printBold("Masukkan Username dan Password\n");
+        printf("Username: ");
+        fflush(stdin);
+        username = getAllChar();
+        if (strcmp(username, "ESCAPE") == 0) return 0;
+        printf("Password: ");
+        pass = getPass();
+        if (strcmp(pass, "ESCAPE") == 0) return 0;
+
+        if (strcmp(username, ADMIN_NAME) != 0) {
+            printf("Username tidak dikenali!\n");
+            printf("Coba login kembali? (Y/N) ");
+            exitCode = getYesNo();
+            if (exitCode != 'Y') return 0;
+
+        } else if (strcmp(pass, PASSWORD) != 0) {
+            printf("Password salah!\n");
+            printf("Coba login kembali? (Y/N) ");
+            exitCode = getYesNo();
+            if (exitCode != 'Y') return 0;
+        }
+    }
+
+    clearScreen();
+    printf("Selamat Datang %s!", username);
+    sleep(1);
+    free(username);
+    free(pass);
+
+    return 1;
+}
+
 void admin() {
-    // char *username, *pass, exitCode;
-    // while (strcmp(pass, PASSWORD) != 0 || strcmp(username, ADMIN_NAME) != 0) {
-    //     clearScreen();
-    //     printBold("[MODE ADMIN]\n");
-    //     printBold("Masukkan Username dan Password\n");
-    //     printf("Username: ");
-    //     fflush(stdin);
-    //     username = getAllChar();
-    //     if (strcmp(username, "ESCAPE") == 0) return;
-    //     printf("Password: ");
-    //     pass = getPass();
-    //     if (strcmp(pass, "ESCAPE") == 0) return;
-
-    //     if (strcmp(username, ADMIN_NAME) != 0) {
-    //         printf("Username tidak dikenali!\n");
-    //         printf("Coba login kembali? (Y/N) ");
-    //         exitCode = getYesNo();
-    //         if (exitCode != 'Y') return;
-
-    //     } else if (strcmp(pass, PASSWORD) != 0) {
-    //         printf("Password salah!\n");
-    //         printf("Coba login kembali? (Y/N) ");
-    //         exitCode = getYesNo();
-    //         if (exitCode != 'Y') return;
-    //     }
-    // }
-
-    // clearScreen();
-    // printf("Selamat Datang %s!", username);
-    // sleep(1);
-    // free(username);
-    // free(pass);
+    // if (!adminLogin()) return;
     clearScreen();
     int code;
     char *option[] = {
@@ -92,9 +98,9 @@ void admin() {
                 free(filter);
             }
             break;
-        // case 5:
-        //     showTransactionLog();
-        //     break;
+        case 5:
+            showTransactionLog();
+            break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);

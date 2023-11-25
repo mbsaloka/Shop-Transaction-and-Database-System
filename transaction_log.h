@@ -1,27 +1,21 @@
 void showLog() {
     int COL_MAX = 21;
     int COL_MIN = 14;
-    char *dateTime, *name;
+    char dateTime[30], name[101];
     int transactionID, price, userID;
-
-    char line[1001];
-    inp = fopen(FILE_TRANSACTION, "r");
-    if (inp == NULL) {
-        puts("File failed to open.");
-        return;
-    }
 
     printBold("CATATAN TRANSAKSI\n");
     printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
     printf("---------------------------------------------------------------------------------\n");
-    fgets(line, sizeof(line), inp);
-    const char *delimiter = ",";
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        transactionID = atoi(strtok(line, delimiter));
-        dateTime = strtok(NULL, delimiter);
-        name = strtok(NULL, delimiter);
-        userID = atoi(strtok(NULL, delimiter));
-        price = atoi(strtok(NULL, delimiter));
+    for (int i = 0; i < numTransaction; i++) {
+        transactionID = transaction[i].ID;
+        strcpy(name, transaction[i].name);
+        userID = transaction[i].memberID;
+        price = transaction[i].totalPrice;
+        char dateTime[101];
+        strcpy(dateTime, transaction[i].transactionDate);
+        strcat(dateTime, " ");
+        strcat(dateTime, transaction[i].transactionTime);
 
         if (strlen(name) > COL_MAX) {
             name[COL_MAX - 2] = '.';
@@ -40,67 +34,6 @@ void showLog() {
             printf("%d\t    | Rp%s\n", userID, strMoney(price));
         }
     }
-    fclose(inp);
-}
-
-void showReceipt(int ID) {
-    char *date, *time, *name;
-    int transactionID, price, userID;
-
-    char line[1001];
-    inp = fopen(FILE_TRANSACTION, "r");
-    if (inp == NULL) {
-        puts("File failed to open.");
-        return;
-    }
-    fgets(line, sizeof(line), inp);
-    const char *delimiter = ",";
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        transactionID = atoi(strtok(line, delimiter));
-        date = strtok(NULL, " ");
-        time = strtok(NULL, delimiter);
-        name = strtok(NULL, delimiter);
-        userID = atoi(strtok(NULL, delimiter));
-        price = atoi(strtok(NULL, delimiter));
-        if (transactionID == ID) {
-            break;
-        } else {
-            transactionID = -1;
-        }
-    }
-    fclose(inp);
-
-    if (transactionID == -1) {
-        printf("ID Transaksi tidak ditemukan!\n");
-        sleep(1);
-        return;
-    }
-
-    char FILE_BILL[100];
-    strcpy(FILE_BILL, "bill/bill_");
-    strcat(FILE_BILL, date);
-    strcat(FILE_BILL, "_");
-    strcat(FILE_BILL, time);
-    strcat(FILE_BILL, ".txt");
-
-    char *ptr = FILE_BILL + 6;
-    while (*ptr) {
-        if (*ptr == '/' || *ptr == ':') {
-            memmove(ptr, ptr + 1, strlen(ptr));
-        } else {
-            ptr++;
-        }
-    }
-
-    inp = fopen(FILE_BILL, "r");
-    if (inp == NULL) {
-        puts("File failed to open.");
-        return;
-    }
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        printf("%s", line);
-    }
-    fclose(inp);
 }
 
 void showTransactionLog() {
@@ -113,7 +46,6 @@ void showTransactionLog() {
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
         clearScreen();
-
         showLog();
         code = chooseOption(option, lengthOption);
         clearScreen();
@@ -138,4 +70,18 @@ void showTransactionLog() {
             sleep(1);
         }
     } while (code != 0);
+}
+
+void addTransactionLog(int totalPrice) {
+    int idx = numTransaction;
+    int transactionID = (idx == 0) ? 1 : transaction[idx - 1].ID + 1;
+    transaction[idx].ID = transactionID;
+    transaction[idx].memberID = onlineUser.ID;
+    transaction[idx].totalPrice = totalPrice;
+    strcpy(transaction[idx].name, onlineUser.name);
+    strcpy(transaction[idx].transactionDate, getDate());
+    strcpy(transaction[idx].transactionTime, getTime());
+
+    addToDb(&transaction[idx], sizeof(Transaction), FILE_TRANSACTION);
+    numTransaction++;
 }

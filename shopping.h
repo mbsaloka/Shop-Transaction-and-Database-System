@@ -1,127 +1,22 @@
-static int balance, transactionID, userID;
-static char userName[101];
-
-void createTempShoppingFile() {
-    FILE *inp, *outp;
-    char ch;
-
-    inp = fopen(FILE_ITEM, "r");
-    outp = fopen(FILE_TEMP_SHOPPING, "w");
-
-    char line[1001];
-    char *name;
-    int ID, price, stock;
-    const char *delimiter = ",";
-    fgets(line, sizeof(line), inp);
-    fprintf(outp, line);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        ID = atoi(strtok(line, delimiter));
-        name = strtok(NULL, delimiter);
-        price = atoi(strtok(NULL, delimiter));
-        stock = atoi(strtok(NULL, delimiter));
-
-        for (int i = 0; i < itemIndex; i++) {
-            if (ID == item[i].ID) {
-                stock = item[i].stock;
-            }
-        }
-        fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
-    }
-
-    fclose(inp);
-    fclose(outp);
-}
-
-void updateDBItem() {
-    FILE *inp, *outp;
-    char ch;
-
-    inp = fopen(FILE_TEMP_SHOPPING, "r");
-    outp = fopen(FILE_ITEM, "w");
-
-    char line[1001];
-    char *name;
-    int ID, price, stock;
-    const char *delimiter = ",";
-    fgets(line, sizeof(line), inp);
-    fprintf(outp, line);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        ID = atoi(strtok(line, delimiter));
-        name = strtok(NULL, delimiter);
-        price = atoi(strtok(NULL, delimiter));
-        stock = atoi(strtok(NULL, delimiter));
-
-        for (int i = 0; i < itemIndex; i++) {
-            if (ID == item[i].ID) {
-                stock = item[i].stock;
-            }
-        }
-        fprintf(outp, "%d,%s,%d,%d\n", ID, name, price, stock);
-    }
-
-    fclose(inp);
-    fclose(outp);
-}
-
-void updateUserBalance(int ID) {
-    char *temp;
-    int tempID;
-    char line[1000];
-    inp = fopen(FILE_MEMBER, "r");
-    outp = fopen("database/temp_member.csv", "w");
-    fgets(line, sizeof(line), inp);
-    fprintf(outp, line);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        tempID = atoi(strtok(line, ","));
-        fprintf(outp, "%d", tempID);
-        for (int i = 0; i < 7; i++) {
-            temp = strtok(NULL, ",");
-            fprintf(outp, ",%s", temp);
-        }
-        if (tempID == userID) {
-            fprintf(outp, ",%d\n", balance);
-        } else {
-            temp = strtok(NULL, ",");
-            fprintf(outp, ",%s", temp);
-        }
-    }
-    fclose(inp);
-    fclose(outp);
-
-    inp = fopen("database/temp_member.csv", "r");
-    outp = fopen(FILE_MEMBER, "w");
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        fprintf(outp, line);
-    }
-    fclose(inp);
-    fclose(outp);
-
-    remove("database/temp_member.csv");
-}
-
 void addItemToCart() {
     int ID, price, stock;
     char *name;
     clearScreen();
-    showItem(1, "");
+    showItem("");
     printBold("Saldo : ");
-    printMoney(balance);
+    printMoney(onlineUser.balance);
     printBold("\nMasukkan ID Barang yang ingin dibeli!\n");
     printf("ID : ");
     ID = getNumINT();
     if (ID == -1) return;
+    int isFound = -1, amount = 0;
 
-    inp = fopen(FILE_TEMP_SHOPPING, "r");
-    char line[1000];
-    int checkID = 1, isFound = 0, amount = 0;
-    fgets(line, sizeof(line), inp);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        checkID = atoi(strtok(line, ","));
-        if (ID == checkID) {
-            name = strtok(NULL, ",");
-            price = atoi(strtok(NULL, ","));
-            stock = atoi(strtok(NULL, ","));
-            isFound = 1;
+    for (int i = 0; i < numItem; i++) {
+        if (ID == item[i].ID) {
+            name = item[i].name;
+            price = item[i].price;
+            stock = item[i].stock;
+            isFound = i;
             if (stock <= 0) {
                 printf("Stok produk yang Anda pilih sedang kosong.");
                 sleep(1);
@@ -130,8 +25,8 @@ void addItemToCart() {
             break;
         }
     }
-    fclose(inp);
-    if (!isFound) {
+
+    if (isFound == -1) {
         printf("ID %d tidak ada di dalam daftar.", ID);
         sleep(1);
         return;
@@ -158,22 +53,23 @@ void addItemToCart() {
             sleep(1);
         } else {
             int isListed = 0;
-            for (int i = 0; i < itemIndex; i++) {
-                if (ID == item[i].ID) {
-                    item[i].amount += amount;
-                    item[i].stock -= amount;
+            for (int i = 0; i < numCart; i++) {
+                if (ID == cart[i].ID) {
+                    cart[i].amount += amount;
+                    cart[i].stock -= amount;
                     isListed = 1;
+                    break;
                 }
             }
             if (!isListed) {
-                item[itemIndex].ID = ID;
-                item[itemIndex].price = price;
-                item[itemIndex].amount = amount;
-                item[itemIndex].stock = stock - amount;
-                strcpy(item[itemIndex].name, name);
-                itemIndex++;
+                cart[numCart].ID = ID;
+                cart[numCart].price = price;
+                cart[numCart].amount = amount;
+                cart[numCart].stock = stock - amount;
+                strcpy(cart[numCart].name, name);
+                numCart++;
             }
-            createTempShoppingFile();
+            item[isFound].stock -= amount;
             printf("\nProduk %s sejumlah %d berhasil ditambahkan ke keranjang.\n", name, amount);
             sleep(1);
             break;
@@ -182,140 +78,38 @@ void addItemToCart() {
     }
 }
 
-int showBill() {
-    printBold("\nISI KERANJANG ANDA ");
-    printf("(%d produk)\n", itemIndex);
-    printBold("ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
-    printf("---------------------------------------------\n");
-    int finalPrice = 0;
-    for (int i = 0; i < itemIndex; i++) {
-        int COL_MAX = 14;
-        int COL_MIN = 6;
-        char name[100];
-        int ID, price, amount;
-
-        strcpy(name, item[i].name);
-        ID = item[i].ID;
-        amount = item[i].amount;
-        price = item[i].price * amount;
-        finalPrice += price;
-
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
-        }
-
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "    ");
-        }
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
-
-        printf("%d%s|\t %s\t| %d\t| ", ID, space, name, amount);
-        printMoney(price);
-        printf("\n");
-    }
-    printf("---------------------------------------------\n");
-    printBold("\t\t\t  TOTAL\t: ");
-    printMoney(finalPrice);
-    printf("\n");
-    return finalPrice;
-}
-
-void addBill() {
-    FILE *inp, *outp;
-    char FILE_BILL[100];
-    char *date = getDate();
-    char *time = getTime();
-    strcpy(FILE_BILL, "bill/bill_");
-    strcat(FILE_BILL, date);
-    strcat(FILE_BILL, "_");
-    strcat(FILE_BILL, time);
-    strcat(FILE_BILL, ".txt");
-
-    char *ptr = FILE_BILL + 6;
-    while (*ptr) {
-        if (*ptr == '/' || *ptr == ':') {
-            memmove(ptr, ptr + 1, strlen(ptr));
-        } else {
-            ptr++;
-        }
+int checkoutCart() {
+    int total = 0;
+    for (int i = 0; i < numCart; i++) {
+        total += cart[i].price * cart[i].amount;
     }
 
-    outp = fopen(FILE_BILL, "w");
-    int length = 1;
-    for (int i = 1; i <= transactionID; i *= 10) length++;
+    if (numCart == 0) {
+        printf("Keranjang Anda kosong.\n");
+        sleep(1);
+    } else if (onlineUser.balance < total) {
+        printf("Saldo kurang! Hapus beberapa barang dari keranjang.\n");
+        sleep(1);
+    } else {
+        onlineUser.balance -= total;
 
-    fprintf(outp, "---------------------------------------------\n");
-    fprintf(outp, "================ ITS MIRT ===================\n");
-    fprintf(outp, "---------------------------------------------\n");
-    fprintf(outp, "Tanggal         : %s %s\n", date, time);
-    fprintf(outp, "Nomor Transaksi : T");
-    for (int i = 0; i < 5 - length; i++) fprintf(outp, "0");
-    fprintf(outp, "%d\n", transactionID);
-    fprintf(outp, "Nama Pelanggan  : %s", userName);
-    if (userID) {
-        fprintf(outp, " (member)\n");
-        fprintf(outp, "ID Member       : %d", userID);
-    }
-    fprintf(outp, "\n");
-    fprintf(outp, "---------------------------------------------\n");
-    fprintf(outp, "ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
-    fprintf(outp, "---------------------------------------------\n");
-    int finalPrice = 0;
-    for (int i = 0; i < itemIndex; i++) {
-        int COL_MAX = 14;
-        int COL_MIN = 11;
-        char name[100];
-        int ID, price, amount;
-
-        strcpy(name, item[i].name);
-        ID = item[i].ID;
-        amount = item[i].amount;
-        price = item[i].price * amount;
-        finalPrice += price;
-
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
+        for (int i = 0; i < numMember; i++) {
+            if (onlineUser.ID == member[i].ID) {
+                member[i].balance = onlineUser.balance;
+                updateData(member, sizeof(Member), numMember, FILE_MEMBER);
+                break;
+            }
         }
+        updateData(item, sizeof(Item), numItem, FILE_ITEM);
 
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "    ");
-        }
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
-
-        fprintf(outp, "%d%s|\t %s\t| %d \t| Rp%s\n", ID, space, name, amount, strMoney(price));
+        addTransactionLog(total);
+        saveReceipt();
+        numCart = 0;
+        printf("Transaksi Sukses!\n");
+        sleep(1);
+        return 1;
     }
-    fprintf(outp, "---------------------------------------------\n");
-    fprintf(outp, "\t\t\tTOTAL\t: Rp%s\n", strMoney(finalPrice));
-    fclose(outp);
-}
-
-void addTransactionLog(int finalPrice) {
-    char *date = getDate();
-    char *time = getTime();
-    char *name = userName;
-    int ID = userID;
-    transactionID = 0;
-
-    inp = fopen(FILE_TRANSACTION, "r");
-    char line[1000];
-    fgets(line, sizeof(line), inp);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        transactionID = atoi(strtok(line, ","));
-    }
-    transactionID++;
-    fclose(inp);
-
-    outp = fopen(FILE_TRANSACTION, "a");
-    fprintf(outp, "%d,%s %s,%s,%d,%d\n", transactionID, date, time, name, ID, finalPrice);
-    fclose(outp);
+    return 0;
 }
 
 void openCart() {
@@ -331,8 +125,8 @@ void openCart() {
     do {
         clearScreen();
         printBold("Saldo : ");
-        printMoney(balance);
-        int finalPrice = showBill();
+        printMoney(onlineUser.balance);
+        showBill();
         printBold("\nIngin melakukan apa?\n");
         code = chooseOption(option, lengthOption);
         clearScreen();
@@ -341,46 +135,33 @@ void openCart() {
             break;
         case 1:
             printBold("Saldo : ");
-            printMoney(balance);
+            printMoney(onlineUser.balance);
             showBill();
             printBold("\nMasukkan ID Barang yang ingin dihapus!\n");
             printf("ID : ");
             int ID = getNumINT();
             if (ID == -1) break;
             int isRemoved = 0;
-            for (int i = 0; i < itemIndex; i++) {
+            for (int i = 0; i < numItem; i++) {
                 if (ID == item[i].ID) {
-                    item[i].stock += item[i].amount;
-                    createTempShoppingFile();
+                    item[i].stock += cart[i].amount;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < numCart; i++) {
+                if (ID == cart[i].ID) {
                     isRemoved = 1;
-                    itemIndex--;
+                    numCart--;
                 }
-                if (isRemoved) {
-                    item[i] = item[i + 1];
-                }
+                if (isRemoved) cart[i] = cart[i + 1];
             }
             break;
         case 2:
             comingSoon();
             break;
         case 3:
-            if (itemIndex == 0) {
-                printf("Keranjang Anda kosong.\n");
-                sleep(1);
-            } else if (balance < finalPrice) {
-                printf("Saldo kurang! Hapus beberapa barang dari keranjang.\n");
-                sleep(1);
-            } else {
-                balance -= finalPrice;
-                addTransactionLog(finalPrice);
-                addBill();
-                updateDBItem();
-                updateUserBalance(userID);
-                itemIndex = 0;
-                printf("Transaksi Sukses!\n");
-                sleep(1);
-                return;
-            }
+            if (checkoutCart()) return;
             break;
         default:
             printBold("Input tidak valid.\n");
@@ -389,37 +170,7 @@ void openCart() {
     } while (code != 0);
 }
 
-int getUserBalance(int ID) {
-    char *temp;
-    int tempID;
-    char line[1000];
-    inp = fopen(FILE_MEMBER, "r");
-    fgets(line, sizeof(line), inp);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        tempID = atoi(strtok(line, ","));
-        if (tempID == userID) {
-            for (int i = 0; i < 7; i++) temp = strtok(NULL, ",");
-            return atoi(strtok(NULL, ","));
-        }
-    }
-    printMoney(balance);
-    printf("\n");
-    fclose(inp);
-
-    return 0;
-}
-
-void shoppingMenu(char name[101], int ID) {
-    strcpy(userName, name);
-    userID = ID;
-    balance = (userID > 0) ? getUserBalance(ID) : 100000;
-
-    struct Cart item[100];
-    int itemIndex = 0;
-    createTempShoppingFile();
-    for (int i = 0; i < 100; i++) {
-        item[i].ID = 0;
-    }
+void shoppingMenu() {
     int code;
     char exitCode;
     char *option[] = {
@@ -429,13 +180,12 @@ void shoppingMenu(char name[101], int ID) {
         "(3) Lihat Keranjang (Bayar)",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
-    char filter[101];
-    strcpy(filter, "");
+    char filter[101] = "\0";
     do {
         clearScreen();
-        showItem(1, filter);
+        showItem(filter);
         printBold("Saldo : ");
-        printMoney(balance);
+        printMoney(onlineUser.balance);
         printBold("\nIngin melakukan apa?\n");
 
         code = chooseOption(option, lengthOption);
@@ -446,14 +196,15 @@ void shoppingMenu(char name[101], int ID) {
             exitCode = getYesNo();
             if (exitCode == 'Y') {
                 clearScreen();
-                remove(FILE_TEMP_SHOPPING);
+                numCart = 0;
+                importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
                 return;
             } else {
                 code = -1;
             }
             break;
         case 1:
-            showItem(1, "");
+            showItem("");
             printf("Masukkan Filter : ");
             char *temp;
             temp = getFilter();

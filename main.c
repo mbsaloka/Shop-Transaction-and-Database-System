@@ -12,13 +12,16 @@
 #include "get_time.h"
 #include "item.h"
 #include "member.h"
-// #include "shopping.h"
+#include "bill.h"
+#include "transaction_log.h"
+#include "shopping.h"
 #include "admin.h"
 #include "user.h"
 
 int main(int argc, char const *argv[]) {
     importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
     importFromDb(member, sizeof(Member), &numMember, FILE_MEMBER);
+    importFromDb(transaction, sizeof(Transaction), &numTransaction, FILE_TRANSACTION);
 
     int code;
     char *option[] = {

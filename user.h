@@ -15,15 +15,15 @@ int memberTopUp() {
     } while (1);
 
     for (int i = 0; i < numMember; i++) {
-        if (userOnline.ID == member[i].ID) {
+        if (onlineUser.ID == member[i].ID) {
             member[i].balance += topUpAmount;
-            userOnline.balance += topUpAmount;
+            onlineUser.balance += topUpAmount;
         }
     }
     updateData(member, sizeof(Member), numMember, FILE_MEMBER);
 
     printf("Isi Saldo Berhasil!\nSaldo anda sekarang ");
-    printMoney(userOnline.balance);
+    printMoney(onlineUser.balance);
     sleep(1);
 }
 
@@ -52,7 +52,7 @@ int memberLogin() {
             if (strcmp(member[i].username, username) == 0) {
                 if (strcmp(member[i].password, password) == 0) {
                     isFound = 1;
-                    userOnline = member[i];
+                    onlineUser = member[i];
                 } else {
                     passFlag = 0;
                 }
@@ -97,12 +97,14 @@ void user() {
         char *temp;
         temp = getAlpha();
         if (strcmp(temp, "ESCAPE") == 0) return;
-        strcpy(userOnline.name, temp);
+        strcpy(onlineUser.name, temp);
+        onlineUser.ID = 0;
+        onlineUser.balance = 100000;
         free(temp);
     }
 
     clearScreen();
-    printf("Selamat Datang %s!", userOnline.name);
+    printf("Selamat Datang %s!", onlineUser.name);
     sleep(1);
     int code;
     char *option[] = {
@@ -122,9 +124,9 @@ void user() {
             printBold("Selamat Berbelanja Kembali!\n");
             sleep(1);
             break;
-        // case 1:
-        //     shoppingMenu(guestName, guestID);
-        //     break;
+        case 1:
+            shoppingMenu();
+            break;
         case 2:
             if (isMember) {
                 printf("Anda sudah terdaftar.");
@@ -133,7 +135,7 @@ void user() {
                 int before = numMember;
                 inputMember();
                 if (before != numMember) {
-                    userOnline = member[numMember - 1];
+                    onlineUser = member[numMember - 1];
                     isMember = 1;
                 }
             }

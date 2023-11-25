@@ -1,8 +1,7 @@
 #define FILE_ITEM "database/db_item.bin"
 #define FILE_MEMBER "database/db_member.bin"
 #define FILE_TEMP "database/temp.bin"
-#define FILE_TEMP_SHOPPING "database/temp_shopping.csv"
-#define FILE_TRANSACTION "database/db_transaction_log.csv"
+#define FILE_TRANSACTION "database/db_transaction_log.bin"
 
 typedef struct item_s {
     int ID, price, stock;
@@ -18,13 +17,19 @@ typedef struct member_s {
 
 typedef struct cart_s {
     int ID, price, amount, stock;
-    char name[100];
+    char name[101];
 } Cart;
 
+typedef struct transaction_s {
+    int ID, memberID, totalPrice;
+    char name[101], transactionDate[15], transactionTime[15];
+} Transaction;
+
 Item item[1000];
-Member member[1000], userOnline;
+Member member[1000], onlineUser;
 Cart cart[1000];
-int numItem, numMember, numCart;
+Transaction transaction[1000];
+int numItem, numMember, numCart, numTransaction;
 
 void addToDb(void *data, size_t dataSize, char *fileName) {
     FILE *outp;
@@ -55,6 +60,19 @@ void importFromDb(void *data, size_t dataSize, int *n, char *fileName) {
     fclose(inp);
 }
 
+void copyData(char *src, char *dest) {
+    FILE *inp, *outp;
+    inp = fopen(src, "rb");
+    outp = fopen(dest, "wb");
+    char buffer[1001];
+    size_t bytesRead;
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), inp)) > 0) {
+        fwrite(buffer, 1, bytesRead, outp);
+    }
+    fclose(inp);
+    fclose(outp);
+}
+
 void removeData(void *data, size_t dataSize, int removeID, int *totalIndex, char *fileName, int (*getID)(void *)) {
     int n = *totalIndex;
     for (int i = 0; i < n; i++) {
@@ -71,16 +89,7 @@ void removeData(void *data, size_t dataSize, int removeID, int *totalIndex, char
         system("pause");
     } else {
         system("pause");
-        FILE *inp, *outp;
-        inp = fopen(FILE_TEMP, "rb");
-        outp = fopen(fileName, "wb");
-        char buffer[1001];
-        size_t bytesRead;
-        while ((bytesRead = fread(buffer, 1, sizeof(buffer), inp)) > 0) {
-            fwrite(buffer, 1, bytesRead, outp);
-        }
-        fclose(inp);
-        fclose(outp);
+        copyData(FILE_TEMP, fileName);
     }
     remove(FILE_TEMP);
 }
@@ -91,19 +100,6 @@ int getItemID(void *item) {
 
 int getMemberID(void *member) {
     return ((Member *)member)->ID;
-}
-
-void copyData(char *src, char *dest) {
-    FILE *inp, *outp;
-    inp = fopen(src, "rb");
-    outp = fopen(dest, "wb");
-    char buffer[1001];
-    size_t bytesRead;
-    while ((bytesRead = fread(buffer, 1, sizeof(buffer), inp)) > 0) {
-        fwrite(buffer, 1, bytesRead, outp);
-    }
-    fclose(inp);
-    fclose(outp);
 }
 
 void updateData(void *data, size_t dataSize, int totalIndex, char *fileName) {
