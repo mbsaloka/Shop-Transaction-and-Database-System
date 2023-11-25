@@ -1,9 +1,5 @@
-static char *username, *pass, guestName[101];
-static int guestID = 0;
-
 int memberTopUp() {
-    int topUpAmount = 0;
-    int newBalance;
+    int topUpAmount, newBalance;
     do {
         clearScreen();
         printf("Masukkan jumlah uang yang ingin Anda isi!\n");
@@ -17,50 +13,21 @@ int memberTopUp() {
             break;
         }
     } while (1);
-    char *temp;
-    int tempID;
-    char line[1000];
-    inp = fopen(FILE_MEMBER, "r");
-    outp = fopen("database/temp_member.csv", "w");
-    fgets(line, sizeof(line), inp);
-    fprintf(outp, line);
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        tempID = atoi(strtok(line, ","));
-        fprintf(outp, "%d", tempID);
-        for (int i = 0; i < 7; i++) {
-            temp = strtok(NULL, ",");
-            fprintf(outp, ",%s", temp);
-        }
-        if (tempID == guestID) {
-            newBalance = atoi(strtok(NULL, ",")) + topUpAmount;
-            printf("NEW BALANCE : %d\n", newBalance);
-            fprintf(outp, ",%d\n", newBalance);
-        } else {
-            temp = strtok(NULL, ",");
-            fprintf(outp, ",%s", temp);
+
+    for (int i = 0; i < numMember; i++) {
+        if (userOnline.ID == member[i].ID) {
+            member[i].balance += topUpAmount;
+            userOnline.balance += topUpAmount;
         }
     }
-    fclose(inp);
-    fclose(outp);
+    updateData(member, sizeof(Member), numMember, FILE_MEMBER);
 
-    inp = fopen("database/temp_member.csv", "r");
-    outp = fopen(FILE_MEMBER, "w");
-    while (fgets(line, sizeof(line), inp) != NULL) {
-        fprintf(outp, line);
-    }
-    fclose(inp);
-    fclose(outp);
-
-    remove("database/temp_member.csv");
-
-    printf("Isi Saldo Berhasil!\n Saldo anda sekarang ");
-    printMoney(newBalance);
+    printf("Isi Saldo Berhasil!\nSaldo anda sekarang ");
+    printMoney(userOnline.balance);
     sleep(1);
 }
 
 int memberLogin() {
-    const char *delimiter = ",";
-    char line[1000];
     int isFound = 0, passFlag;
     do {
         clearScreen();
@@ -71,8 +38,8 @@ int memberLogin() {
         username = getAllChar();
         if (strcmp(username, "ESCAPE") == 0) return -1;
         printf("Password : ");
-        pass = getPass();
-        if (strcmp(pass, "ESCAPE") == 0) {
+        char *password = getPass();
+        if (strcmp(password, "ESCAPE") == 0) {
             free(username);
             return -1;
         }
@@ -81,37 +48,31 @@ int memberLogin() {
         char *temp, *tempName, exitCode;
         int tempID;
         passFlag = 1;
-        inp = fopen(FILE_MEMBER, "r");
-        fgets(line, sizeof(line), inp);
-        while (fgets(line, sizeof(line), inp) != NULL) {
-            tempID = atoi(strtok(line, delimiter));
-            tempName = strtok(NULL, delimiter);
-            for (int i = 0; i < 5; i++) temp = strtok(NULL, delimiter);
-            if (strcmp(temp, username) == 0) {
-                temp = strtok(NULL, delimiter);
-                if (strcmp(temp, pass) == 0) {
+        for (int i = 0; i < numMember; i++) {
+            if (strcmp(member[i].username, username) == 0) {
+                if (strcmp(member[i].password, password) == 0) {
                     isFound = 1;
-                    strcpy(guestName, tempName);
-                    guestID = tempID;
-                    break;
+                    userOnline = member[i];
                 } else {
-                    printf("Password salah!\n");
                     passFlag = 0;
                 }
+                break;
             }
         }
         free(username);
-        free(pass);
+        free(password);
+
         if (!isFound) {
             if (passFlag) {
                 printf("Username tidak terdaftar!\n");
+            } else {
+                printf("Password salah!\n");
             }
             printf("Coba login kembali? (Y/N) ");
             exitCode = getYesNo();
             if (exitCode == 'N') return 0;
             if (exitCode == 'E') return -1;
         }
-        fclose(inp);
     } while (!isFound);
     return 1;
 }
@@ -131,18 +92,17 @@ void user() {
     if (isMember == -1) return;
     if (!isMember) {
         clearScreen();
-        guestID = 0;
         printBold("Masukkan nama Anda (guest)\n");
         printf("Nama : ");
         char *temp;
         temp = getAlpha();
         if (strcmp(temp, "ESCAPE") == 0) return;
-        strcpy(guestName, temp);
+        strcpy(userOnline.name, temp);
         free(temp);
     }
 
     clearScreen();
-    printf("Selamat Datang %s!", guestName);
+    printf("Selamat Datang %s!", userOnline.name);
     sleep(1);
     int code;
     char *option[] = {
@@ -162,18 +122,20 @@ void user() {
             printBold("Selamat Berbelanja Kembali!\n");
             sleep(1);
             break;
-        case 1:
-            shoppingMenu(guestName, guestID);
-            break;
+        // case 1:
+        //     shoppingMenu(guestName, guestID);
+        //     break;
         case 2:
             if (isMember) {
                 printf("Anda sudah terdaftar.");
                 sleep(1);
             } else {
-                int before = getCurrentID();
+                int before = numMember;
                 inputMember();
-                int after = getCurrentID();
-                if (before != after) isMember = 1;
+                if (before != numMember) {
+                    userOnline = member[numMember - 1];
+                    isMember = 1;
+                }
             }
             break;
         case 3:
@@ -181,7 +143,7 @@ void user() {
                 printf("Anda harus menjadi member terlebih dahulu untuk mengisi saldo.");
                 sleep(1);
             } else {
-                memberTopUp(guestID);
+                memberTopUp();
             }
             break;
         default:

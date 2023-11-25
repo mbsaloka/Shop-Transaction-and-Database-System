@@ -22,7 +22,7 @@ typedef struct cart_s {
 } Cart;
 
 Item item[1000];
-Member member[1000], memberOnline;
+Member member[1000], userOnline;
 Cart cart[1000];
 int numItem, numMember, numCart;
 
@@ -91,4 +91,27 @@ int getItemID(void *item) {
 
 int getMemberID(void *member) {
     return ((Member *)member)->ID;
+}
+
+void copyData(char *src, char *dest) {
+    FILE *inp, *outp;
+    inp = fopen(src, "rb");
+    outp = fopen(dest, "wb");
+    char buffer[1001];
+    size_t bytesRead;
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), inp)) > 0) {
+        fwrite(buffer, 1, bytesRead, outp);
+    }
+    fclose(inp);
+    fclose(outp);
+}
+
+void updateData(void *data, size_t dataSize, int totalIndex, char *fileName) {
+    int n = totalIndex;
+    for (int i = 0; i < n; i++) {
+        void *currentData = (char *)data + (i * dataSize);
+        addToDb(currentData, dataSize, FILE_TEMP);
+    }
+    copyData(FILE_TEMP, fileName);
+    remove(FILE_TEMP);
 }

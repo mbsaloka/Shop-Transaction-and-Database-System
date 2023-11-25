@@ -14,7 +14,7 @@
 #include "member.h"
 // #include "shopping.h"
 #include "admin.h"
-// #include "user.h"
+#include "user.h"
 
 int main(int argc, char const *argv[]) {
     importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
@@ -39,10 +39,10 @@ int main(int argc, char const *argv[]) {
         case 1:
             admin();
             break;
-        // case 2:
-        //     user();
-        //     clearScreen();
-        //     break;
+        case 2:
+            user();
+            clearScreen();
+            break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);
