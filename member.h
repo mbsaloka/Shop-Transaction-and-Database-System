@@ -1,4 +1,3 @@
-#define FILE_MEMBER "database/db_member.csv"
 FILE *inp, *outp;
 
 static char *username, *pass;
@@ -95,16 +94,12 @@ int createAccount() {
         fflush(stdin);
         username = getAllChar();
         if (strcmp(username, "ESCAPE") == 0) return 0;
-        // fgets(username, 100, stdin);
-        // username[strlen(username) - 1] = '\0';
         printf("Password : ");
         pass = getAllChar();
         if (strcmp(pass, "ESCAPE") == 0) {
             free(username);
             return 0;
         }
-        // fgets(pass, 100, stdin);
-        // pass[strlen(pass) - 1] = '\0';
 
         // Check is username used
         char *temp, exitCode;

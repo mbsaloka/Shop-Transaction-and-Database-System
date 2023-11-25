@@ -1,154 +1,324 @@
 // #include <stdio.h>
+// #include <string.h>
+// #include <stdlib.h>
+// #include <conio.h>
+// #include <time.h>
 // #include <unistd.h>
 
-// int main() {
-//     // for (int i = 0; i < 10; i++) {
-//     //     printf("Baris ke-%d\r", i);
-//     //     fflush(stdout); // Memastikan output segera ditampilkan
-//     //     // Disarankan menggunakan fflush untuk memastikan output segera ditampilkan pada terminal.
-//     // }
-
-//     // printf("\n"); // Mengakhiri baris terakhir
-
-//     // printf("Hello");
-
-//     // printf("\33[2K\r");
-//     // printf("Bye");
-
-//     int i = 3;
-//     printf("\nText to keep\n");
-//     printf("Text to erase****************************\n");
-//     while(i >= 0) { // 3 second countdown
-//         printf("\033[A\33[2KT\rT minus %d seconds...\n", i);
-//         i--;
-//         sleep(1);
-//     }
-
-//     return 0;
-// }
-
-/*
-\33[2K erases the entire line your cursor is currently on
-
-\033[A moves your cursor up one line, but in the same column i.e. not to the start of the line
-
-\r brings your cursor to the beginning of the line (r is for carriage return N.B. carriage returns do not include a newline so cursor remains on the same line) but does not erase anything
-*/
-
-// #include <curses.h>
+// struct Cart {
+//     int ID, price, stock;
+//     char name[100];
+// };
 
 // int main() {
-//     initscr();             // Inisialisasi layar "curses"
-//     keypad(stdscr, TRUE);  // Aktifkan pemrosesan tombol fungsi
-
-//     int ch;
-//     while ((ch = getch()) != 'q') {  // Loop hingga tombol 'q' ditekan
-//         if (ch == KEY_UP) {
-//             printw("Panah Atas\n");
-//         } else if (ch == KEY_DOWN) {
-//             printw("Panah Bawah\n");
-//         }
-//         refresh();  // Perbarui layar
+//     struct Cart item[100];
+//     for (int i = 0; i < 100; i++) {
+//         item[i].ID = i;
 //     }
 
-//     endwin();  // Akhiri mode "curses"
+//     for (int i = 0; i < 100; i++) {
+//         printf("%d\n", item[i].ID);
+//     }
 //     return 0;
 // }
 
 // #include <stdio.h>
+// #include <conio.h>
+// #include <signal.h>
+// #include <stdlib.h>
 
-// int main() {
-//     char ID[100], namaBarang[100];
-//     int harga, stok;
-
-//     printf("TAMBAHKAN BARANG BARU\n");
-//     printf("ID: ");
-//     scanf("%s", &ID);
-//     printf("Nama Barang: ");
-//     scanf("%s", &namaBarang);
-//     printf("Harga: ");
-//     scanf("%d", &harga);
-//     printf("Stok: ");
-//     scanf("%d", &stok);
+// void sigint_handler(int signo) {
+//     printf("Ctrl+C ditekan, menangani sinyal SIGINT.\n");
+//     // Tindakan yang sesuai untuk menangani sinyal SIGINT.
+//     exit(1);  // Misalnya, keluar dari program.
 // }
 
+// int main() {
+//     signal(SIGINT, sigint_handler);
+
+//     printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
+
+//     while (1) {
+//         int input = getch();
+//         printf("Anda menekan: %c\n", input);
+//     }
+
+//     return 0;
+// }
+
+// #include <stdio.h>
+// #include <conio.h>
+
+// int main() {
+//     printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
+
+//     while (1) {
+//         if (_kbhit()) {
+//             int input = _getch();
+//             if (input == 3) {  // ASCII value for Ctrl+C
+//                 printf("Ctrl+C ditekan. Keluar dari program.\n");
+//                 break;
+//             } else {
+//                 printf("Anda menekan: %c\n", input);
+//             }
+//         }
+//     }
+
+//     return 0;
+// }
+
+// #include <stdio.h>
+// #include <conio.h>
+// #include <stdlib.h>
+
+// int main() {
+//     printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
+//     int input, prev;
+//     input = getch();
+//     while (1) {
+//         if (input == 3) {  // ASCII value for Ctrl+C
+//             printf("Ctrl+C ditekan. Keluar dari program.\n");
+//             exit(0);
+//         }
+
+//         if ((prev == '\0' || prev == 224) && input == 'P') {
+//             printf("PANAH BAWAH\n");
+//         }
+//         if ((prev == '\0' || prev == 224) && input == 'H') {
+//             printf("PANAH ATAS\n");
+//         }
+//         if ((prev == '\0' || prev == 224) && input == 'K') {
+//             printf("PANAH KIRI\n");
+//         }
+//         if ((prev == '\0' || prev == 224) && input == 'M') {
+//             printf("PANAH KANAN\n");
+//         }
+
+//         if (prev != '\0' && prev != 224 && input != '\0' && input != 224) {
+//             printf("Anda menekan: %d %c\n", input, input);
+//         }
+
+//         prev = input;
+//         input = getch();
+//     }
+//     return 0;
+// }
+
+// #include <stdio.h>
+// #include <conio.h>
+// #include <signal.h>
+
+// int ctrlCPressed = 0;
+
+// // Fungsi penanganan sinyal SIGINT
+// void sigint_handler(int signo) {
+//     printf("Ctrl+C ditekan, menangani sinyal SIGINT. Program berhenti.\n");
+//     ctrlCPressed = 1;
+// }
+
+// int main() {
+//     signal(SIGINT, sigint_handler);
+
+//     printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
+
+//     while (!ctrlCPressed) {
+//         if (_kbhit()) {
+//             int input = _getch();
+//             if (input == 3) {  // ASCII value for Ctrl+C
+//                 printf("Ctrl+C ditekan. Keluar dari program.\n");
+//                 break;
+//             } else {
+//                 printf("Anda menekan: %c\n", input);
+//             }
+//         }
+//     }
+//     printf("ADAD");
+//     return 0;
+// }
+
+// #include <stdio.h>
+// #include <string.h>
+
+// void modifyStringArray(char *strings[], int length) {
+//     for (int i = 0; i < length; i++) {
+//         // strcat(strings[i], " (modified)");
+//         printf("%s\n", strings[i]);
+//     }
+// }
+
+// int main() {
+//     char *strings[] = {
+//         "String pertama",
+//         "String kedua",
+//         "String ketiga"};
+
+//     int length = sizeof(strings) / sizeof(strings[0]);
+
+//     // printf("Sebelum pemanggilan fungsi:\n");
+//     // for (int i = 0; i < length; i++) {
+//     //     printf("String %d: %s\n", i, strings[i]);
+//     // }
+
+//     modifyStringArray(strings, length);
+
+//     // printf("\nSetelah pemanggilan fungsi:\n");
+//     // for (int i = 0; i < length; i++) {
+//     //     printf("String %d: %s\n", i, strings[i]);
+//     // }
+
+//     return 0;
+// }
+
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <conio.h>
+// #include <unistd.h>
+// #include "text_style.h"
+
+// char *getAlpha() {
+//     int length = 100;
+//     char *str = (char *)malloc(length + 1);
+//     char c;
+//     int i = 0;
+//     while (c != 13) {  // ASCII 13 = enter
+//         c = getch();
+//         if (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ') && i < length) {
+//             printf("%c", c);
+//             str[i++] = c;
+//         } else if (c == 8 && i > 0) {  // ASCII 8 = backspace
+//             printf("%c %c", c, c);
+//             i--;
+//         }
+//         if (c == 3) exit(0);  // Ctrl + C
+//         if (c == 27) {        // Esc
+//             clearScreen();
+//             strcpy(str, "ESCAPE");
+//             break;
+//         }
+//     }
+//     str[i] = '\0';
+//     return str;
+// }
+
+// int main() {
+//     char *nama;
+//     nama = getAlpha();
+//     printf("%s\n", nama);
+//     printf("HALO1\n");
+//     free(nama);  // Membebaskan memori yang dialokasikan dalam getAlpha
+//     printf("HALO2\n");
+// }
+
+// #include <stdio.h>
+// #include <string.h>
+// typedef struct s_student {
+//     char name[50];
+//     int roll;
+//     float marks;
+// } Student;
+
+// typedef struct s_teacher {
+//     char name[50], subject[50];
+// } Teacher;
+
+// void addToDb(void *s, size_t dataSize, int index) {
+//     FILE *outp;
+//     outp = fopen("database/student_db.bin", "ab");
+//     fwrite(s + index, dataSize, 1, outp);
+//     fclose(outp);
+// }
+
+// void importFromDb(void *s, size_t dataSize, int *n) {
+//     FILE *inp;
+//     inp = fopen("database/student_db.bin", "rb");
+
+//     fseek(inp, 0, SEEK_END);
+//     int fileSize = ftell(inp);
+//     *n = fileSize / dataSize;
+
+//     rewind(inp);
+
+//     const int maxData = 100;
+//     *n = (*n > maxData) ? maxData : *n;
+
+//     fread(s, dataSize, *n, inp);
+
+//     fclose(inp);
+// }
+
+// int inputData(Student *s) {
+//     char exitCode;
+//     int i = 0;
+//     do {
+//         printf("\nEnter information of students:\n");
+//         printf("Enter name: ");
+//         scanf(" %[^\n]", s[i].name);
+//         printf("Enter roll number: ");
+//         scanf("%d", &s[i].roll);
+//         printf("Enter marks: ");
+//         scanf("%f", &s[i].marks);
+//         addToDb(s, sizeof(Student), i);
+
+//         printf("Ingin menambahkan data lagi? (Y/N)\n");
+//         scanf(" %c", &exitCode);
+//         i++;
+//     } while (exitCode == 'Y' || exitCode == 'y');
+//     return i;
+// }
+
+// void printData(Student *s, int *n) {
+//     importFromDb(s, sizeof(Student), n);
+//     printf("\nDisplaying Information\n");
+//     for (int i = 0; i < *n; i++) {
+//         printf("Student %d\n", i + 1);
+//         printf("Name: %s\n", s[i].name);
+//         printf("Roll: %d\n", s[i].roll);
+//         printf("Marks: %.2f\n", s[i].marks);
+//         printf("\n");
+//     }
+// }
+
+// int main() {
+//     Student s[100];
+//     int code, n;
+//     // printf("%s\n", s[0].name);
+//     importFromDb(s, sizeof(Student), &n);
+//     // printf("%s\n", s[0].name);
+//     do {
+//         printf("Pilih Menu\n");
+//         printf("(1) Input Data\n");
+//         printf("(2) Tampilkan Data\n");
+//         printf("(0) Akhiri Program\n");
+//         scanf("%d", &code);
+//         switch (code) {
+//         case 1:
+//             n = inputData(s);
+//             break;
+//         case 2:
+//             printData(s, &n);
+//             break;
+//         default:
+//             printf("Akhir Dari Program.");
+//             break;
+//         }
+//     } while (code != 0);
+//     return 0;
+// }
+
+// RETURN STRING
 #include <stdio.h>
 #include <string.h>
 
-// Definisikan struktur data untuk menyimpan informasi pelanggan
-struct Customer {
-    int ID;
-    char Nama[100];
-    char NoTelp[20];
-    char Alamat[100];
-    char TanggalDaftar[11];
-    char WaktuDaftar[9];
-};
-
-// Fungsi untuk mengecek apakah nomor telepon sudah ada dalam database
-int isPhoneNumberExist(struct Customer customers[], int numCustomers, char noTelp[]) {
-    for (int i = 0; i < numCustomers; i++) {
-        if (strcmp(customers[i].NoTelp, noTelp) == 0) {
-            return 1;  // Nomor telepon sudah ada dalam database
-        }
-    }
-    return 0;  // Nomor telepon belum ada dalam database
+void getNama(char s[101]) {
+    char input[101];
+    printf("MASUKKAN NAMA : ");
+    scanf("%s", input);
+    strcpy(s, input);
 }
 
 int main() {
-    struct Customer customers[100];  // Maksimal 100 pelanggan
-    int numCustomers = 2;            // Jumlah pelanggan awal
-
-    // Mengisi data awal
-    customers[0].ID = 1;
-    strcpy(customers[0].Nama, "Muh Buyung Saloka");
-    strcpy(customers[0].NoTelp, "082141977680");
-    strcpy(customers[0].Alamat, "Jl. Ababil No. 5");
-    strcpy(customers[0].TanggalDaftar, "14/10/2023");
-    strcpy(customers[0].WaktuDaftar, "21:03:23");
-
-    customers[1].ID = 2;
-    strcpy(customers[1].Nama, "Nazwarahma Hannum");
-    strcpy(customers[1].NoTelp, "08121652240");
-    strcpy(customers[1].Alamat, "Jl. Soekarno Hatta 40");
-    strcpy(customers[1].TanggalDaftar, "14/10/2023");
-    strcpy(customers[1].WaktuDaftar, "21:04:59");
-
-    // Input data baru
-    struct Customer newCustomer;
-    printf("Masukkan Nama Pelanggan: ");
-    scanf("%s", newCustomer.Nama);
-    printf("Masukkan No Telp: ");
-    scanf("%s", newCustomer.NoTelp);
-
-    if (isPhoneNumberExist(customers, numCustomers, newCustomer.NoTelp)) {
-        printf("Nomor telepon sudah ada dalam database.\n");
-    } else {
-        // Tambahkan data baru ke database
-        numCustomers++;
-        newCustomer.ID = numCustomers;
-        printf("Masukkan Alamat: ");
-        scanf("%s", newCustomer.Alamat);
-        printf("Masukkan Tanggal Daftar: ");
-        scanf("%s", newCustomer.TanggalDaftar);
-        printf("Masukkan Waktu Daftar: ");
-        scanf("%s", newCustomer.WaktuDaftar);
-
-        customers[numCustomers - 1] = newCustomer;
-        printf("Data pelanggan baru telah ditambahkan.\n");
-    }
-
-    // Tampilkan data pelanggan dalam database
-    printf("\nData Pelanggan:\n");
-    for (int i = 0; i < numCustomers; i++) {
-        printf("ID: %d\n", customers[i].ID);
-        printf("Nama: %s\n", customers[i].Nama);
-        printf("No Telp: %s\n", customers[i].NoTelp);
-        printf("Alamat: %s\n", customers[i].Alamat);
-        printf("Tanggal Daftar: %s\n", customers[i].TanggalDaftar);
-        printf("Waktu Daftar: %s\n", customers[i].WaktuDaftar);
-        printf("\n");
-    }
-
-    return 0;
+    char nama[101];
+    getNama(nama);
+    printf("HASIL : %s", nama);
 }

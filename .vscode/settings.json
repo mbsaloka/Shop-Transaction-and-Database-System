@@ -1,12 +1,14 @@
 {
   "files.associations": {
-    "iosfwd": "cpp",
-    "string.h": "c",
-    "txt_manipulation.h": "c",
-    "text_style.h": "c",
-    "data_barang.h": "c",
-    "data_member.h": "c",
-    "typeinfo": "cpp"
+    "unistd.h": "c",
+    "typeinfo": "c",
+    "time.h": "c",
+    "signal.h": "c",
+    "string_view": "c",
+    "arrow_input.h": "c",
+    "stdio.h": "c",
+    "limited_input.h": "c",
+    "get_time.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }
