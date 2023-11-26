@@ -190,5 +190,5 @@ char getEnter() {
         c = getch();
         if (c == 3) exit(0);  // Ctrl + C
     }
-    return 'E';
+    return c;
 }

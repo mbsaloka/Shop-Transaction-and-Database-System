@@ -1,8 +1,9 @@
-void showItem(char *filter) {
+void showItem(char* filter) {
     int COL_MAX = 21;
     int COL_MIN = 14;
     char name[101];
     int ID, price, stock;
+    numTempFilterItem = 0;
 
     printBold("DAFTAR BARANG\n");
     printBold("ID   |\t Nama Barang\t\t| Harga\t| Stok\n");
@@ -40,8 +41,108 @@ void showItem(char *filter) {
         }
 
         if (strstr(name, filter)) {
+            tempFilterItem[numTempFilterItem++] = item[i];
             printf("%d%s|\t %s\t| %d\t| %d\n", ID, space, name2, price, stock);
         }
+    }
+}
+
+void updateItem(int ID) {
+    int idx = 0;
+    char name[101];
+    int price, stock;
+    for (int i = 0; i < numItem; i++) {
+        if (item[i].ID == ID) {
+            idx = i;
+            break;
+        }
+    }
+
+    int code;
+    char* option[] = {
+        "Perbarui Info Barang",
+        "Hapus Barang",
+        "Kembali",
+    };
+    int lengthOption = sizeof(option) / sizeof(option[0]);
+    printf("Ingin melakukan apa?\n");
+    code = chooseOption(option, lengthOption);
+    switch (code) {
+    case 0:
+        printf("\033[2B");
+        for (int i = 0; i < 3; i++) clearRow();
+        printBold("\nPERBARUI INFO BARANG (tekan tab untuk isi otomatis.)\n");
+        printf("ID : %d\n", ID);
+        printf("Nama Barang : \x1b[90m%s\x1b[0m\n", item[idx].name);
+        printf("Harga : \x1b[90m%d\x1b[0m\n", item[idx].price);
+        printf("Stok : \x1b[90m%d\x1b[0m\n", item[idx].stock);
+        printf("\033[3A\r");
+        printf("Nama Barang : ");
+        if (getch() == 9) {
+            strcpy(name, item[idx].name);
+            printf("%s\n", name);
+        } else {
+            for (int i = 0; i < 50; i++) putchar(' ');
+            printf("\033[50D");
+            getAllChar(name);
+            if (strcmp(name, "ESCAPE") == 0) return;
+        }
+        printf("Harga : ");
+        if (getch() == 9) {
+            price = item[idx].price;
+            printf("%d\n", price);
+        } else {
+            for (int i = 0; i < 20; i++) putchar(' ');
+            printf("\033[20D");
+            price = getNumINT();
+            if (price == -1) return;
+        }
+        printf("Stok : ");
+        if (getch() == 9) {
+            stock = item[idx].stock;
+            printf("%d\n", stock);
+        } else {
+            for (int i = 0; i < 20; i++) putchar(' ');
+            printf("\033[20D");
+            stock = getNumINT();
+            if (stock == -1) return;
+        }
+
+        printf("Apakah Anda yakin ingin memperbarui barang %s? (Y/N) ", name);
+        if (getYesNo() == 'Y') {
+            clearScreen();
+            item[idx].ID = ID;
+            strcpy(item[idx].name, name);
+            item[idx].price = price;
+            item[idx].stock = stock;
+
+            updateData(item, sizeof(Item), numItem, FILE_ITEM);
+
+            printf("%s berhasil diperbarui.", name);
+            sleep(1);
+            clearScreen();
+        } else {
+            printf("Proses dibatalkan.");
+            sleep(1);
+            clearScreen();
+        }
+        break;
+    case 1:
+        clearScreen();
+        printf("Apakah Anda yakin ingin menghapus barang %s? (Y/N) ", item[idx].name);
+        if (getYesNo() == 'Y') {
+            printf("%s berhasil dihapus.", item[idx].name);
+            removeData(item, sizeof(Item), ID, &numItem, FILE_ITEM, getItemID);
+            importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
+
+            sleep(1);
+            clearScreen();
+        } else {
+            printf("Proses dibatalkan.");
+            sleep(1);
+            clearScreen();
+        }
+        break;
     }
 }
 
@@ -56,7 +157,6 @@ void inputItem() {
 
     printBold("TAMBAHKAN BARANG BARU\n");
     printf("ID %s%d\n", nol, ID);
-    fflush(stdin);
     printf("Nama Barang : ");
     getAllChar(name);
     if (strcmp(name, "ESCAPE") == 0) return;

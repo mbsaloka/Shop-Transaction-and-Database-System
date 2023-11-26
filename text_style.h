@@ -70,6 +70,9 @@ Hapus Satu Baris
 \33[2K : hapus baris saat ini dan di bawahnya
 \r     : menggerakkan kursor ke awal baris
 
+Hapus baris tertentu sampai akhir layar
+\033[J
+
 Kode Pengendali ANSI
 \x1b[0m : normal text
 \x1b[1m : bold
@@ -124,5 +127,7 @@ Arrow Key Code
 Hidden Cursor
 \e[?25l - Hidden
 \e[?25h - Visible
+
+
 
 */

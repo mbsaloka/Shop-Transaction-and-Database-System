@@ -25,11 +25,11 @@ typedef struct transaction_s {
     char name[101], transactionDate[15], transactionTime[15];
 } Transaction;
 
-Item item[1000];
+Item item[1000], tempFilterItem[1000];
 Member member[1000], onlineUser;
 Cart cart[1000];
 Transaction transaction[1000];
-int numItem, numMember, numCart, numTransaction;
+int numItem, numMember, numCart, numTransaction, numTempFilterItem;
 
 void addToDb(void *data, size_t dataSize, char *fileName) {
     FILE *outp;
@@ -86,9 +86,7 @@ void removeData(void *data, size_t dataSize, int removeID, int *totalIndex, char
     }
     if (n == *totalIndex) {
         printf("ID tidak ditemukan.\n");
-        system("pause");
     } else {
-        system("pause");
         copyData(FILE_TEMP, fileName);
     }
     remove(FILE_TEMP);

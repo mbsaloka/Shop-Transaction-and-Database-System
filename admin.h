@@ -57,15 +57,21 @@ void admin() {
             inputItem();
             break;
         case 1:
-            showItem("");
+            char filter[101] = "\0";
             while (1) {
-                char filter[101];
+                clearScreen();
+                showItem(filter);
                 printBold("[FILTER] (Tekan Esc untuk kembali)\n");
                 printf("Masukkan Filter : ");
-                getFilter(filter);
-                clearScreen();
-                if (strcmp(filter, "ESCAPE") == 0) break;
-                showItem(filter);
+                int ID = chooseData(tempFilterItem, sizeof(Item), numTempFilterItem, printLineItem);
+                if (ID == -2) {
+                    getFilter(filter);
+                    if (strcmp(filter, "ESCAPE") == 0) break;
+                } else if (ID == -1) {
+                    break;
+                } else {
+                    updateItem(ID);
+                }
             }
             break;
         case 2:
