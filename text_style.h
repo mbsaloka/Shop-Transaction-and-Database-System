@@ -121,4 +121,8 @@ Arrow Key Code
 \0K - LEFT
 \0M - RIGHT
 
+Hidden Cursor
+\e[?25l - Hidden
+\e[?25h - Visible
+
 */

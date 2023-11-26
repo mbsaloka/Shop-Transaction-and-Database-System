@@ -115,10 +115,10 @@ int checkoutCart() {
 void openCart() {
     int code;
     char *option[] = {
-        "(0) Kembali ke Menu Belanja",
-        "(1) Hapus Produk",
-        "(2) Ubah Jumlah Produk",
-        "(3) Selesai & Bayar",
+        "Hapus Produk",
+        "Ubah Jumlah Produk",
+        "Selesai & Bayar",
+        "Kembali ke Menu Belanja",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -131,8 +131,6 @@ void openCart() {
         clearScreen();
         switch (code) {
         case 0:
-            break;
-        case 1:
             printBold("Saldo : ");
             printMoney(onlineUser.balance);
             showBill();
@@ -156,11 +154,13 @@ void openCart() {
                 if (isRemoved) cart[i] = cart[i + 1];
             }
             break;
-        case 2:
+        case 1:
             comingSoon();
             break;
-        case 3:
+        case 2:
             if (checkoutCart()) return;
+            break;
+        case 3:
             break;
         default:
             printBold("Input tidak valid.\n");
@@ -172,10 +172,10 @@ void openCart() {
 void shoppingMenu() {
     int code;
     char *option[] = {
-        "(0) Kembali ke Menu Utama",
-        "(1) Terapkan Filter",
-        "(2) Pilih Produk",
-        "(3) Lihat Keranjang (Bayar)",
+        "Terapkan Filter",
+        "Pilih Produk",
+        "Lihat Keranjang (Bayar)",
+        "Kembali ke Menu Utama",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     char filter[101] = "\0";
@@ -190,6 +190,20 @@ void shoppingMenu() {
         clearScreen();
         switch (code) {
         case 0:
+            showItem("");
+            printf("Masukkan Filter : ");
+            getFilter(filter);
+            if (strcmp(filter, "ESCAPE") == 0) {
+                break;
+            }
+            break;
+        case 1:
+            addItemToCart();
+            break;
+        case 2:
+            openCart();
+            break;
+        case 3:
             printf("Jika keluar maka keranjang akan dikosongkan.\nYakin ingin keluar? (Y/N) ");
             if (getYesNo() == 'Y') {
                 clearScreen();
@@ -199,20 +213,6 @@ void shoppingMenu() {
             } else {
                 code = -1;
             }
-            break;
-        case 1:
-            showItem("");
-            printf("Masukkan Filter : ");
-            getFilter(filter);
-            if (strcmp(filter, "ESCAPE") == 0) {
-                break;
-            }
-            break;
-        case 2:
-            addItemToCart();
-            break;
-        case 3:
-            openCart();
             break;
         default:
             printBold("Input tidak valid.\n");

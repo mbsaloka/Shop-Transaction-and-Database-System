@@ -35,8 +35,7 @@ int memberLogin() {
         printBold("LOGIN MEMBERSHIP\n");
         printBold("Masukkan Username dan Password\n");
         printf("Username : ");
-        fflush(stdin);
-        getAllChar(username);
+        getAlphaNum(username);
         if (strcmp(username, "ESCAPE") == 0) return -1;
         printf("Password : ");
         getPass(password);
@@ -102,10 +101,10 @@ void user() {
     sleep(1);
     int code;
     char *option[] = {
-        "(0) Keluar",
-        "(1) Mulai Belanja",
-        "(2) Daftar Membership",
-        "(3) Isi Saldo",
+        "Mulai Belanja",
+        "Daftar Membership",
+        "Isi Saldo",
+        "Keluar",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -115,13 +114,9 @@ void user() {
         clearScreen();
         switch (code) {
         case 0:
-            printBold("Selamat Berbelanja Kembali!\n");
-            sleep(1);
-            break;
-        case 1:
             shoppingMenu();
             break;
-        case 2:
+        case 1:
             if (isMember) {
                 printf("Anda sudah terdaftar.");
                 sleep(1);
@@ -134,7 +129,7 @@ void user() {
                 }
             }
             break;
-        case 3:
+        case 2:
             if (!isMember) {
                 printf("Anda harus menjadi member terlebih dahulu untuk mengisi saldo.");
                 sleep(1);
@@ -142,9 +137,13 @@ void user() {
                 memberTopUp();
             }
             break;
+        case 3:
+            printBold("Selamat Berbelanja Kembali!\n");
+            sleep(1);
+            break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);
         }
-    } while (code != 0);
+    } while (code != lengthOption - 1);
 }

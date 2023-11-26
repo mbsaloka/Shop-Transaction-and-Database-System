@@ -25,9 +25,9 @@ int main(int argc, char const *argv[]) {
 
     int code;
     char *option[] = {
-        "(0) Akhiri Program",
-        "(1) Login Sebagai Admin",
-        "(2) Login Sebagai Pelanggan",
+        "Login Sebagai Admin",
+        "Login Sebagai Pelanggan",
+        "Akhiri Program",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -37,20 +37,20 @@ int main(int argc, char const *argv[]) {
         clearScreen();
         switch (code) {
         case 0:
-            printBold("[Akhir dari program.]\n");
-            break;
-        case 1:
             admin();
             break;
-        case 2:
+        case 1:
             user();
             clearScreen();
+            break;
+        case 2:
+            printBold("[Akhir dari program.]\n");
             break;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);
         }
-    } while (code != 0);
+    } while (code != lengthOption - 1);
 
     return 0;
 }

@@ -40,8 +40,8 @@ void showTransactionLog() {
     int code;
     char exitCode;
     char *option[] = {
-        "(0) Kembali ke Menu Admin",
-        "(1) Tampilkan Struk",
+        "Tampilkan Struk",
+        "Kembali ke Menu Admin",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -51,8 +51,6 @@ void showTransactionLog() {
         clearScreen();
         switch (code) {
         case 0:
-            return;
-        case 1:
             showLog();
             printf("Masukkan ID Transaksi : ");
             int transactionID;
@@ -65,6 +63,8 @@ void showTransactionLog() {
             printf("Tekan Enter untuk kembali.");
             char escapeCode = getEnter();
             break;
+        case 1:
+            return;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);

@@ -8,8 +8,7 @@ int adminLogin() {
         printBold("[MODE ADMIN]\n");
         printBold("Masukkan Username dan Password\n");
         printf("Username: ");
-        fflush(stdin);
-        getAllChar(username);
+        getAlphaNum(username);
         if (strcmp(username, "ESCAPE") == 0) return 0;
         printf("Password: ");
         getPass(password);
@@ -39,12 +38,12 @@ void admin() {
     clearScreen();
     int code;
     char *option[] = {
-        "(0) Keluar Dari Mode Admin",
-        "(1) Tambah Barang",
-        "(2) Lihat Barang",
-        "(3) Tambah Membership",
-        "(4) Lihat Membership",
-        "(5) Lihat Catatan Traksaksi",
+        "Tambah Barang",
+        "Lihat Barang",
+        "Tambah Membership",
+        "Lihat Membership",
+        "Lihat Catatan Traksaksi",
+        "Keluar Dari Mode Admin",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
@@ -55,14 +54,9 @@ void admin() {
         clearScreen();
         switch (code) {
         case 0:
-            printBold("[Keluar Dari Mode Admin]\n");
-            sleep(1);
-            clearScreen();
-            return;
-        case 1:
             inputItem();
             break;
-        case 2:
+        case 1:
             showItem("");
             while (1) {
                 char filter[101];
@@ -74,10 +68,10 @@ void admin() {
                 showItem(filter);
             }
             break;
-        case 3:
+        case 2:
             inputMember();
             break;
-        case 4:
+        case 3:
             showMember("");
             while (1) {
                 char filter[101];
@@ -89,13 +83,18 @@ void admin() {
                 showMember(filter);
             }
             break;
-        case 5:
+        case 4:
             showTransactionLog();
             break;
+        case 5:
+            printBold("[Keluar Dari Mode Admin]\n");
+            sleep(1);
+            clearScreen();
+            return;
         default:
             printBold("Input tidak valid.\n");
             sleep(1);
             clearScreen();
         }
-    } while (code != 0);
+    } while (code != lengthOption - 1);
 }

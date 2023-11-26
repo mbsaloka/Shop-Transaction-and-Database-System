@@ -63,8 +63,7 @@ int createAccount(char *username, char *password) {
         printBold("BUAT AKUN MEMBERSHIP\n");
 
         printf("Username : ");
-        fflush(stdin);
-        getAllChar(username);
+        getAlphaNum(username);
         if (strcmp(username, "ESCAPE") == 0) return 0;
         printf("Password : ");
         getPass(password);
