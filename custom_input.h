@@ -194,9 +194,12 @@ char getEnter() {
 }
 
 int getTabStr(char *str, char *defaultStr) {
-    if (getch() == 9) {
+    char c = getch();
+    if (c == 9) {
         strcpy(str, defaultStr);
         printf("%s\n", str);
+    } else if (c == 27) {
+        return -1;
     } else {
         for (int i = 0; i < 50; i++) putchar(' ');
         printf("\033[50D");
@@ -207,9 +210,12 @@ int getTabStr(char *str, char *defaultStr) {
 }
 
 int getTabInt(int *num, int defaultNum) {
-    if (getch() == 9) {
+    char c = getch();
+    if (c == 9) {
         *num = defaultNum;
         printf("%d\n", *num);
+    } else if (c == 27) {
+        return -1;
     } else {
         for (int i = 0; i < 50; i++) putchar(' ');
         printf("\033[50D");

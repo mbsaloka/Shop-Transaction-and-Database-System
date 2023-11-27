@@ -1,10 +1,11 @@
-int memberTopUp() {
+void memberTopUp() {
     int topUpAmount, newBalance;
     do {
         clearScreen();
         printf("Masukkan jumlah uang yang ingin Anda isi!\n");
         printf("Jumlah Uang : ");
         topUpAmount = getNumINT();
+        if (topUpAmount == -1) return;
         if (topUpAmount > 10000000) {
             clearScreen();
             printf("ISI SALDO GAGAL!\nNominal yang dimasukkan tidak bisa melebihi 10 juta.");
@@ -104,6 +105,7 @@ void user() {
         "Mulai Belanja",
         "Daftar Membership",
         "Isi Saldo",
+        "Ubah Data Diri",
         "Keluar",
     };
     int lengthOption = sizeof(option) / sizeof(option[0]);
@@ -138,6 +140,61 @@ void user() {
             }
             break;
         case 3:
+            if (!isMember) {
+                printf("Anda harus menjadi member terlebih dahulu untuk mengubah data diri.");
+                sleep(1);
+                break;
+            }
+            int idx = 0;
+            char name[101], phoneNum[20], address[101], username[101], password[101];
+            for (int i = 0; i < numMember; i++) {
+                if (member[i].ID == onlineUser.ID) {
+                    idx = i;
+                    break;
+                }
+            }
+            printBold("\nPERBARUI DATA DIRI (tekan tab untuk isi otomatis.)\n");
+            printf("ID : %d\n", member[idx].ID);
+            printf("Nama : \x1b[90m%s\x1b[0m\n", member[idx].name);
+            printf("No Telp : \x1b[90m%s\x1b[0m\n", member[idx].phoneNum);
+            printf("Alamat : \x1b[90m%s\x1b[0m\n", member[idx].address);
+            printf("Username : \x1b[90m%s\x1b[0m\n", member[idx].username);
+            printf("Password : \x1b[90m%s\x1b[0m\n", member[idx].password);
+            printf("\033[5A\r");
+            printf("Nama : ");
+            if (getTabStr(name, member[idx].name) == -1) break;
+            printf("No Telp : ");
+            if (getTabStr(phoneNum, member[idx].phoneNum) == -1) break;
+            printf("Alamat : ");
+            if (getTabStr(address, member[idx].address) == -1) break;
+            printf("Username : ");
+            if (getTabStr(username, member[idx].username) == -1) break;
+            printf("Password : ");
+            if (getTabStr(password, member[idx].password) == -1) break;
+
+            printf("Apakah Anda yakin ingin memperbarui member %s? (Y/N) ", name);
+            if (getYesNo() == 'Y') {
+                clearScreen();
+
+                strcpy(member[idx].name, name);
+                strcpy(member[idx].phoneNum, phoneNum);
+                strcpy(member[idx].address, address);
+                strcpy(member[idx].username, username);
+                strcpy(member[idx].password, password);
+
+                updateData(member, sizeof(Member), numMember, FILE_MEMBER);
+                onlineUser = member[idx];
+
+                printf("%s berhasil diperbarui.", name);
+                sleep(1);
+                clearScreen();
+            } else {
+                printf("Proses dibatalkan.");
+                sleep(1);
+                clearScreen();
+            }
+            break;
+        case 4:
             printBold("Selamat Berbelanja Kembali!\n");
             sleep(1);
             break;

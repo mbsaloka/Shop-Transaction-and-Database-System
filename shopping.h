@@ -2,79 +2,100 @@ void addItemToCart() {
     int ID, price, stock;
     char name[101];
     clearScreen();
-    showItem("");
-    printBold("Saldo : ");
-    printMoney(onlineUser.balance);
-    printBold("\nMasukkan ID Barang yang ingin dibeli!\n");
-    printf("ID : ");
-    ID = getNumINT();
-    if (ID == -1) return;
-    int isFound = -1, amount = 0;
 
-    for (int i = 0; i < numItem; i++) {
-        if (ID == item[i].ID) {
-            strcpy(name, item[i].name);
-            price = item[i].price;
-            stock = item[i].stock;
-            isFound = i;
-            if (stock <= 0) {
+    char filter[101] = "\0";
+    while (1) {
+        clearScreen();
+        showItem(filter);
+        printBold("Saldo : ");
+        printMoney(onlineUser.balance);
+        printf("\nMasukkan Filter : ");
+        int ID = chooseData(tempFilterItem, sizeof(Item), numTempFilterItem, printLineItem);
+        if (ID == -2) {
+            getFilter(filter);
+            if (strcmp(filter, "ESCAPE") == 0) break;
+        } else if (ID == -1) {
+            if (numTempFilterItem < numItem) {
+                filter[0] = '\0';
+            } else {
+                break;
+            }
+        } else {
+            int idx;
+            for (int i = 0; i < numItem; i++) {
+                if (item[i].ID == ID) {
+                    idx = i;
+                    break;
+                }
+            }
+            if (item[idx].stock <= 0) {
                 printf("Stok produk yang Anda pilih sedang kosong.");
                 sleep(1);
                 return;
             }
-            break;
-        }
-    }
+            printBold("Saldo : ");
+            printMoney(onlineUser.balance);
+            int amount = 0;
 
-    if (isFound == -1) {
-        printf("ID %d tidak ada di dalam daftar.", ID);
-        sleep(1);
-        return;
-    }
-
-    printBold("\nDetail Produk\n");
-    printf("Nama : %s\n", name);
-    printf("Harga : ");
-    printMoney(price);
-    printf("\nStok : %d\n", stock);
-
-    printBold("\nMasukkan jumlah yang ingin dibeli!\n");
-    while (1) {
-        printf("Jumlah : ");
-        amount = getNumINT();
-        if (amount == -1) return;
-        if (amount > stock) {
-            printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
-            printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-            sleep(1);
-        } else if (amount == 0) {
-            printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
-            printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-            sleep(1);
-        } else {
-            int isListed = 0;
-            for (int i = 0; i < numCart; i++) {
-                if (ID == cart[i].ID) {
-                    cart[i].amount += amount;
-                    cart[i].stock -= amount;
-                    isListed = 1;
+            for (int i = 0; i < numItem; i++) {
+                if (ID == item[i].ID) {
+                    strcpy(name, item[i].name);
+                    price = item[i].price;
+                    stock = item[i].stock;
+                    if (stock <= 0) {
+                        printf("Stok produk yang Anda pilih sedang kosong.");
+                        sleep(1);
+                        return;
+                    }
                     break;
                 }
             }
-            if (!isListed) {
-                cart[numCart].ID = ID;
-                cart[numCart].price = price;
-                cart[numCart].amount = amount;
-                cart[numCart].stock = stock - amount;
-                strcpy(cart[numCart].name, name);
-                numCart++;
+
+            printBold("\n\nDetail Produk\n");
+            printf("Nama : %s\n", item[idx].name);
+            printf("Harga : ");
+            printMoney(item[idx].price);
+            printf("\nStok : %d\n", item[idx].stock);
+
+            printBold("\nMasukkan jumlah yang ingin dibeli!\n");
+            while (1) {
+                printf("Jumlah : ");
+                amount = getNumINT();
+                if (amount == -1) return;
+                if (amount > stock) {
+                    printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
+                    printf("Tolong masukkan kembali jumlah yang sesuai.\n");
+                    sleep(1);
+                } else if (amount == 0) {
+                    printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
+                    printf("Tolong masukkan kembali jumlah yang sesuai.\n");
+                    sleep(1);
+                } else {
+                    int isListed = 0;
+                    for (int i = 0; i < numCart; i++) {
+                        if (ID == cart[i].ID) {
+                            cart[i].amount += amount;
+                            cart[i].stock -= amount;
+                            isListed = 1;
+                            break;
+                        }
+                    }
+                    if (!isListed) {
+                        cart[numCart].ID = item[idx].ID;
+                        cart[numCart].price = item[idx].price;
+                        cart[numCart].amount = amount;
+                        cart[numCart].stock = item[idx].stock - amount;
+                        strcpy(cart[numCart].name, item[idx].name);
+                        numCart++;
+                    }
+                    item[idx].stock -= amount;
+                    printf("\nProduk %s sejumlah %d berhasil ditambahkan ke keranjang.\n", item[idx].name, amount);
+                    sleep(1);
+                    return;
+                }
+                for (int i = 0; i < 3; i++) clearRow();
             }
-            item[isFound].stock -= amount;
-            printf("\nProduk %s sejumlah %d berhasil ditambahkan ke keranjang.\n", name, amount);
-            sleep(1);
-            break;
         }
-        for (int i = 0; i < 3; i++) clearRow();
     }
 }
 
@@ -113,66 +134,98 @@ int checkoutCart() {
 }
 
 void openCart() {
-    int code;
-    char *option[] = {
-        "Hapus Produk",
-        "Ubah Jumlah Produk",
-        "Selesai & Bayar",
-        "Kembali ke Menu Belanja",
-    };
-    int lengthOption = sizeof(option) / sizeof(option[0]);
-    do {
+    while (1) {
         clearScreen();
         printBold("Saldo : ");
         printMoney(onlineUser.balance);
         showBill();
-        printBold("\nIngin melakukan apa?\n");
-        code = chooseOption(option, lengthOption);
-        clearScreen();
-        switch (code) {
-        case 0:
-            printBold("Saldo : ");
-            printMoney(onlineUser.balance);
-            showBill();
-            printBold("\nMasukkan ID Barang yang ingin dihapus!\n");
-            printf("ID : ");
-            int ID = getNumINT();
-            if (ID == -1) break;
-            int isRemoved = 0;
+        int ID = chooseCart();
+        if (ID == -2) {
+            if (checkoutCart()) return;
+        } else if (ID == -3) {
+            return;
+        } else if (ID == -1) {
+            return;
+        } else {
+            int code, idx, cartIdx;
             for (int i = 0; i < numItem; i++) {
-                if (ID == item[i].ID) {
-                    item[i].stock += cart[i].amount;
+                if (item[i].ID == ID) {
+                    idx = i;
                     break;
                 }
             }
-
             for (int i = 0; i < numCart; i++) {
-                if (ID == cart[i].ID) {
-                    isRemoved = 1;
-                    numCart--;
+                if (cart[i].ID == ID) {
+                    cartIdx = i;
+                    break;
                 }
-                if (isRemoved) cart[i] = cart[i + 1];
             }
-            break;
-        case 1:
-            comingSoon();
-            break;
-        case 2:
-            if (checkoutCart()) return;
-            break;
-        case 3:
-            break;
-        default:
-            printBold("Input tidak valid.\n");
-            sleep(1);
-        }
-    } while (code != 0);
-}
+            printf("HAPUS ATAU UBAH JUMLAH BARANG\n");
+            char* option[] = {
+                "Hapus Barang dari Keranjang",
+                "Ubah Jumlah Barang         ",
+                "Kembali",
+            };
+            int lengthOption = sizeof(option) / sizeof(option[0]);
+            code = chooseOption(option, lengthOption);
+            switch (code) {
+            case 0:
+                int isRemoved = 0;
+                for (int i = 0; i < numCart; i++) {
+                    if (ID == cart[i].ID) {
+                        item[idx].stock += cart[i].amount;
+                        isRemoved = 1;
+                        numCart--;
+                    }
+                    if (isRemoved) cart[i] = cart[i + 1];
+                }
+                clearScreen();
+                printf("\nBarang berhasil dihapus dari keranjang.\n");
+                sleep(1);
+                break;
+            case 1:
+                printBold("\n\n\nDetail Produk\n");
+                printf("Nama : %s\n", item[idx].name);
+                printf("Harga : ");
+                printMoney(item[idx].price);
+                printf("\nStok : %d\n", item[idx].stock + cart[cartIdx].amount);
 
+                printBold("\nMasukkan jumlah yang ingin dibeli!\n");
+                while (1) {
+                    printf("Jumlah : ");
+                    int amount = getNumINT();
+                    if (amount == -1) break;
+                    if (amount > item[idx].stock + cart[cartIdx].amount) {
+                        printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
+                        printf("Tolong masukkan kembali jumlah yang sesuai.\n");
+                        sleep(1);
+                    } else if (amount == 0) {
+                        printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
+                        printf("Tolong masukkan kembali jumlah yang sesuai.\n");
+                        sleep(1);
+                    } else {
+                        item[idx].stock += cart[cartIdx].amount;
+                        cart[cartIdx].amount = amount;
+                        item[idx].stock -= amount;
+                        cart[cartIdx].stock = item[idx].stock;
+
+                        printf("\nPerubahan berhasil dilakukan.\n");
+                        sleep(1);
+                        break;
+                    }
+                    for (int i = 0; i < 3; i++) clearRow();
+                }
+                break;
+            case 2:
+                break;
+            }
+        }
+    }
+}
 void shoppingMenu() {
     int code;
-    char *option[] = {
-        "Terapkan Filter",
+    char* option[] = {
+        "Masukkan Filter   ",
         "Pilih Produk",
         "Lihat Keranjang (Bayar)",
         "Kembali ke Menu Utama",
@@ -187,13 +240,20 @@ void shoppingMenu() {
         printBold("\nIngin melakukan apa?\n");
 
         code = chooseOption(option, lengthOption);
-        clearScreen();
         switch (code) {
         case 0:
-            showItem("");
-            printf("Masukkan Filter : ");
+            printf("\r\x1b[92m> Masukkan Filter : \x1b[90m(ketik di sini)\x1b[0m");
+            printf("\r\x1b[92m> Masukkan Filter : \x1b[0m");
+            if (getch() != 27) {
+                printf("               ");
+                printf("\r\x1b[92m> Masukkan Filter : \x1b[0m");
+            } else {
+                filter[0] = '\0';
+                break;
+            }
             getFilter(filter);
             if (strcmp(filter, "ESCAPE") == 0) {
+                filter[0] = '\0';
                 break;
             }
             break;
@@ -201,9 +261,11 @@ void shoppingMenu() {
             addItemToCart();
             break;
         case 2:
+            clearScreen();
             openCart();
             break;
         case 3:
+            clearScreen();
             printf("Jika keluar maka keranjang akan dikosongkan.\nYakin ingin keluar? (Y/N) ");
             if (getYesNo() == 'Y') {
                 clearScreen();
@@ -218,5 +280,5 @@ void shoppingMenu() {
             printBold("Input tidak valid.\n");
             sleep(1);
         }
-    } while (code != 0);
+    } while (code != lengthOption - 1);
 }

@@ -7,9 +7,9 @@
 
 #include "data_manipulation.h"
 #include "text_style.h"
+#include "get_time.h"
 #include "custom_input.h"
 #include "arrow_input.h"
-#include "get_time.h"
 #include "item.h"
 #include "member.h"
 #include "bill.h"

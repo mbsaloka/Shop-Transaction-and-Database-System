@@ -25,8 +25,9 @@ void showTransactionLog(char *filter) {
             name[COL_MAX - 1] = '.';
             name[COL_MAX] = '\0';
         }
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "          ");
+
+        while (strlen(name) <= COL_MIN) {
+            strcat(name, " ");
         }
 
         char space[] = "    ";

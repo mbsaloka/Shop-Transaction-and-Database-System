@@ -7,7 +7,7 @@ void showMember(char *filter) {
     numTempFilterMember = 0;
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
-    printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Saldo\t\t| Username\t| Password\n");
+    printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Username\t| Password\t| Saldo\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < numMember; i++) {
         ID = member[i].ID;
@@ -52,8 +52,9 @@ void showMember(char *filter) {
         if (strstr(name2, filter)) {
             tempFilterMember[numTempFilterMember++] = member[i];
             printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name, phoneNum, address, registDate, registTime);
+            printf("%s\t| %s\t\t| ", username, password);
             printMoney(balance);
-            printf("\t| %s\t| %s\n", username, password);
+            printf("\n");
         }
     }
 }
