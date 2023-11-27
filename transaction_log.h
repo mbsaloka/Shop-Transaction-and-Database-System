@@ -1,8 +1,9 @@
-void showLog() {
+void showTransactionLog(char *filter) {
     int COL_MAX = 21;
     int COL_MIN = 14;
     char dateTime[30], name[101];
     int transactionID, price, userID;
+    numTempFilterTransaction = 0;
 
     printBold("CATATAN TRANSAKSI\n");
     printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
@@ -17,6 +18,8 @@ void showLog() {
         strcat(dateTime, " ");
         strcat(dateTime, transaction[i].transactionTime);
 
+        char name2[101];
+        strcpy(name2, name);
         if (strlen(name) > COL_MAX) {
             name[COL_MAX - 2] = '.';
             name[COL_MAX - 1] = '.';
@@ -25,51 +28,31 @@ void showLog() {
         if (strlen(name) < COL_MIN) {
             strcat(name, "          ");
         }
+
         char space[] = "    ";
         space[3] = (transactionID < 10) ? ' ' : '\0';
-        printf("%d%s|\t %s\t| %s\t| ", transactionID, space, dateTime, name);
-        if (userID == 0) {
-            printf("guest     | Rp%s\n", strMoney(price));
-        } else {
-            printf("%d\t    | Rp%s\n", userID, strMoney(price));
+
+        for (int i = 0; i < strlen(filter); i++) {
+            if (filter[i] >= 'A' && filter[i] <= 'Z') {
+                filter[i] += 32;
+            }
+        }
+        for (int i = 0; i < strlen(name2); i++) {
+            if (name2[i] >= 'A' && name2[i] <= 'Z') {
+                name2[i] += 32;
+            }
+        }
+
+        if (strstr(name2, filter)) {
+            tempFilterTransaction[numTempFilterTransaction++] = transaction[i];
+            printf("%d%s|\t %s\t| %s\t| ", transactionID, space, dateTime, name);
+            if (userID == 0) {
+                printf("guest     | Rp%s\n", strMoney(price));
+            } else {
+                printf("%d\t    | Rp%s\n", userID, strMoney(price));
+            }
         }
     }
-}
-
-void showTransactionLog() {
-    int code;
-    char exitCode;
-    char *option[] = {
-        "Tampilkan Struk",
-        "Kembali ke Menu Admin",
-    };
-    int lengthOption = sizeof(option) / sizeof(option[0]);
-    do {
-        clearScreen();
-        showLog();
-        code = chooseOption(option, lengthOption);
-        clearScreen();
-        switch (code) {
-        case 0:
-            showLog();
-            printf("Masukkan ID Transaksi : ");
-            int transactionID;
-            transactionID = getNumINT();
-            if (transactionID == -1) {
-                break;
-            }
-            clearScreen();
-            showReceipt(transactionID);
-            printf("Tekan Enter untuk kembali.");
-            char escapeCode = getEnter();
-            break;
-        case 1:
-            return;
-        default:
-            printBold("Input tidak valid.\n");
-            sleep(1);
-        }
-    } while (code != 0);
 }
 
 void addTransactionLog(int totalPrice) {

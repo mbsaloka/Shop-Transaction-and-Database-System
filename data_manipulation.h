@@ -26,10 +26,11 @@ typedef struct transaction_s {
 } Transaction;
 
 Item item[1000], tempFilterItem[1000];
-Member member[1000], onlineUser;
+Member member[1000], onlineUser, tempFilterMember[1000];
 Cart cart[1000];
-Transaction transaction[1000];
-int numItem, numMember, numCart, numTransaction, numTempFilterItem;
+Transaction transaction[1000], tempFilterTransaction[1000];
+int numItem, numMember, numCart, numTransaction;
+int numTempFilterItem, numTempFilterMember, numTempFilterTransaction;
 
 void addToDb(void *data, size_t dataSize, char *fileName) {
     FILE *outp;

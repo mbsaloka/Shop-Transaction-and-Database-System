@@ -37,6 +37,7 @@ void admin() {
     if (!adminLogin()) return;
     clearScreen();
     int code;
+    char filter[101];
     char *option[] = {
         "Tambah Barang",
         "Lihat Barang",
@@ -57,7 +58,7 @@ void admin() {
             inputItem();
             break;
         case 1:
-            char filter[101] = "\0";
+            filter[0] = '\0';
             while (1) {
                 clearScreen();
                 showItem(filter);
@@ -68,7 +69,11 @@ void admin() {
                     getFilter(filter);
                     if (strcmp(filter, "ESCAPE") == 0) break;
                 } else if (ID == -1) {
-                    break;
+                    if (numTempFilterItem < numItem) {
+                        filter[0] = '\0';
+                    } else {
+                        break;
+                    }
                 } else {
                     updateItem(ID);
                 }
@@ -78,19 +83,51 @@ void admin() {
             inputMember();
             break;
         case 3:
-            showMember("");
+            filter[0] = '\0';
             while (1) {
-                char filter[101];
-                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
-                printf("Masukkan Filter : ");
-                getFilter(filter);
-                if (strcmp(filter, "ESCAPE") == 0) break;
                 clearScreen();
                 showMember(filter);
+                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+                printf("Masukkan Filter : ");
+                int ID = chooseData(tempFilterMember, sizeof(Member), numTempFilterMember, printLineMember);
+                if (ID == -2) {
+                    getFilter(filter);
+                    if (strcmp(filter, "ESCAPE") == 0) break;
+                } else if (ID == -1) {
+                    if (numTempFilterMember < numMember) {
+                        filter[0] = '\0';
+                    } else {
+                        break;
+                    }
+                } else {
+                    updateMember(ID);
+                }
             }
             break;
         case 4:
-            showTransactionLog();
+            filter[0] = '\0';
+            while (1) {
+                clearScreen();
+                showTransactionLog(filter);
+                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+                printf("Masukkan Filter : ");
+                int ID = chooseData(tempFilterTransaction, sizeof(Transaction), numTempFilterTransaction, printLineTransaction);
+                if (ID == -2) {
+                    getFilter(filter);
+                    if (strcmp(filter, "ESCAPE") == 0) break;
+                } else if (ID == -1) {
+                    if (numTempFilterTransaction < numTransaction) {
+                        filter[0] = '\0';
+                    } else {
+                        break;
+                    }
+                } else {
+                    clearScreen();
+                    showReceipt(ID);
+                    printf("\nTekan Enter untuk kembali.");
+                    char escapeCode = getEnter();
+                }
+            }
             break;
         case 5:
             printBold("[Keluar Dari Mode Admin]\n");

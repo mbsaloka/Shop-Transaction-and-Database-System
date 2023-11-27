@@ -78,35 +78,11 @@ void updateItem(int ID) {
         printf("Stok : \x1b[90m%d\x1b[0m\n", item[idx].stock);
         printf("\033[3A\r");
         printf("Nama Barang : ");
-        if (getch() == 9) {
-            strcpy(name, item[idx].name);
-            printf("%s\n", name);
-        } else {
-            for (int i = 0; i < 50; i++) putchar(' ');
-            printf("\033[50D");
-            getAllChar(name);
-            if (strcmp(name, "ESCAPE") == 0) return;
-        }
+        if (getTabStr(name, item[idx].name) == -1) return;
         printf("Harga : ");
-        if (getch() == 9) {
-            price = item[idx].price;
-            printf("%d\n", price);
-        } else {
-            for (int i = 0; i < 20; i++) putchar(' ');
-            printf("\033[20D");
-            price = getNumINT();
-            if (price == -1) return;
-        }
+        if (getTabInt(&price, item[idx].price) == -1) return;
         printf("Stok : ");
-        if (getch() == 9) {
-            stock = item[idx].stock;
-            printf("%d\n", stock);
-        } else {
-            for (int i = 0; i < 20; i++) putchar(' ');
-            printf("\033[20D");
-            stock = getNumINT();
-            if (stock == -1) return;
-        }
+        if (getTabInt(&stock, item[idx].stock) == -1) return;
 
         printf("Apakah Anda yakin ingin memperbarui barang %s? (Y/N) ", name);
         if (getYesNo() == 'Y') {

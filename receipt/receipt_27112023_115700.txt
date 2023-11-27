@@ -1,14 +1,15 @@
 ---------------------------------------------
 ================ ITS MIRT ===================
 ---------------------------------------------
-Tanggal         : 26/11/2023 02:06:17
-Nomor Transaksi : T0002
-Nama Pelanggan  : Siti Shafia Hamidah (member)
-ID Member       : 2
+Tanggal         : 27/11/2023 11:57:00
+Nomor Transaksi : T0003
+Nama Pelanggan  : Tata Safira KD (member)
+ID Member       : 3
 ---------------------------------------------
 ID   |	 Nama Barang	| Jmlh	| Total Harga
 ---------------------------------------------
-2    |	 Aqua Gelas    	| 4 	| Rp2.000
-5    |	 Indomie Kuah	| 3 	| Rp12.900
+5    |	 Pop Corn    	| 2 	| Rp22.000
+2    |	 Tango Waffer	| 7 	| Rp21.000
+4    |	 Pocky Coklat	| 10 	| Rp80.000
 ---------------------------------------------
-			TOTAL	: Rp14.900
+			TOTAL	: Rp123.000

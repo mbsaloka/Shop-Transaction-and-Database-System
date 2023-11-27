@@ -4,6 +4,7 @@ void showMember(char *filter) {
     char name[101], phoneNum[20], address[101], username[101], password[101];
     char registDate[15], registTime[15];
     int ID, balance;
+    numTempFilterMember = 0;
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
     printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Saldo\t\t| Username\t| Password\n");
@@ -49,10 +50,99 @@ void showMember(char *filter) {
         }
 
         if (strstr(name2, filter)) {
+            tempFilterMember[numTempFilterMember++] = member[i];
             printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name, phoneNum, address, registDate, registTime);
             printMoney(balance);
             printf("\t| %s\t| %s\n", username, password);
         }
+    }
+}
+
+void updateMember(int ID) {
+    int idx = 0;
+    int balance;
+    char name[101], phoneNum[20], address[101], username[101], password[101];
+
+    for (int i = 0; i < numMember; i++) {
+        if (member[i].ID == ID) {
+            idx = i;
+            break;
+        }
+    }
+
+    int code;
+    char *option[] = {
+        "Perbarui Info Member",
+        "Hapus Member",
+        "Kembali",
+    };
+    int lengthOption = sizeof(option) / sizeof(option[0]);
+    printf("Ingin melakukan apa?\n");
+    code = chooseOption(option, lengthOption);
+    switch (code) {
+    case 0:
+        printf("\033[2B");
+        for (int i = 0; i < 3; i++) clearRow();
+        printBold("\nPERBARUI INFO MEMBER (tekan tab untuk isi otomatis.)\n");
+        printf("ID : %d\n", ID);
+        printf("Nama : \x1b[90m%s\x1b[0m\n", member[idx].name);
+        printf("No Telp : \x1b[90m%s\x1b[0m\n", member[idx].phoneNum);
+        printf("Alamat : \x1b[90m%s\x1b[0m\n", member[idx].address);
+        printf("Saldo : \x1b[90m%d\x1b[0m\n", member[idx].balance);
+        printf("Username : \x1b[90m%s\x1b[0m\n", member[idx].username);
+        printf("Password : \x1b[90m%s\x1b[0m\n", member[idx].password);
+        printf("\033[6A\r");
+        printf("Nama : ");
+        if (getTabStr(name, member[idx].name) == -1) return;
+        printf("No Telp : ");
+        if (getTabStr(phoneNum, member[idx].phoneNum) == -1) return;
+        printf("Alamat : ");
+        if (getTabStr(address, member[idx].address) == -1) return;
+        printf("Saldo : ");
+        if (getTabInt(&balance, member[idx].balance) == -1) return;
+        printf("Username : ");
+        if (getTabStr(username, member[idx].username) == -1) return;
+        printf("Password : ");
+        if (getTabStr(password, member[idx].password) == -1) return;
+
+        printf("Apakah Anda yakin ingin memperbarui member %s? (Y/N) ", name);
+        if (getYesNo() == 'Y') {
+            clearScreen();
+
+            strcpy(member[idx].name, name);
+            strcpy(member[idx].phoneNum, phoneNum);
+            strcpy(member[idx].address, address);
+            strcpy(member[idx].username, username);
+            strcpy(member[idx].password, password);
+            member[idx].balance = balance;
+
+            updateData(member, sizeof(Member), numMember, FILE_MEMBER);
+
+            printf("%s berhasil diperbarui.", name);
+            sleep(1);
+            clearScreen();
+        } else {
+            printf("Proses dibatalkan.");
+            sleep(1);
+            clearScreen();
+        }
+        break;
+    case 1:
+        clearScreen();
+        printf("Apakah Anda yakin ingin menghapus Member %s? (Y/N) ", member[idx].name);
+        if (getYesNo() == 'Y') {
+            printf("%s berhasil dihapus.", member[idx].name);
+            removeData(member, sizeof(Member), ID, &numMember, FILE_MEMBER, getMemberID);
+            importFromDb(member, sizeof(Member), &numMember, FILE_MEMBER);
+
+            sleep(1);
+            clearScreen();
+        } else {
+            printf("Proses dibatalkan.");
+            sleep(1);
+            clearScreen();
+        }
+        break;
     }
 }
 

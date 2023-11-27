@@ -1,14 +1,13 @@
 ---------------------------------------------
 ================ ITS MIRT ===================
 ---------------------------------------------
-Tanggal         : 26/11/2023 02:19:20
-Nomor Transaksi : T0003
-Nama Pelanggan  : Nazwa
+Tanggal         : 27/11/2023 11:55:07
+Nomor Transaksi : T0001
+Nama Pelanggan  : Muh Buyung Saloka (member)
+ID Member       : 1
 ---------------------------------------------
 ID   |	 Nama Barang	| Jmlh	| Total Harga
 ---------------------------------------------
-3    |	 Indomie Sedaap	| 5 	| Rp15.500
-1    |	 Sofa    	| 1 	| Rp10.000
-2    |	 Aqua Gelas    	| 3 	| Rp1.500
+2    |	 Tango Waffer	| 10 	| Rp30.000
 ---------------------------------------------
-			TOTAL	: Rp27.000
+			TOTAL	: Rp30.000

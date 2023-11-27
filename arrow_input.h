@@ -170,3 +170,57 @@ int printLineItem(void *item) {
     printf("%d\r", i->stock);
     return ((Item *)item)->ID;
 }
+
+int printLineMember(void *member) {
+    Member *i = (Member *)member;
+    char space[] = "    ";
+    space[3] = (i->ID < 10) ? ' ' : '\0';
+    char name2[101];
+    int COL_MAX = 21;
+    int COL_MIN = 14;
+    strcpy(name2, i->name);
+    if (strlen(name2) > COL_MAX) {
+        name2[COL_MAX - 2] = '.';
+        name2[COL_MAX - 1] = '.';
+        name2[COL_MAX] = '\0';
+    }
+
+    while (strlen(name2) <= COL_MIN) {
+        strcat(name2, " ");
+    }
+    printf("%d%s|\t ", i->ID, space);
+    printf("%s\t| ", name2);
+    printf("%s\t| ", i->phoneNum);
+    printf("%s\t| ", i->address);
+    printf("%s %s | ", i->registDate, i->registTime);
+    printMoney(i->balance);
+    printf("\t| %s\t| ", i->username);
+    printf("%s\r", i->password);
+    return ((Member *)member)->ID;
+}
+
+int printLineTransaction(void *transaction) {
+    Transaction *i = (Transaction *)transaction;
+    char space[] = "    ";
+    space[3] = (i->ID < 10) ? ' ' : '\0';
+    char name2[101];
+    int COL_MAX = 21;
+    int COL_MIN = 14;
+    strcpy(name2, i->name);
+    if (strlen(name2) > COL_MAX) {
+        name2[COL_MAX - 2] = '.';
+        name2[COL_MAX - 1] = '.';
+        name2[COL_MAX] = '\0';
+    }
+
+    while (strlen(name2) <= COL_MIN) {
+        strcat(name2, " ");
+    }
+
+    printf("%d%s|\t ", i->ID, space);
+    printf("%s %s\t| ", i->transactionDate, i->transactionTime);
+    printf("%s\t| ", name2);
+    (i->memberID == 0) ? printf("guest     | ") : printf("%d\t    | ", i->memberID);
+    printf("Rp%s\r", strMoney(i->totalPrice));
+    return ((Transaction *)transaction)->ID;
+}
