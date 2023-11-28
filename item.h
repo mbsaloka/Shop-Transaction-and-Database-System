@@ -1,7 +1,7 @@
 void showItem(char* filter) {
     int COL_MAX = 21;
     int COL_MIN = 14;
-    char name[101];
+    char name[101], name2[101];
     int ID, price, stock;
     numTempFilterItem = 0;
 
@@ -9,40 +9,18 @@ void showItem(char* filter) {
     printBold("ID   |\t Nama Barang\t\t| Harga\t| Stok\n");
     printf("----------------------------------------------\n");
     for (int i = 0; i < numItem; i++) {
-        ID = item[i].ID;
         strcpy(name, item[i].name);
-        price = item[i].price;
-        stock = item[i].stock;
-
-        char name2[101];
-        strcpy(name2, name);
-        if (strlen(name) > COL_MAX) {
-            name2[COL_MAX - 2] = '.';
-            name2[COL_MAX - 1] = '.';
-            name2[COL_MAX] = '\0';
-        }
-
-        while (strlen(name2) <= COL_MIN) {
-            strcat(name2, " ");
-        }
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
 
         for (int j = 0; j < strlen(filter); j++) {
-            if (filter[j] >= 'A' && filter[j] <= 'Z') {
-                filter[j] += 32;
-            }
+            if (filter[j] >= 'A' && filter[j] <= 'Z') filter[j] += 32;
         }
         for (int j = 0; j < strlen(name); j++) {
-            if (name[j] >= 'A' && name[j] <= 'Z') {
-                name[j] += 32;
-            }
+            if (name[j] >= 'A' && name[j] <= 'Z') name[j] += 32;
         }
 
         if (strstr(name, filter)) {
             tempFilterItem[numTempFilterItem++] = item[i];
-            printf("%d%s|\t %s\t| %d\t| %d\n", ID, space, name2, price, stock);
+            printf("%-5.d|\t %-22.22s | %d\t| %d\n", item[i].ID, item[i].name, item[i].price, item[i].stock);
         }
     }
 }

@@ -8,52 +8,21 @@ void showMember(char *filter) {
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
     printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Username\t| Password\t| Saldo\n");
-    printf("-----------------------------------------------------------------------------------------------------------------------------------------\n");
+    printf("----------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < numMember; i++) {
-        ID = member[i].ID;
         strcpy(name, member[i].name);
-        strcpy(phoneNum, member[i].phoneNum);
-        strcpy(address, member[i].address);
-        strcpy(username, member[i].username);
-        strcpy(password, member[i].password);
-        strcpy(registDate, member[i].registDate);
-        strcpy(registTime, member[i].registTime);
-        balance = member[i].balance;
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
-
-        char name2[101];
-        strcpy(name2, name);
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
-        }
-
-        if (strlen(name) < COL_MIN) {
-            int nameLength = strlen(name);
-            for (int i = 0; i <= COL_MIN - nameLength; i++) {
-                strcat(name, " ");
-            }
-        }
-
         for (int i = 0; i < strlen(filter); i++) {
-            if (filter[i] >= 'A' && filter[i] <= 'Z') {
-                filter[i] += 32;
-            }
+            if (filter[i] >= 'A' && filter[i] <= 'Z') filter[i] += 32;
         }
-        for (int i = 0; i < strlen(name2); i++) {
-            if (name2[i] >= 'A' && name2[i] <= 'Z') {
-                name2[i] += 32;
-            }
+        for (int i = 0; i < strlen(name); i++) {
+            if (name[i] >= 'A' && name[i] <= 'Z') name[i] += 32;
         }
 
-        if (strstr(name2, filter)) {
+        if (strstr(name, filter)) {
             tempFilterMember[numTempFilterMember++] = member[i];
-            printf("%d%s|\t %s\t| %s\t| %s\t| %s %s | ", ID, space, name, phoneNum, address, registDate, registTime);
-            printf("%s\t| %s\t\t| ", username, password);
-            printMoney(balance);
+            printf("%-5.d|\t %-22.22s | %-13.13s | %-21.21s | %s %s | ", member[i].ID, member[i].name, member[i].phoneNum, member[i].address, member[i].registDate, member[i].registTime);
+            printf("%-15.15s | %-15.15s | ", member[i].username, member[i].password);
+            printMoney(member[i].balance);
             printf("\n");
         }
     }

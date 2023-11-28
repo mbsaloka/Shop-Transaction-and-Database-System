@@ -307,18 +307,34 @@
 // }
 
 // RETURN STRING
-#include <stdio.h>
-#include <string.h>
+// #include <stdio.h>
+// #include <string.h>
 
-void getNama(char s[101]) {
-    char input[101];
-    printf("MASUKKAN NAMA : ");
-    scanf("%s", input);
-    strcpy(s, input);
-}
+// void getNama(char s[101]) {
+//     char input[101];
+//     printf("MASUKKAN NAMA : ");
+//     scanf("%s", input);
+//     strcpy(s, input);
+// }
+
+// int main() {
+//     char nama[101];
+//     getNama(nama);
+//     printf("HASIL : %s", nama);
+// }
+
+#include <stdio.h>
 
 int main() {
-    char nama[101];
-    getNama(nama);
-    printf("HASIL : %s", nama);
+    int max_width = 20;     // Batas maksimal karakter
+    char text[] = "Hello";  // Ganti dengan teks yang ingin dicetak
+
+    // Menggunakan spesifikasi format lebar lapangan %-*.*s
+    // %-*.*s akan mencetak string dengan lebar lapangan yang ditentukan, rata kiri
+    // Pertama * adalah untuk lebar lapangan total, kedua * adalah untuk panjang string
+
+    printf("%20.s", text);
+
+    printf("*");
+    return 0;
 }

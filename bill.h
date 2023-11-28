@@ -5,32 +5,9 @@ void showBill() {
     printf("---------------------------------------------\n");
     int totalPrice = 0;
     for (int i = 0; i < numCart; i++) {
-        int COL_MAX = 14;
-        int COL_MIN = 6;
-        char name[101];
-        int ID, price, amount;
-
-        strcpy(name, cart[i].name);
-        ID = cart[i].ID;
-        amount = cart[i].amount;
-        price = cart[i].price * amount;
-        totalPrice += price;
-
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
-        }
-
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "    ");
-        }
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
-
-        printf("%d%s|\t %s\t| %d\t| ", ID, space, name, amount);
-        printMoney(price);
+        totalPrice += cart[i].price * cart[i].amount;
+        printf("%-5.d|\t %-14.14s\t| %d\t| ", cart[i].ID, cart[i].name, cart[i].amount);
+        printMoney(cart[i].price * cart[i].amount);
         printf("\n");
     }
     printf("---------------------------------------------\n");

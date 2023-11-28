@@ -1,6 +1,4 @@
 void showTransactionLog(char *filter) {
-    int COL_MAX = 21;
-    int COL_MIN = 14;
     char dateTime[30], name[101];
     int transactionID, price, userID;
     numTempFilterTransaction = 0;
@@ -9,49 +7,22 @@ void showTransactionLog(char *filter) {
     printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
     printf("---------------------------------------------------------------------------------\n");
     for (int i = 0; i < numTransaction; i++) {
-        transactionID = transaction[i].ID;
-        strcpy(name, transaction[i].name);
-        userID = transaction[i].memberID;
-        price = transaction[i].totalPrice;
-        char dateTime[101];
-        strcpy(dateTime, transaction[i].transactionDate);
-        strcat(dateTime, " ");
-        strcat(dateTime, transaction[i].transactionTime);
-
-        char name2[101];
-        strcpy(name2, name);
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
-        }
-
-        while (strlen(name) <= COL_MIN) {
-            strcat(name, " ");
-        }
-
-        char space[] = "    ";
-        space[3] = (transactionID < 10) ? ' ' : '\0';
-
         for (int i = 0; i < strlen(filter); i++) {
             if (filter[i] >= 'A' && filter[i] <= 'Z') {
                 filter[i] += 32;
             }
         }
-        for (int i = 0; i < strlen(name2); i++) {
-            if (name2[i] >= 'A' && name2[i] <= 'Z') {
-                name2[i] += 32;
+        for (int i = 0; i < strlen(name); i++) {
+            if (name[i] >= 'A' && name[i] <= 'Z') {
+                name[i] += 32;
             }
         }
 
-        if (strstr(name2, filter)) {
+        if (strstr(name, filter)) {
             tempFilterTransaction[numTempFilterTransaction++] = transaction[i];
-            printf("%d%s|\t %s\t| %s\t| ", transactionID, space, dateTime, name);
-            if (userID == 0) {
-                printf("guest     | Rp%s\n", strMoney(price));
-            } else {
-                printf("%d\t    | Rp%s\n", userID, strMoney(price));
-            }
+            printf("%-5.d| %s %s | %-22.22s | ", transaction[i].ID, transaction[i].transactionDate, transaction[i].transactionTime, transaction[i].name);
+            (transaction[i].memberID == 0) ? printf("guest     | ") : printf("%-10.d| ", transaction[i].memberID);
+            printf("Rp%s\n", strMoney(transaction[i].totalPrice));
         }
     }
 }
