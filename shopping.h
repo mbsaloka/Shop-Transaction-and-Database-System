@@ -12,8 +12,11 @@ void addItemToCart() {
         printf("\nMasukkan Filter : ");
         int ID = chooseData(tempFilterItem, sizeof(Item), numTempFilterItem, printLineItem);
         if (ID == -2) {
+            printf("\r%sMasukkan Filter : %-31.s", GREEN);
+            CURSOR_LEFT(31);
+            printf("%s(ketik di sini)%s", GRAY, NO_EFFECT);
+            CURSOR_LEFT(15);
             getFilter(filter);
-            if (strcmp(filter, "ESCAPE") == 0) break;
         } else if (ID == -1) {
             if (numTempFilterItem < numItem) {
                 filter[0] = '\0';
@@ -63,13 +66,13 @@ void addItemToCart() {
                 amount = getNumINT();
                 if (amount == -1) return;
                 if (amount > stock) {
-                    printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
+                    printf("\nJumlah yang dipilih tidak boleh melebihi stok produk.\n");
                     printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-                    sleep(1);
+                    pause();
                 } else if (amount == 0) {
-                    printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
+                    printf("\nJumlah yang dipilih tidak boleh sama dengan 0.\n");
                     printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-                    sleep(1);
+                    pause();
                 } else {
                     int isListed = 0;
                     for (int i = 0; i < numCart; i++) {
@@ -93,7 +96,7 @@ void addItemToCart() {
                     sleep(1);
                     return;
                 }
-                CLEAR_ROW(3);
+                CLEAR_ROW(4);
             }
         }
     }
@@ -180,7 +183,7 @@ void openCart() {
                     if (isRemoved) cart[i] = cart[i + 1];
                 }
                 clearScreen();
-                printf("\nBarang berhasil dihapus dari keranjang.\n");
+                printf("Barang berhasil dihapus dari keranjang.\n");
                 sleep(1);
                 break;
             case 1:
@@ -196,13 +199,13 @@ void openCart() {
                     int amount = getNumINT();
                     if (amount == -1) break;
                     if (amount > item[idx].stock + cart[cartIdx].amount) {
-                        printf("Jumlah yang dipilih tidak boleh melebihi stok produk.\n");
+                        printf("\nJumlah yang dipilih tidak boleh melebihi stok produk.\n");
                         printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-                        sleep(1);
+                        pause();
                     } else if (amount == 0) {
-                        printf("Jumlah yang dipilih tidak boleh sama dengan 0.\n");
+                        printf("\nJumlah yang dipilih tidak boleh sama dengan 0.\n");
                         printf("Tolong masukkan kembali jumlah yang sesuai.\n");
-                        sleep(1);
+                        pause();
                     } else {
                         item[idx].stock += cart[cartIdx].amount;
                         cart[cartIdx].amount = amount;
@@ -213,7 +216,7 @@ void openCart() {
                         sleep(1);
                         break;
                     }
-                    CLEAR_ROW(3);
+                    CLEAR_ROW(4);
                 }
                 break;
             case 2:
@@ -242,20 +245,9 @@ void shoppingMenu() {
         code = chooseOption(option, lengthOption);
         switch (code) {
         case 0:
-            printf("\r\x1b[92m> Masukkan Filter : \x1b[90m(ketik di sini)\x1b[0m");
-            printf("\r\x1b[92m> Masukkan Filter : \x1b[0m");
-            if (getch() != 27) {
-                printf("               ");
-                printf("\r\x1b[92m> Masukkan Filter : \x1b[0m");
-            } else {
-                filter[0] = '\0';
-                break;
-            }
+            printf("\r%s> Masukkan Filter : %s(ketik di sini)%s", GREEN, GRAY, NO_EFFECT);
+            CURSOR_LEFT(15);
             getFilter(filter);
-            if (strcmp(filter, "ESCAPE") == 0) {
-                filter[0] = '\0';
-                break;
-            }
             break;
         case 1:
             addItemToCart();
@@ -266,6 +258,11 @@ void shoppingMenu() {
             break;
         case 3:
             clearScreen();
+            if (filter[0] != '\0') {
+                filter[0] = '\0';
+                code = 0;
+                break;
+            }
             printf("Jika keluar maka keranjang akan dikosongkan.\nYakin ingin keluar? (Y/N) ");
             if (getYesNo() == 'Y') {
                 clearScreen();
@@ -276,9 +273,6 @@ void shoppingMenu() {
                 code = -1;
             }
             break;
-        default:
-            printBold("Input tidak valid.\n");
-            sleep(1);
         }
     } while (code != lengthOption - 1);
 }

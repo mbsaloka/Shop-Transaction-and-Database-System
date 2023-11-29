@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     int lengthOption = sizeof(option) / sizeof(option[0]);
     do {
         clearScreen();
-        printBold("Selamat Datang di SENKUKO\n");
+        printBold("Selamat Datang di ITS MIRT\n");
         code = chooseOption(option, lengthOption);
         clearScreen();
         switch (code) {

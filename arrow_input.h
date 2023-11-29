@@ -1,8 +1,8 @@
-int downArrow(char a, char b) {
+int downArrow(int a, int b) {
     return ((a == '\0' || a == 224) && b == 'P');
 }
 
-int upArrow(char a, char b) {
+int upArrow(int a, int b) {
     return ((a == '\0' || a == 224) && b == 'H');
 }
 
@@ -49,14 +49,16 @@ int chooseOption(char *option[], int length) {
 
 int printLineItem(void *item) {
     Item *i = (Item *)item;
-    printf("%-5.d|\t %-22.22s | %d\t| %d", i->ID, i->name, i->price, i->stock);
+    printf("%-5.d|\t %-22.22s | %-5.d | ", i->ID, i->name, i->stock);
+    printMoney(i->price);
+    printf("\r");
     return ((Item *)item)->ID;
 }
 
 int printLineMember(void *member) {
     Member *i = (Member *)member;
     printf("%-5.d|\t %-22.22s | %-13.13s | %-21.21s | %s %s | ", i->ID, i->name, i->phoneNum, i->address, i->registDate, i->registTime);
-    printf("%-15.15s | %-15.15s | ", i->username, i->password);
+    printf("%-15.15s | %-13.13s | ", i->username, i->password);
     printMoney(i->balance);
     return ((Member *)member)->ID;
 }
@@ -65,7 +67,8 @@ int printLineTransaction(void *transaction) {
     Transaction *i = (Transaction *)transaction;
     printf("%-5.d| %s %s | %-22.22s | ", i->ID, i->transactionDate, i->transactionTime, i->name);
     (i->memberID == 0) ? printf("guest     | ") : printf("%-10.d| ", i->memberID);
-    printf("Rp%s\r", strMoney(i->totalPrice));
+    printMoney(i->totalPrice);
+    printf("\r");
     return ((Transaction *)transaction)->ID;
 }
 
@@ -101,9 +104,10 @@ int chooseData(void *data, size_t dataSize, int totalIndex, int (*printLineData)
 
         if (downArrow(prev, input) || upArrow(prev, input)) {
             if (ID == -2) {
-                printf("Masukkan Filter : %-31.s");
+                printf("\rMasukkan Filter : %-31.s");
                 printf("%s", HIDE_CURSOR);
             } else {
+                printf("\r");
                 printLineData(currentData);
             }
 
@@ -114,7 +118,7 @@ int chooseData(void *data, size_t dataSize, int totalIndex, int (*printLineData)
                     CURSOR_DOWN(2);
                 } else if (code > totalIndex) {
                     code = 0;
-                    CURSOR_UP(totalIndex - 1);
+                    CURSOR_UP(totalIndex + 1);
                 } else {
                     CURSOR_DOWN(1);
                 }
@@ -123,7 +127,7 @@ int chooseData(void *data, size_t dataSize, int totalIndex, int (*printLineData)
                 if (code == totalIndex) {
                     code--;
                     CURSOR_UP(2);
-                } else if (code < totalIndex) {
+                } else if (code < 0) {
                     code = totalIndex + 1;
                     CURSOR_DOWN(totalIndex + 1);
                 } else {
@@ -183,10 +187,10 @@ int chooseCart() {
         ID = getEnter();
         return -1;
     } else {
-        CURSOR_UP(numCart + 4);
+        CURSOR_UP(numCart + 5);
         printf("%s", ORANGE);
         printLineCart(0);
-        printf("%s", NO_EFFECT);
+        printf("%s\r", NO_EFFECT);
     }
 
     while (input != 13 && numCart > 0) {
@@ -216,8 +220,7 @@ int chooseCart() {
             } else if (input == 'H') {
                 code--;
                 if (code < 0) {
-                    code = numCart;
-                    +4;
+                    code = numCart + 4;
                     CURSOR_DOWN(numCart + 4);
                 } else if (code == numCart + 2) {
                     code = numCart - 1;
@@ -232,10 +235,10 @@ int chooseCart() {
                 ID = printLineCart(code);
                 printf("%s\r", NO_EFFECT);
             } else if (code == numCart + 3) {
-                printf("%s> %s%s", BLUE, option[0], NO_EFFECT);
+                printf("%s> %s%s\r", BLUE, option[0], NO_EFFECT);
                 ID = -2;
             } else if (code == numCart + 4) {
-                printf("%s> %s%s", RED, option[1], NO_EFFECT);
+                printf("%s> %s%s\r", RED, option[1], NO_EFFECT);
                 ID = -3;
             }
         }

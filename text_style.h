@@ -9,10 +9,9 @@
 #define SHOW_CURSOR "\e[?25h"
 #define CURSOR_UP(n) printf("\033[%dA\r", (n))
 #define CURSOR_DOWN(n) printf("\033[%dB\r", (n))
-#define CURSOR_LEFT(n) printf("\033[%dD\r", (n))
-#define CURSOR_RIGHT(n) printf("\033[%dC\r", (n))
-#define CLEAR_ROW(n)
-#define CLEAR_ROWS(n) (for (int i = 0; i < (n); i++) printf("\033[A\033[2K\r"))
+#define CURSOR_LEFT(n) printf("\033[%dD", (n))
+#define CURSOR_RIGHT(n) printf("\033[%dC", (n))
+#define CLEAR_ROW(n) ({for (int i = 0; i < (n); i++) printf("\033[A\033[2K\r"); })
 #define clearScreen() printf("\x1b[2J\x1b[H")
 #define printBold(s) printf("\x1b[1m%s\x1b[0m", (s))
 
@@ -51,7 +50,7 @@ void printMoney(int money) {
             strcat(str, temp);
         }
     }
-    printf("%sRp%s", YELLOW, str, NO_EFFECT);
+    printf("%sRp%s%s", YELLOW, str, NO_EFFECT);
 }
 
 char *strMoney(int money) {

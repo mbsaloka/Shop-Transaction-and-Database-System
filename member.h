@@ -14,7 +14,7 @@ void showMember(char *filter) {
         if (strstr(name, filter)) {
             tempFilterMember[numTempFilterMember++] = member[i];
             printf("%-5.d|\t %-22.22s | %-13.13s | %-21.21s | %s %s | ", member[i].ID, member[i].name, member[i].phoneNum, member[i].address, member[i].registDate, member[i].registTime);
-            printf("%-15.15s | %-15.15s | ", member[i].username, member[i].password);
+            printf("%-15.15s | %-13.13s | ", member[i].username, member[i].password);
             printMoney(member[i].balance);
             printf("\n");
         }
@@ -24,7 +24,8 @@ void showMember(char *filter) {
 void updateMember(int ID) {
     int idx = 0;
     int balance;
-    char name[101], phoneNum[20], address[101], username[101], password[101];
+    char name[101] = "\0", phoneNum[20] = "\0", address[101] = "\0";
+    char username[101] = "\0", password[101] = "\0";
 
     for (int i = 0; i < numMember; i++) {
         if (member[i].ID == ID) {
@@ -48,17 +49,17 @@ void updateMember(int ID) {
         CLEAR_ROW(3);
         printBold("\nPERBARUI INFO MEMBER (tekan tab untuk isi otomatis.)\n");
         printf("ID : %d\n", ID);
-        printf("Nama : \x1b[90m%s\x1b[0m\n", member[idx].name);
-        printf("No Telp : \x1b[90m%s\x1b[0m\n", member[idx].phoneNum);
-        printf("Alamat : \x1b[90m%s\x1b[0m\n", member[idx].address);
-        printf("Saldo : \x1b[90m%d\x1b[0m\n", member[idx].balance);
-        printf("Username : \x1b[90m%s\x1b[0m\n", member[idx].username);
-        printf("Password : \x1b[90m%s\x1b[0m\n", member[idx].password);
-        printf("\033[6A\r");
+        printf("Nama : %s%s%s\n", GRAY, member[idx].name, NO_EFFECT);
+        printf("No Telp : %s%s%s\n", GRAY, member[idx].phoneNum, NO_EFFECT);
+        printf("Alamat : %s%s%s\n", GRAY, member[idx].address, NO_EFFECT);
+        printf("Saldo : %s%d%s\n", GRAY, member[idx].balance, NO_EFFECT);
+        printf("Username : %s%s%s\n", GRAY, member[idx].username, NO_EFFECT);
+        printf("Password : %s%s%s\n", GRAY, member[idx].password, NO_EFFECT);
+        CURSOR_UP(6);
         printf("Nama : ");
         if (getTabStr(name, member[idx].name) == -1) return;
         printf("No Telp : ");
-        if (getTabStr(phoneNum, member[idx].phoneNum) == -1) return;
+        if (getTabNumStr(phoneNum, member[idx].phoneNum) == -1) return;
         printf("Alamat : ");
         if (getTabStr(address, member[idx].address) == -1) return;
         printf("Saldo : ");
@@ -158,7 +159,7 @@ int createAccount(char *username, char *password) {
 }
 
 void inputMember() {
-    char name[101], phoneNum[20], address[101], username[101], password[101];
+    char name[101] = "\0", phoneNum[20] = "\0", address[101] = "\0", username[101] = "\0", password[101] = "\0";
     int ID, balance = 1000000;
 
     while (createAccount(username, password)) {

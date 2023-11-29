@@ -4,7 +4,7 @@ void showTransactionLog(char *filter) {
     numTempFilterTransaction = 0;
 
     printBold("CATATAN TRANSAKSI\n");
-    printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
+    printBold("ID   | Tanggal Transaksi   | Nama Pelanggan\t    | ID Member | Total Harga\n");
     printf("---------------------------------------------------------------------------------\n");
     for (int i = 0; i < numTransaction; i++) {
         strcpy(name, transaction[i].name);
@@ -15,7 +15,8 @@ void showTransactionLog(char *filter) {
             tempFilterTransaction[numTempFilterTransaction++] = transaction[i];
             printf("%-5.d| %s %s | %-22.22s | ", transaction[i].ID, transaction[i].transactionDate, transaction[i].transactionTime, transaction[i].name);
             (transaction[i].memberID == 0) ? printf("guest     | ") : printf("%-10.d| ", transaction[i].memberID);
-            printf("Rp%s\n", strMoney(transaction[i].totalPrice));
+            printMoney(transaction[i].totalPrice);
+            printf("\n");
         }
     }
 }

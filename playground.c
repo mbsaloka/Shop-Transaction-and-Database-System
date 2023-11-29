@@ -67,42 +67,50 @@
 //     return 0;
 // }
 
-// #include <stdio.h>
-// #include <conio.h>
-// #include <stdlib.h>
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
 
-// int main() {
-//     printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
-//     int input, prev;
-//     input = getch();
-//     while (1) {
-//         if (input == 3) {  // ASCII value for Ctrl+C
-//             printf("Ctrl+C ditekan. Keluar dari program.\n");
-//             exit(0);
-//         }
+int downArrow(char *a, char *b) {
+    return ((*a == '\0' || *a == 224) && *b == 'P');
+}
 
-//         if ((prev == '\0' || prev == 224) && input == 'P') {
-//             printf("PANAH BAWAH\n");
-//         }
-//         if ((prev == '\0' || prev == 224) && input == 'H') {
-//             printf("PANAH ATAS\n");
-//         }
-//         if ((prev == '\0' || prev == 224) && input == 'K') {
-//             printf("PANAH KIRI\n");
-//         }
-//         if ((prev == '\0' || prev == 224) && input == 'M') {
-//             printf("PANAH KANAN\n");
-//         }
+int upArrow(char a, char b) {
+    return ((a == '\0' || a == 224) && b == 'H');
+}
 
-//         if (prev != '\0' && prev != 224 && input != '\0' && input != 224) {
-//             printf("Anda menekan: %d %c\n", input, input);
-//         }
+int main() {
+    printf("Program sedang berjalan. Tekan Ctrl+C untuk menghentikan.\n");
+    char input, prev;
+    input = getch();
+    while (1) {
+        if (input == 3) {  // ASCII value for Ctrl+C
+            printf("Ctrl+C ditekan. Keluar dari program.\n");
+            exit(0);
+        }
 
-//         prev = input;
-//         input = getch();
-//     }
-//     return 0;
-// }
+        if (downArrow(&prev, &input)) {
+            printf("PANAH BAWAH %c %c\n", prev, input);
+        }
+        if ((prev == '\0' || prev == 224) && input == 'H') {
+            printf("PANAH ATAS %c %c\n", prev, input);
+        }
+        if ((prev == '\0' || prev == 224) && input == 'K') {
+            printf("PANAH KIRI %c %c\n", prev, input);
+        }
+        if ((prev == '\0' || prev == 224) && input == 'M') {
+            printf("PANAH KANAN %c %c\n", prev, input);
+        }
+
+        if (prev != '\0' && prev != 224 && input != '\0' && input != 224) {
+            printf("Anda menekan: %d %c\n", input, input);
+        }
+
+        prev = input;
+        input = getch();
+    }
+    return 0;
+}
 
 // #include <stdio.h>
 // #include <conio.h>
@@ -339,11 +347,11 @@
 //     return 0;
 // }
 
-#include <stdio.h>
-#include <conio.h>
+// #include <stdio.h>
+// #include <conio.h>
 
-int main() {
-    int a = 5;
-    printf("%.5d", a);
-    printf("TES");
-}
+// int main() {
+//     int a = 5;
+//     printf("%.5d", a);
+//     printf("TES");
+// }
