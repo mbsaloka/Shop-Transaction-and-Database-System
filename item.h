@@ -1,8 +1,5 @@
 void showItem(char* filter) {
-    int COL_MAX = 21;
-    int COL_MIN = 14;
-    char name[101], name2[101];
-    int ID, price, stock;
+    char name[101];
     numTempFilterItem = 0;
 
     printBold("DAFTAR BARANG\n");
@@ -10,14 +7,8 @@ void showItem(char* filter) {
     printf("----------------------------------------------\n");
     for (int i = 0; i < numItem; i++) {
         strcpy(name, item[i].name);
-
-        for (int j = 0; j < strlen(filter); j++) {
-            if (filter[j] >= 'A' && filter[j] <= 'Z') filter[j] += 32;
-        }
-        for (int j = 0; j < strlen(name); j++) {
-            if (name[j] >= 'A' && name[j] <= 'Z') name[j] += 32;
-        }
-
+        toLower(name);
+        toLower(filter);
         if (strstr(name, filter)) {
             tempFilterItem[numTempFilterItem++] = item[i];
             printf("%-5.d|\t %-22.22s | %d\t| %d\n", item[i].ID, item[i].name, item[i].price, item[i].stock);
@@ -48,7 +39,7 @@ void updateItem(int ID) {
     switch (code) {
     case 0:
         printf("\033[2B");
-        for (int i = 0; i < 3; i++) clearRow();
+        CLEAR_ROW(3);
         printBold("\nPERBARUI INFO BARANG (tekan tab untuk isi otomatis.)\n");
         printf("ID : %d\n", ID);
         printf("Nama Barang : \x1b[90m%s\x1b[0m\n", item[idx].name);

@@ -1,8 +1,8 @@
-#define ADMIN_NAME ""
-#define ADMIN_PASSWORD ""
+#define ADMIN_NAME "Admin1"
+#define ADMIN_PASSWORD "123"
 
 int adminLogin() {
-    char username[101] = "", password[101] = "";
+    char username[101], password[101];
     while (strcmp(username, ADMIN_NAME) != 0 || strcmp(password, ADMIN_PASSWORD) != 0) {
         clearScreen();
         printBold("[MODE ADMIN]\n");
@@ -18,7 +18,6 @@ int adminLogin() {
             printf("Username tidak dikenali!\n");
             printf("Coba login kembali? (Y/N) ");
             if (getYesNo() != 'Y') return 0;
-
         } else if (strcmp(password, ADMIN_PASSWORD) != 0) {
             printf("Password salah!\n");
             printf("Coba login kembali? (Y/N) ");

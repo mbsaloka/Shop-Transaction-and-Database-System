@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <conio.h>
-#include <string.h>
-#include <stdlib.h>
-
 void getAlpha(char *str) {
     int length = 100;
     char c;
@@ -202,7 +197,8 @@ int getTabStr(char *str, char *defaultStr) {
         return -1;
     } else {
         for (int i = 0; i < 50; i++) putchar(' ');
-        printf("\033[50D");
+        printf("%-50.s");
+        CURSOR_LEFT(50);
         getAllChar(str);
         if (strcmp(str, "ESCAPE") == 0) return -1;
     }
@@ -218,7 +214,8 @@ int getTabInt(int *num, int defaultNum) {
         return -1;
     } else {
         for (int i = 0; i < 50; i++) putchar(' ');
-        printf("\033[50D");
+        printf("%-50.s");
+        CURSOR_LEFT(50);
         *num = getNumINT();
         if (*num == -1) return -1;
     }

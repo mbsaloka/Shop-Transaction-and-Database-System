@@ -323,18 +323,27 @@
 //     printf("HASIL : %s", nama);
 // }
 
+// #include <stdio.h>
+
+// int main() {
+//     int max_width = 20;     // Batas maksimal karakter
+//     char text[] = "Hello";  // Ganti dengan teks yang ingin dicetak
+
+//     // Menggunakan spesifikasi format lebar lapangan %-*.*s
+//     // %-*.*s akan mencetak string dengan lebar lapangan yang ditentukan, rata kiri
+//     // Pertama * adalah untuk lebar lapangan total, kedua * adalah untuk panjang string
+
+//     printf("%20.s", text);
+
+//     printf("*");
+//     return 0;
+// }
+
 #include <stdio.h>
+#include <conio.h>
 
 int main() {
-    int max_width = 20;     // Batas maksimal karakter
-    char text[] = "Hello";  // Ganti dengan teks yang ingin dicetak
-
-    // Menggunakan spesifikasi format lebar lapangan %-*.*s
-    // %-*.*s akan mencetak string dengan lebar lapangan yang ditentukan, rata kiri
-    // Pertama * adalah untuk lebar lapangan total, kedua * adalah untuk panjang string
-
-    printf("%20.s", text);
-
-    printf("*");
-    return 0;
+    int a = 5;
+    printf("%.5d", a);
+    printf("TES");
 }

@@ -7,16 +7,9 @@ void showTransactionLog(char *filter) {
     printBold("ID   |\t Tanggal Transaksi\t| Nama Pelanggan\t| ID Member | Total Harga\n");
     printf("---------------------------------------------------------------------------------\n");
     for (int i = 0; i < numTransaction; i++) {
-        for (int i = 0; i < strlen(filter); i++) {
-            if (filter[i] >= 'A' && filter[i] <= 'Z') {
-                filter[i] += 32;
-            }
-        }
-        for (int i = 0; i < strlen(name); i++) {
-            if (name[i] >= 'A' && name[i] <= 'Z') {
-                name[i] += 32;
-            }
-        }
+        strcpy(name, transaction[i].name);
+        toLower(name);
+        toLower(filter);
 
         if (strstr(name, filter)) {
             tempFilterTransaction[numTempFilterTransaction++] = transaction[i];

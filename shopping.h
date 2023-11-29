@@ -93,7 +93,7 @@ void addItemToCart() {
                     sleep(1);
                     return;
                 }
-                for (int i = 0; i < 3; i++) clearRow();
+                CLEAR_ROW(3);
             }
         }
     }
@@ -213,7 +213,7 @@ void openCart() {
                         sleep(1);
                         break;
                     }
-                    for (int i = 0; i < 3; i++) clearRow();
+                    CLEAR_ROW(3);
                 }
                 break;
             case 2:

@@ -1,3 +1,20 @@
+void generateReceiptFileName(char *fileName, char *date, char *time) {
+    strcpy(fileName, "receipt/receipt_");
+    strcat(fileName, date);
+    strcat(fileName, "_");
+    strcat(fileName, time);
+    strcat(fileName, ".txt");
+
+    char *ptr = fileName + 9;
+    while (*ptr) {
+        if (*ptr == '/' || *ptr == ':') {
+            memmove(ptr, ptr + 1, strlen(ptr));
+        } else {
+            ptr++;
+        }
+    }
+}
+
 void showBill() {
     printBold("\nISI KERANJANG ANDA ");
     printf("(%d produk)\n", numCart);
@@ -23,31 +40,15 @@ void saveReceipt() {
     char *time = transaction[numTransaction - 1].transactionTime;
     int transactionID = transaction[numTransaction - 1].ID;
     int totalPrice = transaction[numTransaction - 1].totalPrice;
-    strcpy(FILE_RECEIPT, "receipt/receipt_");
-    strcat(FILE_RECEIPT, date);
-    strcat(FILE_RECEIPT, "_");
-    strcat(FILE_RECEIPT, time);
-    strcat(FILE_RECEIPT, ".txt");
-
-    char *ptr = FILE_RECEIPT + 9;
-    while (*ptr) {
-        if (*ptr == '/' || *ptr == ':') {
-            memmove(ptr, ptr + 1, strlen(ptr));
-        } else {
-            ptr++;
-        }
-    }
+    generateReceiptFileName(FILE_RECEIPT, date, time);
 
     outp = fopen(FILE_RECEIPT, "w");
-    int zeroLength = 1;
-    for (int i = 1; i <= transactionID; i *= 10) zeroLength++;
     fprintf(outp, "---------------------------------------------\n");
     fprintf(outp, "================ ITS MIRT ===================\n");
     fprintf(outp, "---------------------------------------------\n");
     fprintf(outp, "Tanggal         : %s %s\n", date, time);
     fprintf(outp, "Nomor Transaksi : T");
-    for (int i = 0; i < 5 - zeroLength; i++) fprintf(outp, "0");
-    fprintf(outp, "%d\n", transactionID);
+    fprintf(outp, "%.5d\n", transactionID);
     fprintf(outp, "Nama Pelanggan  : %s", onlineUser.name);
     if (onlineUser.ID) {
         fprintf(outp, " (member)\n");
@@ -57,30 +58,7 @@ void saveReceipt() {
     fprintf(outp, "ID   |\t Nama Barang\t| Jmlh\t| Total Harga\n");
     fprintf(outp, "---------------------------------------------\n");
     for (int i = 0; i < numCart; i++) {
-        int COL_MAX = 14;
-        int COL_MIN = 11;
-        char name[101];
-        int ID, price, amount;
-
-        ID = cart[i].ID;
-        strcpy(name, cart[i].name);
-        amount = cart[i].amount;
-        price = cart[i].price * amount;
-
-        if (strlen(name) > COL_MAX) {
-            name[COL_MAX - 2] = '.';
-            name[COL_MAX - 1] = '.';
-            name[COL_MAX] = '\0';
-        }
-
-        if (strlen(name) < COL_MIN) {
-            strcat(name, "    ");
-        }
-
-        char space[] = "    ";
-        space[3] = (ID < 10) ? ' ' : '\0';
-
-        fprintf(outp, "%d%s|\t %s\t| %d \t| Rp%s\n", ID, space, name, amount, strMoney(price));
+        fprintf(outp, "%-5.d|\t %-14.14s\t| %d\t| Rp%s\n", cart[i].ID, cart[i].name, cart[i].amount, strMoney(cart[i].price * cart[i].amount));
     }
     fprintf(outp, "---------------------------------------------\n");
     fprintf(outp, "\t\t\tTOTAL\t: Rp%s\n", strMoney(totalPrice));
@@ -108,20 +86,7 @@ void showReceipt(int ID) {
     }
 
     char FILE_RECEIPT[101];
-    strcpy(FILE_RECEIPT, "receipt/receipt_");
-    strcat(FILE_RECEIPT, date);
-    strcat(FILE_RECEIPT, "_");
-    strcat(FILE_RECEIPT, time);
-    strcat(FILE_RECEIPT, ".txt");
-
-    char *ptr = FILE_RECEIPT + 9;
-    while (*ptr) {
-        if (*ptr == '/' || *ptr == ':') {
-            memmove(ptr, ptr + 1, strlen(ptr));
-        } else {
-            ptr++;
-        }
-    }
+    generateReceiptFileName(FILE_RECEIPT, date, time);
 
     inp = fopen(FILE_RECEIPT, "r");
     if (inp == NULL) {

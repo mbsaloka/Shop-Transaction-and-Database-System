@@ -5,8 +5,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "data_manipulation.h"
 #include "text_style.h"
+#include "data_manipulation.h"
 #include "get_time.h"
 #include "custom_input.h"
 #include "arrow_input.h"

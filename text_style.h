@@ -1,13 +1,27 @@
-void clearScreen() {
-    printf("\x1b[2J\x1b[H");
-}
+#define BLUE "\x1b[1m\x1b[94m"
+#define RED "\x1b[1m\x1b[91m"
+#define ORANGE "\x1b[1m\033[38;5;208m"
+#define GREEN "\x1b[1m\033[92m"
+#define GRAY "\x1b[90m"
+#define YELLOW "\x1b[33m"
+#define NO_EFFECT "\x1b[0m"
+#define HIDE_CURSOR "\e[?25l"
+#define SHOW_CURSOR "\e[?25h"
+#define CURSOR_UP(n) printf("\033[%dA\r", (n))
+#define CURSOR_DOWN(n) printf("\033[%dB\r", (n))
+#define CURSOR_LEFT(n) printf("\033[%dD\r", (n))
+#define CURSOR_RIGHT(n) printf("\033[%dC\r", (n))
+#define CLEAR_ROW(n)
+#define CLEAR_ROWS(n) (for (int i = 0; i < (n); i++) printf("\033[A\033[2K\r"))
+#define clearScreen() printf("\x1b[2J\x1b[H")
+#define printBold(s) printf("\x1b[1m%s\x1b[0m", (s))
 
-void clearRow() {
-    printf("\033[A\33[2K\r");
-}
-
-void printBold(char *s) {
-    printf("\x1b[1m%s\x1b[0m", s);
+void toLower(char *str) {
+    for (int i = 0; i < strlen(str); i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+            str[i] = str[i] += 32;
+        }
+    }
 }
 
 void comingSoon() {
@@ -37,7 +51,7 @@ void printMoney(int money) {
             strcat(str, temp);
         }
     }
-    printf("\x1b[33mRp%s\x1b[0m", str);
+    printf("%sRp%s", YELLOW, str, NO_EFFECT);
 }
 
 char *strMoney(int money) {
@@ -60,8 +74,11 @@ char *strMoney(int money) {
 }
 
 /*
-Activate ANSI in CMD
+Activate  ANSI escape sequences in CMD
 reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
+
+Deactivate ANSI
+reg delete HKCU\Console /v VirtualTerminalLevel /f
 
 Hapus Satu Baris
 \033[A\33[2K\r

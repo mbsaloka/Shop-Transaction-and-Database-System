@@ -1,8 +1,5 @@
 void showMember(char *filter) {
-    int COL_MAX = 22;
-    int COL_MIN = 15;
-    char name[101], phoneNum[20], address[101], username[101], password[101];
-    char registDate[15], registTime[15];
+    char name[101];
     int ID, balance;
     numTempFilterMember = 0;
 
@@ -11,12 +8,8 @@ void showMember(char *filter) {
     printf("----------------------------------------------------------------------------------------------------------------------------------------------\n");
     for (int i = 0; i < numMember; i++) {
         strcpy(name, member[i].name);
-        for (int i = 0; i < strlen(filter); i++) {
-            if (filter[i] >= 'A' && filter[i] <= 'Z') filter[i] += 32;
-        }
-        for (int i = 0; i < strlen(name); i++) {
-            if (name[i] >= 'A' && name[i] <= 'Z') name[i] += 32;
-        }
+        toLower(name);
+        toLower(filter);
 
         if (strstr(name, filter)) {
             tempFilterMember[numTempFilterMember++] = member[i];
@@ -52,7 +45,7 @@ void updateMember(int ID) {
     switch (code) {
     case 0:
         printf("\033[2B");
-        for (int i = 0; i < 3; i++) clearRow();
+        CLEAR_ROW(3);
         printBold("\nPERBARUI INFO MEMBER (tekan tab untuk isi otomatis.)\n");
         printf("ID : %d\n", ID);
         printf("Nama : \x1b[90m%s\x1b[0m\n", member[idx].name);

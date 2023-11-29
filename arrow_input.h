@@ -1,57 +1,49 @@
+int downArrow(char a, char b) {
+    return ((a == '\0' || a == 224) && b == 'P');
+}
+
+int upArrow(char a, char b) {
+    return ((a == '\0' || a == 224) && b == 'H');
+}
+
 int chooseOption(char *option[], int length) {
-    char *arrow = "\x1b[1m\x1b[94m> ";
-    char *redArrow = "\x1b[1m\x1b[91m> ";
-    char *noEffect = "\x1b[0m";
-    char *hiddenCursor = "\e[?25l";
-    char *visibleCursor = "\e[?25h";
+    int code = 0;
+    int input, prev;
     for (int i = 0; i < length; i++) {
         printf("  %s\n", option[i]);
     }
-    printf("%s", hiddenCursor);
-    printf("\033[%dA\r", length);
-    printf("%s", arrow);
-    printf("%s%s", option[0], noEffect);
-    int code = 0;
-    int input, prev;
+    printf("%s", HIDE_CURSOR);
+    CURSOR_UP(length);
+    printf("%s> %s%s", BLUE, option[0], NO_EFFECT);
     do {
         prev = input;
         input = getch();
 
-        if ((prev == '\0' || prev == 224) && input == 'P') {  // down
-            printf("\r  %s%s", noEffect, option[code]);
-            code++;
+        if (downArrow(prev, input) || upArrow(prev, input)) {
+            printf("\r  %s", option[code]);
+            (input == 'P') ? code++ : code--;
             if (code >= length) {
                 code = 0;
-                printf("\r\033[%dA%s%s%s", length - 1, arrow, option[code], noEffect);
-            } else {
-                if (code == length - 1) {
-                    printf("\r\033[B%s%s%s", redArrow, option[code], noEffect);
-                } else {
-                    printf("\r\033[B%s%s%s", arrow, option[code], noEffect);
-                }
-            }
-        } else if ((prev == '\0' || prev == 224) && input == 'H') {  // up
-            printf("\r  %s%s", noEffect, option[code]);
-            code--;
-            if (code < 0) {
+                CURSOR_UP(length - 1);
+            } else if (code < 0) {
                 code = length - 1;
-                printf("\r\033[%dB%s%s%s", length - 1, redArrow, option[code], noEffect);
+                CURSOR_DOWN(length - 1);
             } else {
-                if (code == length - 1) {
-                    printf("\r\033[A%s%s%s", redArrow, option[code], noEffect);
-                } else {
-                    printf("\r\033[A%s%s%s", arrow, option[code], noEffect);
-                }
+                (input == 'P') ? CURSOR_DOWN(1) : CURSOR_UP(1);
             }
-        } else if (input == 3) {
-            printf("%s", visibleCursor);
+            printf("%s> ", (code == length - 1) ? RED : BLUE);
+            printf("%s%s", option[code], NO_EFFECT);
+        }
+
+        if (input == 3) {
+            printf("%s", SHOW_CURSOR);
             exit(0);
         } else if (input == 27) {
-            printf("%s", visibleCursor);
+            printf("%s", SHOW_CURSOR);
             return length - 1;
         }
     } while (input != 13);
-    printf("%s", visibleCursor);
+    printf("%s", SHOW_CURSOR);
     return code;
 }
 
@@ -84,202 +76,186 @@ int printLineCart(int idx) {
 }
 
 int chooseData(void *data, size_t dataSize, int totalIndex, int (*printLineData)(void *)) {
-    char *highlight = "\x1b[1m\033[38;5;208m";
-    char *greenHighlight = "\x1b[1m\x1b[92m";
-    char *noEffect = "\x1b[0m";
-    char *hiddenCursor = "\e[?25l";
-    char *visibleCursor = "\e[?25h";
     void *currentData = (char *)data + (dataSize * 0);
-
     int code = 0, ID;
     int input, prev;
 
     if (totalIndex == 0) {
-        printf("%s", greenHighlight);
-        printf("\rMasukkan Filter : \x1b[90m(enter untuk menerapkan filter)\033[31D");
-        printf("%s%s", noEffect, visibleCursor);
+        printf("%s", GREEN);
+        printf("\rMasukkan Filter : ");
+        printf("%s(enter untuk menerapkan filter)", GRAY);
+        CURSOR_LEFT(31);
+        printf("%s", NO_EFFECT);
         ID = (getEnter() == 13) ? -2 : -1;
     } else {
-        printf("%s", hiddenCursor);
-        printf("\033[%dA\r", totalIndex + 1);
-        printf("%s", highlight);
+        printf("%s", HIDE_CURSOR);
+        CURSOR_UP(totalIndex + 1);
+        printf("%s", ORANGE);
         ID = printLineData(currentData);
-        printf("%s", noEffect);
+        printf("%s", NO_EFFECT);
     }
 
     while (input != 13 && totalIndex > 0) {
         prev = input;
         input = getch();
 
-        if (((prev == '\0' || prev == 224) && input == 'P') || ((prev == '\0' || prev == 224) && input == 'H')) {
-            printf("\r%s", noEffect);
+        if (downArrow(prev, input) || upArrow(prev, input)) {
             if (ID == -2) {
-                printf("Masukkan Filter : ");
-                for (int i = 0; i < 31; i++) putchar(' ');
-                printf("%s", hiddenCursor);
+                printf("Masukkan Filter : %-31.s");
+                printf("%s", HIDE_CURSOR);
             } else {
                 printLineData(currentData);
             }
+
             if (input == 'P') {
                 code++;
                 if (code == totalIndex) {
                     code++;
-                    printf("\r\033[2B");
+                    CURSOR_DOWN(2);
                 } else if (code > totalIndex) {
                     code = 0;
-                    printf("\r\033[%dA", totalIndex + 1);
+                    CURSOR_UP(totalIndex - 1);
                 } else {
-                    printf("\r\033[B");
+                    CURSOR_DOWN(1);
                 }
             } else if (input == 'H') {
                 code--;
-                if (code < 0) {
-                    code = totalIndex + 1;
-                    printf("\r\033[%dB", totalIndex + 1);
-                } else if (code == totalIndex) {
+                if (code == totalIndex) {
                     code--;
-                    printf("\r\033[2A");
+                    CURSOR_UP(2);
+                } else if (code < totalIndex) {
+                    code = totalIndex + 1;
+                    CURSOR_DOWN(totalIndex + 1);
                 } else {
-                    printf("\r\033[A");
+                    CURSOR_UP(1);
                 }
             }
-            currentData = (char *)data + (dataSize * code);
+
             if (code < totalIndex) {
-                printf("%s", highlight);
+                currentData = (char *)data + (dataSize * code);
+                printf("%s", ORANGE);
                 ID = printLineData(currentData);
-                printf("%s\r", noEffect);
+                printf("%s\r", NO_EFFECT);
             } else {
-                printf("%s", greenHighlight);
-                printf("Masukkan Filter : \x1b[90m(enter untuk menerapkan filter)\033[31D");
-                printf("%s%s", noEffect, visibleCursor);
+                printf("%s", GREEN);
+                printf("\rMasukkan Filter : ");
+                printf("%s(enter untuk menerapkan filter)", GRAY);
+                CURSOR_LEFT(31);
+                printf("%s%s", NO_EFFECT, SHOW_CURSOR);
                 ID = -2;
             }
-        } else if (input == 3) {
-            printf("%s", visibleCursor);
+        }
+
+        if (input == 3) {
+            printf("%s", SHOW_CURSOR);
             exit(0);
         } else if (input == 27) {
-            printf("%s", visibleCursor);
+            printf("%s", SHOW_CURSOR);
             return -1;
         }
     }
     if (ID == -2) {
-        for (int i = 0; i < 31; i++) putchar(' ');
-        printf("\033[31D");
+        printf("%-31.s");
+        CURSOR_LEFT(31);
     } else {
-        printf("\033[%dB", totalIndex - code + 2);
-        clearRow();
-        clearRow();
+        CURSOR_DOWN(totalIndex - code + 2);
+        CLEAR_ROW(2);
     }
-    printf("%s", visibleCursor);
+    printf("%s", SHOW_CURSOR);
     return ID;
 }
 
 int chooseCart() {
-    char *highlight = "\x1b[1m\033[38;5;208m";
-    char *blueArrow = "\x1b[1m\x1b[94m> ";
-    char *redArrow = "\x1b[1m\x1b[91m> ";
-    char *noEffect = "\x1b[0m";
-    char *hiddenCursor = "\e[?25l";
-    char *visibleCursor = "\e[?25h";
-
+    int code = 0, ID;
+    int input, prev;
     char *option[] = {
         "Selesai & Bayar",
         "Kembali ke Menu Belanja",
     };
-    printf("%s", hiddenCursor);
 
+    printf("%s", HIDE_CURSOR);
     printBold("Ingin melakukan apa?\n");
-    printf("  Selesai & Bayar\n");
-    printf("  Kembali ke Menu Belanja");
-
-    int code = 0, ID;
-    int input, prev;
+    printf("  %s\n  %s\n", option[0], option[1]);
 
     if (numCart == 0) {
-        printf("\n");
-        clearRow();
-        clearRow();
-        clearRow();
-        printf("%sKembali ke Menu Belanja", blueArrow);
-        printf("%s", noEffect);
+        CLEAR_ROW(2);
+        printf("%s> Kembali ke Menu Belanja%s", BLUE, NO_EFFECT);
         ID = getEnter();
         return -1;
     } else {
-        printf("\033[%dA\r", numCart + 4);
-        printf("%s", highlight);
+        CURSOR_UP(numCart + 4);
+        printf("%s", ORANGE);
         printLineCart(0);
-        printf("%s", noEffect);
+        printf("%s", NO_EFFECT);
     }
 
     while (input != 13 && numCart > 0) {
         prev = input;
         input = getch();
 
-        if (((prev == '\0' || prev == 224) && input == 'P') || ((prev == '\0' || prev == 224) && input == 'H')) {
-            printf("\r%s", noEffect);
+        if (downArrow(prev, input) || upArrow(prev, input)) {
             if (ID == -2) {
-                printf("  Selesai & Bayar");
+                printf("  %s", option[0]);
             } else if (ID == -3) {
-                printf("  Kembali ke Menu Belanja");
+                printf("  %s", option[1]);
             } else {
                 printLineCart(code);
             }
+
             if (input == 'P') {
                 code++;
                 if (code == numCart) {
                     code = numCart + 3;
-                    printf("\r\033[4B");
+                    CURSOR_DOWN(4);
                 } else if (code == numCart + 5) {
                     code = 0;
-                    printf("\r\033[%dA", numCart + 4);
+                    CURSOR_UP(numCart + 4);
                 } else {
-                    printf("\r\033[B");
+                    CURSOR_DOWN(1);
                 }
             } else if (input == 'H') {
                 code--;
                 if (code < 0) {
-                    code = numCart + 4;
-                    printf("\r\033[%dB", numCart + 4);
+                    code = numCart;
+                    +4;
+                    CURSOR_DOWN(numCart + 4);
                 } else if (code == numCart + 2) {
                     code = numCart - 1;
-                    printf("\r\033[4A");
+                    CURSOR_UP(4);
                 } else {
-                    printf("\r\033[A");
+                    CURSOR_UP(1);
                 }
             }
+
             if (code < numCart) {
-                printf("%s", highlight);
+                printf("%s", ORANGE);
                 ID = printLineCart(code);
-                printf("\r%s", noEffect);
+                printf("%s\r", NO_EFFECT);
             } else if (code == numCart + 3) {
-                printf("%s", blueArrow);
-                printf("Selesai & Bayar");
-                printf("%s", noEffect);
+                printf("%s> %s%s", BLUE, option[0], NO_EFFECT);
                 ID = -2;
             } else if (code == numCart + 4) {
-                printf("%s", redArrow);
-                printf("Kembali ke Menu Belanja");
-                printf("%s", noEffect);
+                printf("%s> %s%s", RED, option[1], NO_EFFECT);
                 ID = -3;
             }
-        } else if (input == 3) {
-            printf("%s", visibleCursor);
+        }
+
+        if (input == 3) {
+            printf("%s", SHOW_CURSOR);
             exit(0);
         } else if (input == 27) {
-            printf("%s", visibleCursor);
+            printf("%s", SHOW_CURSOR);
             return -1;
         }
     }
     if (ID == -2) {
         clearScreen();
     } else if (ID == -3) {
-        clearRow();
-        clearRow();
+        CLEAR_ROW(2);
     } else {
-        printf("\033[%dB", numCart - code + 4);
-        clearRow();
-        clearRow();
+        CURSOR_DOWN(numCart - code + 4);
+        CLEAR_ROW(2);
     }
-    printf("%s", visibleCursor);
+    printf("%s", SHOW_CURSOR);
     return ID;
 }
