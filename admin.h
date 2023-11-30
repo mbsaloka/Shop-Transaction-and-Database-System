@@ -33,7 +33,7 @@ int adminLogin() {
 }
 
 void admin() {
-    // if (!adminLogin()) return;
+    if (!adminLogin()) return;
     clearScreen();
     int code;
     char filter[101];

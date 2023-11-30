@@ -73,7 +73,7 @@ char *strMoney(int money) {
 }
 
 /*
-Activate  ANSI escape sequences in CMD
+Activate ANSI escape sequences in CMD
 reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1
 
 Deactivate ANSI
