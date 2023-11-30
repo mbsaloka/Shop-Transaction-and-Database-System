@@ -5,7 +5,7 @@
 - [Screenshot Aplikasi](#screenshot-aplikasi)
 
 ## Deskripsi
-Program "Shop Transaction and Database System in C" adalah sebuah sistem yang dirancang untuk memudahkan pengelolaan transaksi dan basis data di toko. Dengan menggunakan bahasa pemrograman C, program ini bertujuan untuk menjalankan fungsi merekam, mengelola, dan melacak transaksi penjualan serta informasi produk di sebuah toko. Dalam program ini terdapat 2 mode, yaitu mode admin dan mode pelanggan.
+Program "Shop Transaction and Database System in C" adalah sebuah program yang dirancang untuk menjalankan sistem pengelolaan transaksi dan basis data di toko. Dengan menggunakan bahasa pemrograman C, program ini bertujuan untuk menjalankan fungsi merekam, mengelola, dan melacak transaksi penjualan serta informasi produk di sebuah toko. Dalam program ini terdapat 2 mode, yaitu mode admin dan mode pelanggan.
 
 ## Fitur Utama
 1. Manajemen Barang:
