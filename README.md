@@ -43,7 +43,7 @@ Program "Shop Transaction and Database System in C" adalah sebuah program yang d
 
 ### Instalasi:
 - Ekstrak file .zip yang sebelumnya didownload.
-- Jalankan shortcut ```SHOP APP``` atau masuk ke folder ```sourde``` lalu jalankan ```main.exe```.
+- Jalankan shortcut ```SHOP APP``` atau masuk ke folder ```source``` lalu jalankan ```main.exe```.
 - Jika ada peringantan bahaya dari windows abaikan saja (saya gamasukin virus apa apa, beneran 🙏).
 - Jika ```SHOP APP``` dan ```main.exe``` bermasalah, masuk ke folder ```source``` kemudian compile file ```main.c``` untuk mendapatkan file ```main.exe``` yang baru.
 - Cara compile:
