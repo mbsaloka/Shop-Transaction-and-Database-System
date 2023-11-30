@@ -33,29 +33,26 @@ Program "Shop Transaction and Database System in C" adalah sebuah sistem yang di
 ### Pra-syarat:
 - Pastikan compiler C (seperti GCC) sudah terinstal di sistem Anda.
 - Karena program memanfaatkan ANSI escape sequences untuk mendukung tampilan, aktifkan ANSI escape sequences terlebih dahulu dengan cara mengetikkan
-  ```reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1``` di CMD.
-  Sebagai informasi tambahan, ketikkan
-  ```reg delete HKCU\Console /v VirtualTerminalLevel /f``` di CMD untuk menonaktifkan ANSI escape sequences
+  ```reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1``` di CMD. Sebagai informasi tambahan, ketikkan ```reg delete HKCU\Console /v VirtualTerminalLevel /f``` di CMD untuk menonaktifkan ANSI escape sequences.
+- Download source code dan file lainnya [di sini]().
 
-Instalasi:
+### Instalasi:
+- Ekstrak file .zip yang sebelumnya didownload.
+- Jalankan file ```main.exe```. Jika file ```main.exe``` bermasalah, compile file ```main.c``` untuk mendapatkan file ```main.exe``` yang baru.
+- Cara compile:
+  - Menggunakan C/C++ IDE
+  - Menggunakan CMD
+    1. Buka CMD di directori saat ini.
+    2. Ketik ```gcc main.c -o main```.
+    3. Kemudian jalankan file ```main.exe```.
 
-(Tambahkan instruksi instalasi jika diperlukan)
-Menjalankan Aplikasi:
+### Menjalankan Aplikasi:
+1. Jalankan file ```main.exe```.
+2. Tekan arrow atas dan bawah serta ```Enter``` pada keyboard untuk menentukan pilihan.
+3. Tekan ```Esc``` untuk membatalkan proses atau kembali ke halaman berikutnya.
+4. Untuk login ke mode admin, gunakan username ```admin1``` dan password ```123```.
+5. Untuk tampilan yang lebih baik, jalankan program dalam ukuran layar lebar atau full screen.
 
-(Berikan langkah-langkah untuk menjalankan aplikasi)
-Kontribusi
-Kami sangat menghargai kontribusi dari para pengembang. Jika Anda ingin berkontribusi pada proyek ini, silakan lakukan langkah-langkah berikut:
-
-(Tambahkan langkah-langkah untuk kontribusi)
-Laporan Masalah (Bug) dan Fitur Baru
-Jika Anda menemui bug atau memiliki ide untuk fitur baru, silakan buka issue di repositori ini.
-
-Lisensi
-Proyek ini dilisensikan di bawah [nama_lisensi]. Untuk detail lebih lanjut, silakan lihat berkas LISENSI.
-
-Pengembang
+## Pengembang
 Proyek ini dikembangkan oleh:
-
-[Nama Pengembang 1]
-[Nama Pengembang 2]
-Terima kasih atas kontribusi dari seluruh tim pengembang!
+[Muh Buyung Saloka](https://instagram.com/mbsaloka)
