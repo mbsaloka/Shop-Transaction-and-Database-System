@@ -54,7 +54,7 @@ Program "Shop Transaction and Database System in C" adalah sebuah program yang d
     3. Kemudian jalankan file ```main.exe``` atau shotcut ```SHOP APP```.
 
 ### Menjalankan Aplikasi:
-1. Jalankan file ```main.exe```.
+1. Jalankan shortcut ```SHOP APP``` atau file ```main.exe```.
 2. Tekan arrow atas dan bawah serta ```Enter``` pada keyboard untuk menentukan pilihan.
 3. Tekan ```Esc``` untuk membatalkan proses atau kembali ke halaman berikutnya.
 4. Untuk login ke mode admin, gunakan username ```Admin1``` dan password ```123```.
