@@ -45,16 +45,19 @@ int memberLogin() {
         char *temp, *tempName;
         int tempID;
         passFlag = 1;
-        for (int i = 0; i < numMember; i++) {
-            if (strcmp(member[i].username, username) == 0) {
-                if (strcmp(member[i].password, password) == 0) {
+
+        Member *curMember = member;
+        while (curMember != NULL) {
+            if (strcmp(curMember->username, username) == 0) {
+                if (strcmp(curMember->password, password) == 0) {
                     isFound = 1;
-                    onlineUser = member[i];
+                    onlineUser = *curMember;
                 } else {
                     passFlag = 0;
                 }
                 break;
             }
+            curMember = curMember->next;
         }
 
         if (!isFound) {
@@ -126,7 +129,11 @@ void user() {
                 int before = numMember;
                 inputMember();
                 if (before != numMember) {
-                    onlineUser = member[numMember - 1];
+                    Member *curMember = member;
+                    while (curMember != NULL) {
+                        onlineUser = *curMember;
+                        curMember = curMember->next;
+                    }
                     isMember = 1;
                 }
             }
@@ -147,40 +154,41 @@ void user() {
             }
             int idx = 0;
             char name[101], phoneNum[20], address[101], username[101], password[101];
-            for (int i = 0; i < numMember; i++) {
-                if (member[i].ID == onlineUser.ID) {
-                    idx = i;
+            Member *curMember = member;
+            while (curMember != NULL) {
+                if (curMember->ID == onlineUser.ID) {
                     break;
                 }
+                curMember = curMember->next;
             }
             printBold("\nPERBARUI DATA DIRI (tekan tab untuk isi otomatis.)\n");
-            printf("ID : %d\n", member[idx].ID);
-            printf("Nama : \x1b[90m%s\x1b[0m\n", member[idx].name);
-            printf("No Telp : \x1b[90m%s\x1b[0m\n", member[idx].phoneNum);
-            printf("Alamat : \x1b[90m%s\x1b[0m\n", member[idx].address);
-            printf("Username : \x1b[90m%s\x1b[0m\n", member[idx].username);
-            printf("Password : \x1b[90m%s\x1b[0m\n", member[idx].password);
+            printf("ID : %d\n", curMember->ID);
+            printf("Nama : \x1b[90m%s\x1b[0m\n", curMember->name);
+            printf("No Telp : \x1b[90m%s\x1b[0m\n", curMember->phoneNum);
+            printf("Alamat : \x1b[90m%s\x1b[0m\n", curMember->address);
+            printf("Username : \x1b[90m%s\x1b[0m\n", curMember->username);
+            printf("Password : \x1b[90m%s\x1b[0m\n", curMember->password);
             printf("\033[5A\r");
             printf("Nama : ");
-            if (getTabStr(name, member[idx].name) == -1) break;
+            if (getTabStr(name, curMember->name) == -1) break;
             printf("No Telp : ");
-            if (getTabStr(phoneNum, member[idx].phoneNum) == -1) break;
+            if (getTabStr(phoneNum, curMember->phoneNum) == -1) break;
             printf("Alamat : ");
-            if (getTabStr(address, member[idx].address) == -1) break;
+            if (getTabStr(address, curMember->address) == -1) break;
             printf("Username : ");
-            if (getTabStr(username, member[idx].username) == -1) break;
+            if (getTabStr(username, curMember->username) == -1) break;
             printf("Password : ");
-            if (getTabStr(password, member[idx].password) == -1) break;
+            if (getTabStr(password, curMember->password) == -1) break;
 
             printf("Apakah Anda yakin ingin memperbarui member %s? (Y/N) ", name);
             if (getYesNo() == 'Y') {
                 clearScreen();
 
-                strcpy(member[idx].name, name);
-                strcpy(member[idx].phoneNum, phoneNum);
-                strcpy(member[idx].address, address);
-                strcpy(member[idx].username, username);
-                strcpy(member[idx].password, password);
+                strcpy(curMember->name, name);
+                strcpy(curMember->phoneNum, phoneNum);
+                strcpy(curMember->address, address);
+                strcpy(curMember->username, username);
+                strcpy(curMember->password, password);
 
                 updateData(member, sizeof(Member), numMember, FILE_MEMBER);
                 onlineUser = member[idx];

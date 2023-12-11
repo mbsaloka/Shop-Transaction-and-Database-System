@@ -225,6 +225,7 @@ void openCart() {
         }
     }
 }
+
 void shoppingMenu() {
     int code;
     char* option[] = {

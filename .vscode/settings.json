@@ -8,7 +8,8 @@
     "arrow_input.h": "c",
     "stdio.h": "c",
     "limited_input.h": "c",
-    "get_time.h": "c"
+    "get_time.h": "c",
+    "transaction_log.h": "c"
   },
   "C_Cpp.errorSquiggles": "disabled"
 }

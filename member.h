@@ -1,38 +1,63 @@
 void showMember(char *filter) {
     char name[101];
-    int ID, balance;
     numTempFilterMember = 0;
+    tempFilterMember = NULL;
 
     printBold("DAFTAR PELANGGAN MEMBERSHIP\n");
     printBold("ID   |\t Nama Pelanggan    \t| No Telp\t| Alamat Pelanggan\t| Tanggal Daftar      | Username\t| Password\t| Saldo\n");
     printf("----------------------------------------------------------------------------------------------------------------------------------------------\n");
-    for (int i = 0; i < numMember; i++) {
-        strcpy(name, member[i].name);
+    Member *curMember = member, *prevFilterMember = NULL;
+    while (curMember != NULL) {
+        strcpy(name, curMember->name);
         toLower(name);
         toLower(filter);
-
         if (strstr(name, filter)) {
-            tempFilterMember[numTempFilterMember++] = member[i];
-            printf("%-5.d|\t %-22.22s | %-13.13s | %-21.21s | %s %s | ", member[i].ID, member[i].name, member[i].phoneNum, member[i].address, member[i].registDate, member[i].registTime);
-            printf("%-15.15s | %-13.13s | ", member[i].username, member[i].password);
-            printMoney(member[i].balance);
+            numTempFilterMember++;
+            Member *newFilterMember = (Member *)malloc(sizeof(Member));
+            newFilterMember = curMember;
+            if (tempFilterMember == NULL) {
+                tempFilterMember = newFilterMember;
+                tempFilterMember->next = NULL;
+                prevFilterMember = tempFilterMember;
+            } else {
+                prevFilterMember->next = newFilterMember;
+                newFilterMember->next = NULL;
+                prevFilterMember = newFilterMember;
+            }
+            printf("%-5.d|\t %-22.22s | %-13.13s | %-21.21s | %s %s | ", curMember->ID, curMember->name, curMember->phoneNum, curMember->address, curMember->registDate, curMember->registTime);
+            printf("%-15.15s | %-13.13s | ", curMember->username, curMember->password);
+            printMoney(curMember->balance);
             printf("\n");
         }
     }
 }
 
+void searchMemberByID(int ID, Member **curMember, Member **prevMember) {
+    Member *cur = member;
+    curMember = NULL;
+    prevMember = NULL;
+    if (cur->ID == ID) {
+        *curMember = cur;
+        *prevMember = NULL;
+        return;
+    }
+    while (cur != NULL) {
+        if (cur->next->ID == ID) {
+            *curMember = cur->next;
+            *prevMember = cur;
+            return;
+        }
+        cur = cur->next;
+    }
+}
+
 void updateMember(int ID) {
-    int idx = 0;
+    Member *curMember, *prevMember;
+    searchMemberByID(ID, &curMember, &prevMember);
+
     int balance;
     char name[101] = "\0", phoneNum[20] = "\0", address[101] = "\0";
     char username[101] = "\0", password[101] = "\0";
-
-    for (int i = 0; i < numMember; i++) {
-        if (member[i].ID == ID) {
-            idx = i;
-            break;
-        }
-    }
 
     int code;
     char *option[] = {
@@ -45,42 +70,42 @@ void updateMember(int ID) {
     code = chooseOption(option, lengthOption);
     switch (code) {
     case 0:
-        printf("\033[2B");
+        CURSOR_DOWN(2);
         CLEAR_ROW(3);
         printBold("\nPERBARUI INFO MEMBER (tekan tab untuk isi otomatis.)\n");
         printf("ID : %d\n", ID);
-        printf("Nama : %s%s%s\n", GRAY, member[idx].name, NO_EFFECT);
-        printf("No Telp : %s%s%s\n", GRAY, member[idx].phoneNum, NO_EFFECT);
-        printf("Alamat : %s%s%s\n", GRAY, member[idx].address, NO_EFFECT);
-        printf("Saldo : %s%d%s\n", GRAY, member[idx].balance, NO_EFFECT);
-        printf("Username : %s%s%s\n", GRAY, member[idx].username, NO_EFFECT);
-        printf("Password : %s%s%s\n", GRAY, member[idx].password, NO_EFFECT);
+        printf("Nama : %s%s%s\n", GRAY, curMember->name, NO_EFFECT);
+        printf("No Telp : %s%s%s\n", GRAY, curMember->phoneNum, NO_EFFECT);
+        printf("Alamat : %s%s%s\n", GRAY, curMember->address, NO_EFFECT);
+        printf("Saldo : %s%d%s\n", GRAY, curMember->balance, NO_EFFECT);
+        printf("Username : %s%s%s\n", GRAY, curMember->username, NO_EFFECT);
+        printf("Password : %s%s%s\n", GRAY, curMember->password, NO_EFFECT);
         CURSOR_UP(6);
         printf("Nama : ");
-        if (getTabStr(name, member[idx].name) == -1) return;
+        if (getTabStr(name, curMember->name) == -1) return;
         printf("No Telp : ");
-        if (getTabNumStr(phoneNum, member[idx].phoneNum) == -1) return;
+        if (getTabNumStr(phoneNum, curMember->phoneNum) == -1) return;
         printf("Alamat : ");
-        if (getTabStr(address, member[idx].address) == -1) return;
+        if (getTabStr(address, curMember->address) == -1) return;
         printf("Saldo : ");
-        if (getTabInt(&balance, member[idx].balance) == -1) return;
+        if (getTabInt(&balance, curMember->balance) == -1) return;
         printf("Username : ");
-        if (getTabStr(username, member[idx].username) == -1) return;
+        if (getTabStr(username, curMember->username) == -1) return;
         printf("Password : ");
-        if (getTabStr(password, member[idx].password) == -1) return;
+        if (getTabStr(password, curMember->password) == -1) return;
 
         printf("Apakah Anda yakin ingin memperbarui member %s? (Y/N) ", name);
         if (getYesNo() == 'Y') {
             clearScreen();
 
-            strcpy(member[idx].name, name);
-            strcpy(member[idx].phoneNum, phoneNum);
-            strcpy(member[idx].address, address);
-            strcpy(member[idx].username, username);
-            strcpy(member[idx].password, password);
-            member[idx].balance = balance;
+            strcpy(curMember->name, name);
+            strcpy(curMember->phoneNum, phoneNum);
+            strcpy(curMember->address, address);
+            strcpy(curMember->username, username);
+            strcpy(curMember->password, password);
+            curMember->balance = balance;
 
-            updateData(member, sizeof(Member), numMember, FILE_MEMBER);
+            updateData(member, sizeof(Member), FILE_MEMBER, getMemberNext);
 
             printf("%s berhasil diperbarui.", name);
             sleep(1);
@@ -93,11 +118,13 @@ void updateMember(int ID) {
         break;
     case 1:
         clearScreen();
-        printf("Apakah Anda yakin ingin menghapus Member %s? (Y/N) ", member[idx].name);
+        printf("Apakah Anda yakin ingin menghapus Member %s? (Y/N) ", curMember->name);
         if (getYesNo() == 'Y') {
-            printf("%s berhasil dihapus.", member[idx].name);
-            removeData(member, sizeof(Member), ID, &numMember, FILE_MEMBER, getMemberID);
-            importFromDb(member, sizeof(Member), &numMember, FILE_MEMBER);
+            printf("%s berhasil dihapus.", curMember->name);
+            prevMember->next = curMember->next;
+            updateData(member, sizeof(Member), FILE_MEMBER, getMemberNext);
+            numMember--;
+            free(curMember);
 
             sleep(1);
             clearScreen();
@@ -123,8 +150,9 @@ int createAccount(char *username, char *password) {
         getPass(password);
         if (strcmp(password, "ESCAPE") == 0) return 0;
 
-        for (int i = 0; i < numMember; i++) {
-            if (strcmp(member[i].username, username) == 0) {
+        Member *cur = member;
+        while (cur != NULL) {
+            if (strcmp(cur->username, username) == 0) {
                 isUsed = 1;
                 break;
             }
@@ -161,6 +189,12 @@ int createAccount(char *username, char *password) {
 void inputMember() {
     char name[101] = "\0", phoneNum[20] = "\0", address[101] = "\0", username[101] = "\0", password[101] = "\0";
     int ID, balance = 1000000;
+    Member *curMember = member;
+    while (curMember != NULL) {
+        ID = curMember->ID;
+        curMember = curMember->next;
+    }
+    ID++;
 
     while (createAccount(username, password)) {
         clearScreen();
@@ -178,17 +212,26 @@ void inputMember() {
         printf("Apakah data diri Anda sudah benar? (Y/N) ");
         if (getYesNo() == 'Y') {
             clearScreen();
-            int idx = numMember;
-            member[idx].ID = (idx == 0) ? 1 : member[idx - 1].ID + 1;
-            strcpy(member[idx].name, name);
-            strcpy(member[idx].phoneNum, phoneNum);
-            strcpy(member[idx].address, address);
-            strcpy(member[idx].username, username);
-            strcpy(member[idx].password, password);
-            strcpy(member[idx].registDate, getDate());
-            strcpy(member[idx].registTime, getTime());
-            member[idx].balance = balance;
-            addToDb(&member[numMember], sizeof(Member), FILE_MEMBER);
+
+            Member *newMember = (Member *)malloc(sizeof(Member));
+            newMember->ID = ID;
+            strcpy(newMember->name, name);
+            strcpy(newMember->phoneNum, phoneNum);
+            strcpy(newMember->address, address);
+            strcpy(newMember->username, username);
+            strcpy(newMember->password, password);
+            strcpy(newMember->registDate, getDate());
+            strcpy(newMember->registTime, getTime());
+            newMember->balance = balance;
+            newMember->next = NULL;
+
+            if (member == NULL) {
+                member = newMember;
+            } else {
+                curMember->next = newMember;
+            }
+
+            addToDb(&member, sizeof(Member), FILE_MEMBER);
             numMember++;
             printf("Anda berhasil terdaftar sebagai membership.");
             sleep(1);

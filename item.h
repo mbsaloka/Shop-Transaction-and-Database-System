@@ -1,33 +1,60 @@
 void showItem(char* filter) {
     char name[101];
     numTempFilterItem = 0;
+    tempFilterItem = NULL;
 
     printBold("DAFTAR BARANG\n");
     printBold("ID   |\t Nama Barang\t\t| Stok\t| Harga\n");
     printf("---------------------------------------------------\n");
-    for (int i = 0; i < numItem; i++) {
-        strcpy(name, item[i].name);
+    Item *curItem = item, *prevFilterItem = NULL;
+    while (curItem != NULL) {
+        strcpy(name, curItem->name);
         toLower(name);
         toLower(filter);
         if (strstr(name, filter)) {
-            tempFilterItem[numTempFilterItem++] = item[i];
-            printf("%-5.d|\t %-22.22s | %-5.d | ", item[i].ID, item[i].name, item[i].stock);
-            printMoney(item[i].price);
+            numTempFilterItem++;
+            Item* newFilterItem = (Item*)malloc(sizeof(Item));
+            newFilterItem = curItem;
+            if (tempFilterItem == NULL) {
+                tempFilterItem = newFilterItem;
+                tempFilterItem->next = NULL;
+                prevFilterItem = tempFilterItem;
+            } else {
+                prevFilterItem->next = newFilterItem;
+                newFilterItem->next = NULL;
+                prevFilterItem = newFilterItem;
+            }
+            printf("%-5.d|\t %-22.22s | %-5.d | ", curItem->ID, curItem->name, curItem->stock);
+            printMoney(curItem->price);
             printf("\n");
         }
     }
 }
 
+void searchItemByID(int ID, Item** curItem, Item** prevItem) {
+    Item* cur = item;
+    *curItem = NULL;
+    *prevItem = NULL;
+    if (cur->ID == ID) {
+        *curItem = cur;
+        *prevItem = NULL;
+        return;
+    }
+    while (cur != NULL) {
+        if (cur->next->ID == ID) {
+            *curItem = cur->next;
+            *prevItem = cur;
+            return;
+        }
+        cur = cur->next;
+    }
+}
+
 void updateItem(int ID) {
-    int idx = 0;
+    Item *curItem, *prevItem;
+    searchItemByID(ID, &curItem, &prevItem);
     char name[101];
     int price, stock;
-    for (int i = 0; i < numItem; i++) {
-        if (item[i].ID == ID) {
-            idx = i;
-            break;
-        }
-    }
 
     int code;
     char* option[] = {
@@ -40,31 +67,30 @@ void updateItem(int ID) {
     code = chooseOption(option, lengthOption);
     switch (code) {
     case 0:
-        printf("\033[2B");
+        CURSOR_DOWN(2);
         CLEAR_ROW(3);
         printBold("\nPERBARUI INFO BARANG (tekan tab untuk isi otomatis.)\n");
         printf("ID : %d\n", ID);
-        printf("Nama Barang : %s%s%s\n", GRAY, item[idx].name, NO_EFFECT);
-        printf("Stok : %s%d%s\n", GRAY, item[idx].stock, NO_EFFECT);
-        printf("Harga : %s%d%s\n", GRAY, item[idx].price, NO_EFFECT);
+        printf("Nama Barang : %s%s%s\n", GRAY, curItem->name, NO_EFFECT);
+        printf("Stok : %s%d%s\n", GRAY, curItem->stock, NO_EFFECT);
+        printf("Harga : %s%d%s\n", GRAY, curItem->price, NO_EFFECT);
         CURSOR_UP(3);
         printf("Nama Barang : ");
-        if (getTabStr(name, item[idx].name) == -1) return;
+        if (getTabStr(name, curItem->name) == -1) return;
         printf("Stok : ");
-        if (getTabInt(&stock, item[idx].stock) == -1) return;
+        if (getTabInt(&stock, curItem->stock) == -1) return;
         stock = MIN(99999, stock);
         printf("Harga : ");
-        if (getTabInt(&price, item[idx].price) == -1) return;
+        if (getTabInt(&price, curItem->price) == -1) return;
 
         printf("Apakah Anda yakin ingin memperbarui barang %s? (Y/N) ", name);
         if (getYesNo() == 'Y') {
             clearScreen();
-            item[idx].ID = ID;
-            strcpy(item[idx].name, name);
-            item[idx].price = price;
-            item[idx].stock = stock;
-
-            updateData(item, sizeof(Item), numItem, FILE_ITEM);
+            curItem->ID = ID;
+            strcpy(curItem->name, name);
+            curItem->price = price;
+            curItem->stock = stock;
+            updateData(item, sizeof(Item), FILE_ITEM, getItemNext);
 
             printf("%s berhasil diperbarui.", name);
             sleep(1);
@@ -76,11 +102,13 @@ void updateItem(int ID) {
         break;
     case 1:
         clearScreen();
-        printf("Apakah Anda yakin ingin menghapus barang %s? (Y/N) ", item[idx].name);
+        printf("Apakah Anda yakin ingin menghapus barang %s? (Y/N) ", curItem->name);
         if (getYesNo() == 'Y') {
-            printf("%s berhasil dihapus.", item[idx].name);
-            removeData(item, sizeof(Item), ID, &numItem, FILE_ITEM, getItemID);
-            importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
+            printf("%s berhasil dihapus.", curItem->name);
+            prevItem->next = curItem->next;
+            updateData(item, sizeof(Item), FILE_ITEM, getItemNext);
+            numItem--;
+            free(curItem);
 
             sleep(1);
             clearScreen();
@@ -94,11 +122,14 @@ void updateItem(int ID) {
 }
 
 void inputItem() {
-    int idx = numItem;
     char name[101] = "\0";
     int ID, price, stock;
-
-    ID = (idx == 0) ? 1 : item[idx - 1].ID + 1;
+    Item* curItem = item;
+    while (curItem != NULL) {
+        ID = curItem->ID;
+        curItem = curItem->next;
+    }
+    ID++;
 
     printBold("TAMBAHKAN BARANG BARU\n");
     printf("ID %-.3d\n", ID);
@@ -116,12 +147,21 @@ void inputItem() {
     printf("Apakah Anda ingin menambahkan %s ke dalam daftar barang? (Y/N) ", name);
     if (getYesNo() == 'Y') {
         clearScreen();
-        item[idx].ID = ID;
-        strcpy(item[idx].name, name);
-        item[idx].stock = stock;
-        item[idx].price = price;
 
-        addToDb(&item[idx], sizeof(Item), FILE_ITEM);
+        Item* newItem = (Item*)malloc(sizeof(Item));
+        newItem->ID = ID;
+        strcpy(newItem->name, name);
+        newItem->stock = stock;
+        newItem->price = price;
+        newItem->next = NULL;
+
+        if (item == NULL) {
+            item = newItem;
+        } else {
+            curItem->next = newItem;
+        }
+
+        addToDb(&newItem, sizeof(Item), FILE_ITEM);
         numItem++;
 
         printf("%s berhasil ditambahkan.", name);

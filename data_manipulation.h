@@ -6,6 +6,7 @@
 typedef struct item_s {
     int ID, price, stock;
     char name[101];
+    struct item_s *next;
 } Item;
 
 typedef struct member_s {
@@ -13,22 +14,25 @@ typedef struct member_s {
     char username[101], password[101];
     char name[101], phoneNum[20], address[101];
     char registDate[15], registTime[15];
+    struct member_s *next;
 } Member;
 
 typedef struct cart_s {
     int ID, price, amount, stock;
     char name[101];
+    struct cart_s *next;
 } Cart;
 
 typedef struct transaction_s {
     int ID, memberID, totalPrice;
     char name[101], transactionDate[15], transactionTime[15];
+    struct transaction_s *next;
 } Transaction;
 
-Item item[1000], tempFilterItem[1000];
-Member member[1000], onlineUser, tempFilterMember[1000];
-Cart cart[1000];
-Transaction transaction[1000], tempFilterTransaction[1000];
+Item *item = NULL, *tempFilterItem = NULL;
+Member *member = NULL, onlineUser, *tempFilterMember = NULL;
+Cart *cart = NULL;
+Transaction *transaction = NULL, *tempFilterTransaction = NULL;
 int numItem, numMember, numCart, numTransaction;
 int numTempFilterItem, numTempFilterMember, numTempFilterTransaction;
 
@@ -50,11 +54,7 @@ void importFromDb(void *data, size_t dataSize, int *n, char *fileName) {
     fseek(inp, 0, SEEK_END);
     int fileSize = ftell(inp);
     *n = fileSize / dataSize;
-
     rewind(inp);
-
-    const int maxData = 1000;
-    *n = (*n > maxData) ? maxData : *n;
 
     fread(data, dataSize, *n, inp);
 
@@ -74,38 +74,18 @@ void copyData(char *src, char *dest) {
     fclose(outp);
 }
 
-void removeData(void *data, size_t dataSize, int removeID, int *totalIndex, char *fileName, int (*getID)(void *)) {
-    int n = *totalIndex;
-    for (int i = 0; i < n; i++) {
-        void *currentData = (char *)data + (i * dataSize);
-        int currentID = getID(currentData);
-        if (currentID == removeID) {
-            (*totalIndex)--;
-        } else {
-            addToDb(currentData, dataSize, FILE_TEMP);
-        }
-    }
-    if (n == *totalIndex) {
-        printf("ID tidak ditemukan.\n");
-    } else {
-        copyData(FILE_TEMP, fileName);
-    }
-    remove(FILE_TEMP);
+void *getItemNext(void *data) {
+    return ((Item *)data)->next;
 }
 
-int getItemID(void *item) {
-    return ((Item *)item)->ID;
+void *getMemberNext(void *data) {
+    return ((Member *)data)->next;
 }
 
-int getMemberID(void *member) {
-    return ((Member *)member)->ID;
-}
-
-void updateData(void *data, size_t dataSize, int totalIndex, char *fileName) {
-    int n = totalIndex;
-    for (int i = 0; i < n; i++) {
-        void *currentData = (char *)data + (i * dataSize);
-        addToDb(currentData, dataSize, FILE_TEMP);
+void updateData(void *data, size_t dataSize, char *fileName, void *(*getNext)(void *)) {
+    while (data != NULL) {
+        addToDb(data, dataSize, FILE_TEMP);
+        data = getNext(data);
     }
     copyData(FILE_TEMP, fileName);
     remove(FILE_TEMP);
