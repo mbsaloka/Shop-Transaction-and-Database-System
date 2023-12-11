@@ -6,7 +6,7 @@
 typedef struct item_s {
     int ID, price, stock;
     char name[101];
-    struct item_s *next;
+    struct item_s *next, *prev;
 } Item;
 
 typedef struct member_s {
@@ -14,49 +14,47 @@ typedef struct member_s {
     char username[101], password[101];
     char name[101], phoneNum[20], address[101];
     char registDate[15], registTime[15];
-    struct member_s *next;
+    struct member_s *next, *prev;
 } Member;
 
 typedef struct cart_s {
     int ID, price, amount, stock;
     char name[101];
-    struct cart_s *next;
+    struct cart_s *next, *prev;
 } Cart;
 
 typedef struct transaction_s {
     int ID, memberID, totalPrice;
     char name[101], transactionDate[15], transactionTime[15];
-    struct transaction_s *next;
+    struct transaction_s *next, *prev;
 } Transaction;
 
-Item *item = NULL, *tempFilterItem = NULL;
-Member *member = NULL, onlineUser, *tempFilterMember = NULL;
+Item *item = NULL, *filterItem = NULL;
+Member *member = NULL, onlineUser, *filterMember = NULL;
 Cart *cart = NULL;
-Transaction *transaction = NULL, *tempFilterTransaction = NULL;
+Transaction *transaction = NULL, *filterTransaction = NULL;
 int numItem, numMember, numCart, numTransaction;
-int numTempFilterItem, numTempFilterMember, numTempFilterTransaction;
+int numFilterItem, numFilterMember, numFilterTransaction;
 
-void addToDb(void *data, size_t dataSize, char *fileName) {
-    FILE *outp;
-    outp = fopen(fileName, "ab");
-    fwrite(data, dataSize, 1, outp);
-    fclose(outp);
-}
-
-void importFromDb(void *data, size_t dataSize, int *n, char *fileName) {
+void importItemFromDb() {
     FILE *inp;
-    inp = fopen(fileName, "rb");
+    inp = fopen(FILE_ITEM, "rb");
     if (inp == NULL) {
         perror("Error opening file");
         return;
     }
 
-    fseek(inp, 0, SEEK_END);
-    int fileSize = ftell(inp);
-    *n = fileSize / dataSize;
-    rewind(inp);
-
-    fread(data, dataSize, *n, inp);
+    Item data;
+    Item *newItem = (Item *)malloc(sizeof(Item));
+    numItem = 0;
+    while (fread(&data, sizeof(Item), 1, inp) == 1) {
+        if (item == NULL) {
+            *item = data;
+        } else {
+            *newItem = data;
+        }
+        numItem++;
+    }
 
     fclose(inp);
 }
@@ -83,10 +81,16 @@ void *getMemberNext(void *data) {
 }
 
 void updateData(void *data, size_t dataSize, char *fileName, void *(*getNext)(void *)) {
+    FILE *outp;
+    outp = fopen(fileName, "wb");
+    if (outp == NULL) {
+        perror("Error opening file");
+        return;
+    }
     while (data != NULL) {
-        addToDb(data, dataSize, FILE_TEMP);
+        printf("Updating %s\n", fileName);
+        fwrite(data, dataSize, 1, outp);
         data = getNext(data);
     }
-    copyData(FILE_TEMP, fileName);
-    remove(FILE_TEMP);
+    fclose(outp);
 }

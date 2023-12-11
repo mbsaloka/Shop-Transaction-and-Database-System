@@ -1,58 +1,54 @@
 void showItem(char* filter) {
     char name[101];
-    numTempFilterItem = 0;
-    tempFilterItem = NULL;
+    numFilterItem = 0;
+    while (filterItem != NULL) {
+        Item* temp = filterItem;
+        filterItem = filterItem->next;
+        free(temp);
+    }
 
     printBold("DAFTAR BARANG\n");
     printBold("ID   |\t Nama Barang\t\t| Stok\t| Harga\n");
     printf("---------------------------------------------------\n");
-    Item *curItem = item, *prevFilterItem = NULL;
+    Item *curItem = item, *lastFilterItem = NULL;
     while (curItem != NULL) {
         strcpy(name, curItem->name);
         toLower(name);
         toLower(filter);
         if (strstr(name, filter)) {
-            numTempFilterItem++;
+            numFilterItem++;
             Item* newFilterItem = (Item*)malloc(sizeof(Item));
             newFilterItem = curItem;
-            if (tempFilterItem == NULL) {
-                tempFilterItem = newFilterItem;
-                tempFilterItem->next = NULL;
-                prevFilterItem = tempFilterItem;
+            if (filterItem == NULL) {
+                filterItem = newFilterItem;
+                filterItem->next = NULL;
+                filterItem->prev = NULL;
+                lastFilterItem = filterItem;
             } else {
-                prevFilterItem->next = newFilterItem;
+                lastFilterItem->next = newFilterItem;
                 newFilterItem->next = NULL;
-                prevFilterItem = newFilterItem;
+                newFilterItem->prev = lastFilterItem;
+                lastFilterItem = newFilterItem;
             }
             printf("%-5.d|\t %-22.22s | %-5.d | ", curItem->ID, curItem->name, curItem->stock);
             printMoney(curItem->price);
             printf("\n");
         }
+        curItem = curItem->next;
     }
 }
 
-void searchItemByID(int ID, Item** curItem, Item** prevItem) {
+Item* searchItemByID(int ID) {
     Item* cur = item;
-    *curItem = NULL;
-    *prevItem = NULL;
-    if (cur->ID == ID) {
-        *curItem = cur;
-        *prevItem = NULL;
-        return;
-    }
     while (cur != NULL) {
-        if (cur->next->ID == ID) {
-            *curItem = cur->next;
-            *prevItem = cur;
-            return;
-        }
+        if (cur->ID == ID) return cur;
         cur = cur->next;
     }
+    return NULL;
 }
 
 void updateItem(int ID) {
-    Item *curItem, *prevItem;
-    searchItemByID(ID, &curItem, &prevItem);
+    Item* curItem = searchItemByID(ID);
     char name[101];
     int price, stock;
 
@@ -105,7 +101,11 @@ void updateItem(int ID) {
         printf("Apakah Anda yakin ingin menghapus barang %s? (Y/N) ", curItem->name);
         if (getYesNo() == 'Y') {
             printf("%s berhasil dihapus.", curItem->name);
-            prevItem->next = curItem->next;
+            // lastItem->next = curItem->next;
+            curItem->prev->next = curItem->next;
+            if (curItem->next != NULL) {
+                curItem->next->prev = curItem->prev;
+            }
             updateData(item, sizeof(Item), FILE_ITEM, getItemNext);
             numItem--;
             free(curItem);
@@ -124,12 +124,18 @@ void updateItem(int ID) {
 void inputItem() {
     char name[101] = "\0";
     int ID, price, stock;
-    Item* curItem = item;
-    while (curItem != NULL) {
-        ID = curItem->ID;
-        curItem = curItem->next;
+    Item *curItem = item, *lastItem = NULL;
+
+    if (curItem == NULL) {
+        ID = 1;
+    } else {
+        while (curItem != NULL) {
+            ID = curItem->ID;
+            lastItem = curItem;
+            curItem = curItem->next;
+        }
+        ID++;
     }
-    ID++;
 
     printBold("TAMBAHKAN BARANG BARU\n");
     printf("ID %-.3d\n", ID);
@@ -154,15 +160,17 @@ void inputItem() {
         newItem->stock = stock;
         newItem->price = price;
         newItem->next = NULL;
+        newItem->prev = lastItem;
 
         if (item == NULL) {
             item = newItem;
         } else {
-            curItem->next = newItem;
+            lastItem->next = newItem;
         }
 
-        addToDb(&newItem, sizeof(Item), FILE_ITEM);
+        // addToDb(newItem, sizeof(Item), FILE_ITEM);
         numItem++;
+        updateData(item, sizeof(Item), FILE_ITEM, getItemNext);
 
         printf("%s berhasil ditambahkan.", name);
         sleep(1);
