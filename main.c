@@ -1,22 +1,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <conio.h>
 #include <time.h>
 #include <unistd.h>
 
 #include "text_style.h"
 #include "data_manipulation.h"
+#include "linked_list.h"
 #include "get_time.h"
 #include "custom_input.h"
 #include "arrow_input.h"
 #include "item.h"
-#include "member.h"
-#include "bill.h"
-#include "transaction_log.h"
-#include "shopping.h"
+// #include "member.h"
+// #include "bill.h"
+// #include "transaction_log.h"
+// #include "shopping.h"
 #include "admin.h"
-#include "user.h"
+// #include "user.h"
 
 int main(int argc, char const *argv[]) {
     importFromDb(item, sizeof(Item), &numItem, FILE_ITEM);
@@ -39,10 +41,10 @@ int main(int argc, char const *argv[]) {
         case 0:
             admin();
             break;
-        case 1:
-            user();
-            clearScreen();
-            break;
+        // case 1:
+        //     user();
+        //     clearScreen();
+        //     break;
         case 2:
             printBold("[Akhir dari program.]\n");
             break;

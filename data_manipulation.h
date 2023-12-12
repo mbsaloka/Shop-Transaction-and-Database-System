@@ -3,24 +3,25 @@
 #define FILE_TEMP "database/temp.bin"
 #define FILE_TRANSACTION "database/db_transaction_log.bin"
 
-typedef struct item_s {
+typedef struct item_t {
     int ID, price, stock;
     char name[101];
+    // struct item_t *next, *prev;
 } Item;
 
-typedef struct member_s {
+typedef struct member_t {
     int ID, balance;
     char username[101], password[101];
     char name[101], phoneNum[20], address[101];
     char registDate[15], registTime[15];
 } Member;
 
-typedef struct cart_s {
+typedef struct cart_t {
     int ID, price, amount, stock;
     char name[101];
 } Cart;
 
-typedef struct transaction_s {
+typedef struct transaction_t {
     int ID, memberID, totalPrice;
     char name[101], transactionDate[15], transactionTime[15];
 } Transaction;

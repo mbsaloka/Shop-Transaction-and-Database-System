@@ -33,7 +33,7 @@ int adminLogin() {
 }
 
 void admin() {
-    if (!adminLogin()) return;
+    // if (!adminLogin()) return;
     clearScreen();
     int code;
     char filter[101];
@@ -81,61 +81,61 @@ void admin() {
                 }
             }
             break;
-        case 2:
-            inputMember();
-            break;
-        case 3:
-            filter[0] = '\0';
-            while (1) {
-                clearScreen();
-                showMember(filter);
-                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
-                printf("Masukkan Filter : ");
-                int ID = chooseData(tempFilterMember, sizeof(Member), numTempFilterMember, printLineMember);
-                if (ID == -2) {
-                    printf("\r%sMasukkan Filter : %-31.s", GREEN);
-                    CURSOR_LEFT(31);
-                    printf("%s(ketik di sini)%s", GRAY, NO_EFFECT);
-                    CURSOR_LEFT(15);
-                    getFilter(filter);
-                } else if (ID == -1) {
-                    if (numTempFilterMember < numMember) {
-                        filter[0] = '\0';
-                    } else {
-                        break;
-                    }
-                } else {
-                    updateMember(ID);
-                }
-            }
-            break;
-        case 4:
-            filter[0] = '\0';
-            while (1) {
-                clearScreen();
-                showTransactionLog(filter);
-                printBold("[FILTER] (Tekan Esc untuk kembali)\n");
-                printf("Masukkan Filter : ");
-                int ID = chooseData(tempFilterTransaction, sizeof(Transaction), numTempFilterTransaction, printLineTransaction);
-                if (ID == -2) {
-                    printf("\r%sMasukkan Filter : %-31.s", GREEN);
-                    CURSOR_LEFT(31);
-                    printf("%s(ketik di sini)%s", GRAY, NO_EFFECT);
-                    CURSOR_LEFT(15);
-                    getFilter(filter);
-                } else if (ID == -1) {
-                    if (numTempFilterTransaction < numTransaction) {
-                        filter[0] = '\0';
-                    } else {
-                        break;
-                    }
-                } else {
-                    clearScreen();
-                    showReceipt(ID);
-                    pause();
-                }
-            }
-            break;
+        // case 2:
+        //     inputMember();
+        //     break;
+        // case 3:
+        //     filter[0] = '\0';
+        //     while (1) {
+        //         clearScreen();
+        //         showMember(filter);
+        //         printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+        //         printf("Masukkan Filter : ");
+        //         int ID = chooseData(tempFilterMember, sizeof(Member), numTempFilterMember, printLineMember);
+        //         if (ID == -2) {
+        //             printf("\r%sMasukkan Filter : %-31.s", GREEN);
+        //             CURSOR_LEFT(31);
+        //             printf("%s(ketik di sini)%s", GRAY, NO_EFFECT);
+        //             CURSOR_LEFT(15);
+        //             getFilter(filter);
+        //         } else if (ID == -1) {
+        //             if (numTempFilterMember < numMember) {
+        //                 filter[0] = '\0';
+        //             } else {
+        //                 break;
+        //             }
+        //         } else {
+        //             updateMember(ID);
+        //         }
+        //     }
+        //     break;
+        // case 4:
+        //     filter[0] = '\0';
+        //     while (1) {
+        //         clearScreen();
+        //         showTransactionLog(filter);
+        //         printBold("[FILTER] (Tekan Esc untuk kembali)\n");
+        //         printf("Masukkan Filter : ");
+        //         int ID = chooseData(tempFilterTransaction, sizeof(Transaction), numTempFilterTransaction, printLineTransaction);
+        //         if (ID == -2) {
+        //             printf("\r%sMasukkan Filter : %-31.s", GREEN);
+        //             CURSOR_LEFT(31);
+        //             printf("%s(ketik di sini)%s", GRAY, NO_EFFECT);
+        //             CURSOR_LEFT(15);
+        //             getFilter(filter);
+        //         } else if (ID == -1) {
+        //             if (numTempFilterTransaction < numTransaction) {
+        //                 filter[0] = '\0';
+        //             } else {
+        //                 break;
+        //             }
+        //         } else {
+        //             clearScreen();
+        //             showReceipt(ID);
+        //             pause();
+        //         }
+        //     }
+        //     break;
         case 5:
             printBold("[Keluar Dari Mode Admin]\n");
             sleep(1);
